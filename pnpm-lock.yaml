@@ -26,9 +26,6 @@ importers:
       '@vercel/analytics':
         specifier: ^2.0.1
         version: 2.0.1(@sveltejs/kit@2.61.1(@sveltejs/vite-plugin-svelte@5.1.1(svelte@5.55.9)(vite@6.4.2(@types/node@22.19.19)(terser@5.48.0)))(svelte@5.55.9)(typescript@5.9.3)(vite@6.4.2(@types/node@22.19.19)(terser@5.48.0)))(svelte@5.55.9)
-      '@vercel/speed-insights':
-        specifier: ^2.0.0
-        version: 2.0.0(@sveltejs/kit@2.61.1(@sveltejs/vite-plugin-svelte@5.1.1(svelte@5.55.9)(vite@6.4.2(@types/node@22.19.19)(terser@5.48.0)))(svelte@5.55.9)(typescript@5.9.3)(vite@6.4.2(@types/node@22.19.19)(terser@5.48.0)))(svelte@5.55.9)
       html-to-image:
         specifier: ^1.11.13
         version: 1.11.13
@@ -1286,32 +1283,6 @@ packages:
     resolution: {integrity: sha512-wE6eAGSXScra60N2l6jWvNtVK0m+sh873CpfZW4KI2v8EHuUQp+mSEi4T+IcdPCSEDgCdAS/7bizbhQlkjzrSA==}
     engines: {node: '>=18'}
     hasBin: true
-
-  '@vercel/speed-insights@2.0.0':
-    resolution: {integrity: sha512-jwkNcrTeafWxjmWq4AHBaptSqZiJkYU5adLC9QBSqeim0GcqDMgN5Ievh8OG1rJ6W3A4l1oiP7qr9CWxGuzu3w==}
-    peerDependencies:
-      '@sveltejs/kit': ^1 || ^2
-      next: '>= 13'
-      nuxt: '>= 3'
-      react: ^18 || ^19 || ^19.0.0-rc
-      svelte: '>= 4'
-      vue: ^3
-      vue-router: ^4
-    peerDependenciesMeta:
-      '@sveltejs/kit':
-        optional: true
-      next:
-        optional: true
-      nuxt:
-        optional: true
-      react:
-        optional: true
-      svelte:
-        optional: true
-      vue:
-        optional: true
-      vue-router:
-        optional: true
 
   '@vite-pwa/sveltekit@1.1.0':
     resolution: {integrity: sha512-mMIf2tY+7Hg8jecpu/WY+Ki2ikoXy3hVmt3tOxi0K+lYYnKQrDYthuHireI0S+26Mg9BXzL7qQF1xeB5VYlYlg==}
@@ -3784,11 +3755,6 @@ snapshots:
       - encoding
       - rollup
       - supports-color
-
-  '@vercel/speed-insights@2.0.0(@sveltejs/kit@2.61.1(@sveltejs/vite-plugin-svelte@5.1.1(svelte@5.55.9)(vite@6.4.2(@types/node@22.19.19)(terser@5.48.0)))(svelte@5.55.9)(typescript@5.9.3)(vite@6.4.2(@types/node@22.19.19)(terser@5.48.0)))(svelte@5.55.9)':
-    optionalDependencies:
-      '@sveltejs/kit': 2.61.1(@sveltejs/vite-plugin-svelte@5.1.1(svelte@5.55.9)(vite@6.4.2(@types/node@22.19.19)(terser@5.48.0)))(svelte@5.55.9)(typescript@5.9.3)(vite@6.4.2(@types/node@22.19.19)(terser@5.48.0))
-      svelte: 5.55.9
 
   '@vite-pwa/sveltekit@1.1.0(@sveltejs/kit@2.61.1(@sveltejs/vite-plugin-svelte@5.1.1(svelte@5.55.9)(vite@6.4.2(@types/node@22.19.19)(terser@5.48.0)))(svelte@5.55.9)(typescript@5.9.3)(vite@6.4.2(@types/node@22.19.19)(terser@5.48.0)))(vite@6.4.2(@types/node@22.19.19)(terser@5.48.0))(workbox-build@7.4.1)(workbox-window@7.4.1)':
     dependencies:

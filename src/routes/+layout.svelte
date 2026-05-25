@@ -14,21 +14,15 @@ import { onMount } from "svelte";
 
 const { children } = $props();
 
-// Vercel Analytics + Speed Insights via the SvelteKit-specific entries.
-// Dynamically imported on mount so neither library lands in the initial
-// JS bundle. `mode: "auto"` lets each library decide based on
-// `process.env.NODE_ENV` (Vite replaces this at build time): vite dev →
-// console-debug, production build → real beacons via Vercel's edge-
-// proxied /_vercel/insights/* endpoints. Both injection functions guard
-// internally on `browser`, so onMount is enough.
+// Vercel Analytics via the SvelteKit-specific entry. Dynamically
+// imported on mount so the library doesn't land in the initial JS
+// bundle. `mode: "auto"` reads process.env.NODE_ENV (Vite replaces it
+// at build time): vite dev → console-debug, production build → real
+// beacons via Vercel's edge-proxied /_vercel/insights/* endpoints.
 onMount(() => {
 	(async () => {
-		const [{ injectAnalytics }, { injectSpeedInsights }] = await Promise.all([
-			import("@vercel/analytics/sveltekit"),
-			import("@vercel/speed-insights/sveltekit"),
-		]);
+		const { injectAnalytics } = await import("@vercel/analytics/sveltekit");
 		injectAnalytics({ mode: "auto" });
-		injectSpeedInsights();
 	})();
 });
 </script>

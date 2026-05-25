@@ -1,7 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Is this a Roman road?">
-	<rect width="64" height="64" rx="14" fill="#8b1e2a"/>
-	<g fill="#fbf6ef" font-family="Georgia, serif" font-weight="700" text-anchor="middle">
-		<text x="32" y="42" font-size="34" letter-spacing="-1">RR</text>
-	</g>
-	<rect x="10" y="50" width="44" height="3" rx="1.5" fill="#fbf6ef" opacity="0.7"/>
+	<defs>
+		<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0" stop-color="#c8312b"/>
+			<stop offset="1" stop-color="#9d2620"/>
+		</linearGradient>
+	</defs>
+	<rect width="64" height="64" rx="14" fill="url(#bg)"/>
+	<text x="32" y="42" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="34" letter-spacing="-1" fill="#fcf8ec">RR</text>
+	<rect x="20" y="48" width="24" height="3" rx="1.5" fill="#d4a437"/>
 </svg>

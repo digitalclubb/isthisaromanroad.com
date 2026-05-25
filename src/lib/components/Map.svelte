@@ -49,36 +49,54 @@ onMount(() => {
 
 		map.on("load", () => {
 			if (!map) return;
+			// Colours inline below mirror the design tokens in src/app.css.
+			// (MapLibre paint props don't read CSS custom properties.)
+			const COLOUR_CREAM = "#fcf8ec"; // --surface
+			const COLOUR_VERMILION = "#c8312b"; // --brand (Pompeii red)
+			const COLOUR_GOLD = "#d4a437"; // --gold (Imperial gold)
+			const COLOUR_BLUE = "#1034a6"; // --blue (Egyptian blue)
+
 			map.addSource("road", { type: "geojson", data: emptyFc() });
 			map.addLayer({
 				id: "road-line-casing",
 				type: "line",
 				source: "road",
 				paint: {
-					"line-color": "#fbf6ef",
-					"line-width": 8,
-					"line-opacity": 0.9,
+					"line-color": COLOUR_CREAM,
+					"line-width": 9,
+					"line-opacity": 0.95,
 				},
+				layout: { "line-cap": "round", "line-join": "round" },
 			});
 			map.addLayer({
 				id: "road-line",
 				type: "line",
 				source: "road",
-				paint: {
-					"line-color": "#8b1e2a",
-					"line-width": 4,
-				},
+				paint: { "line-color": COLOUR_VERMILION, "line-width": 4 },
+				layout: { "line-cap": "round", "line-join": "round" },
 			});
 			map.addSource("point-on-road", { type: "geojson", data: emptyFc() });
+			// On-road pin: dark fill with a gold halo so it doesn't camouflage
+			// against the vermilion road line (gold + red are adjacent warms).
+			map.addLayer({
+				id: "point-on-road-halo",
+				type: "circle",
+				source: "point-on-road",
+				paint: {
+					"circle-radius": 15,
+					"circle-color": COLOUR_GOLD,
+					"circle-opacity": 0.42,
+				},
+			});
 			map.addLayer({
 				id: "point-on-road",
 				type: "circle",
 				source: "point-on-road",
 				paint: {
-					"circle-radius": 6,
-					"circle-color": "#8b1e2a",
-					"circle-stroke-color": "#fff",
-					"circle-stroke-width": 2,
+					"circle-radius": 7,
+					"circle-color": "#1f1a14",
+					"circle-stroke-color": COLOUR_GOLD,
+					"circle-stroke-width": 2.5,
 				},
 			});
 			map.addSource("user", { type: "geojson", data: emptyFc() });
@@ -87,9 +105,9 @@ onMount(() => {
 				type: "circle",
 				source: "user",
 				paint: {
-					"circle-radius": 14,
-					"circle-color": "#1d4ed8",
-					"circle-opacity": 0.18,
+					"circle-radius": 16,
+					"circle-color": COLOUR_BLUE,
+					"circle-opacity": 0.16,
 				},
 			});
 			map.addLayer({
@@ -98,9 +116,9 @@ onMount(() => {
 				source: "user",
 				paint: {
 					"circle-radius": 7,
-					"circle-color": "#1d4ed8",
-					"circle-stroke-color": "#fff",
-					"circle-stroke-width": 2,
+					"circle-color": COLOUR_BLUE,
+					"circle-stroke-color": COLOUR_CREAM,
+					"circle-stroke-width": 2.5,
 				},
 			});
 			loaded = true;
@@ -184,7 +202,7 @@ $effect(() => {
 		width: 100%;
 		height: 100%;
 		min-height: 320px;
-		background: #e8e3d7;
+		background: var(--surface-warm, #fbeaca);
 	}
 	.map :global(.maplibregl-ctrl-attrib) {
 		font-size: 11px;

@@ -274,11 +274,23 @@ const subline = $derived.by(() => {
 		font-size: clamp(2rem, 6vw, 3rem);
 		margin: 0 0 0.4rem;
 		color: var(--brand);
+		display: inline-block;
+		position: relative;
+	}
+	.hero h1::after {
+		content: "";
+		display: block;
+		height: 4px;
+		width: 56px;
+		margin-top: 0.4rem;
+		background: linear-gradient(90deg, var(--gold) 0%, var(--gold-deep) 100%);
+		border-radius: 2px;
 	}
 	.tag {
 		margin: 0;
 		color: var(--ink-soft);
 		font-size: 0.95rem;
+		max-width: 56ch;
 	}
 
 	.answer-card {
@@ -295,41 +307,59 @@ const subline = $derived.by(() => {
 		display: flex;
 		flex-direction: column;
 		gap: 0.4rem;
-		padding: 1rem 1.2rem;
+		padding: 1.1rem 1.3rem;
 		border-radius: 12px;
 		border-left: 6px solid transparent;
+		transition: background 200ms ease, border-color 200ms ease;
 	}
 	.answer-text {
-		font-family: Georgia, serif;
-		font-size: clamp(1.8rem, 6vw, 2.6rem);
-		line-height: 1;
+		font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+		font-size: clamp(1.9rem, 6vw, 2.8rem);
+		line-height: 1.05;
 		font-weight: 700;
+		letter-spacing: -0.02em;
 	}
 	.answer-sub {
 		margin: 0;
 		color: var(--ink-soft);
 		font-size: 1rem;
+		line-height: 1.5;
 	}
 	.answer-sub.error {
 		color: var(--warn);
 	}
 	.answer--neutral {
-		background: color-mix(in srgb, var(--brand) 4%, var(--surface));
-		border-left-color: color-mix(in srgb, var(--brand) 25%, var(--surface));
+		background: var(--surface-warm);
+		border-left-color: var(--gold);
+	}
+	.answer--neutral .answer-text {
+		color: var(--ink);
 	}
 	.answer--yes {
-		background: color-mix(in srgb, var(--ok) 8%, var(--surface));
+		background: var(--ok-bg);
 		border-left-color: var(--ok);
 	}
 	.answer--yes .answer-text {
-		color: var(--ok);
+		color: var(--ok-deep);
 	}
 	.answer--no {
-		background: color-mix(in srgb, var(--brand) 6%, var(--surface));
+		background: var(--brand-bg);
 		border-left-color: var(--brand);
 	}
 	.answer--no .answer-text {
-		color: var(--brand);
+		color: var(--brand-deep);
+	}
+
+	/* Dark-mode contrast fixes: in dark mode, *-deep tokens are too dim on the
+	   tinted card backgrounds. Use the brighter *-brand tokens for headline
+	   text and the deeper one for the button so white-on-red still clears AA. */
+	@media (prefers-color-scheme: dark) {
+		.answer--yes .answer-text {
+			color: var(--ok);
+		}
+		.answer--no .answer-text {
+			color: var(--brand);
+		}
 	}
 
 	.controls {
@@ -359,15 +389,31 @@ const subline = $derived.by(() => {
 	}
 	.btn--primary {
 		background: var(--brand);
-		color: white;
+		color: #fff;
+		box-shadow: inset 0 -2px 0 0 rgb(0 0 0 / 0.12);
 	}
 	.btn--primary:hover:not(:disabled) {
 		background: var(--brand-deep);
 	}
+	@media (prefers-color-scheme: dark) {
+		/* Dark `--brand` (#e64b41) is intentionally light for text contrast on
+		   dark bg, but white-on-it falls below AA. Swap to `--brand-deep`
+		   (#c8312b in dark) for the button face. */
+		.btn--primary {
+			background: var(--brand-deep);
+		}
+		.btn--primary:hover:not(:disabled) {
+			background: var(--brand);
+		}
+	}
 	.btn--ghost {
-		background: transparent;
+		background: var(--surface);
 		color: var(--ink);
-		border-color: color-mix(in srgb, var(--ink) 18%, transparent);
+		border-color: color-mix(in srgb, var(--ink) 14%, transparent);
+	}
+	.btn--ghost:hover:not(:disabled) {
+		border-color: var(--gold);
+		color: var(--brand-deep);
 	}
 
 	.search {
@@ -399,9 +445,14 @@ const subline = $derived.by(() => {
 		padding: clamp(1rem, 2.5vw, 1.5rem);
 	}
 	.info h2 {
-		margin: 0 0 0.25rem;
-		font-size: 1.4rem;
-		color: var(--brand);
+		margin: 0 0 0.4rem;
+		font-size: 1.5rem;
+		color: var(--brand-deep);
+	}
+	@media (prefers-color-scheme: dark) {
+		.info h2 {
+			color: var(--brand);
+		}
 	}
 	.info-sub {
 		margin: 0 0 0.75rem;

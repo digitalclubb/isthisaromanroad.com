@@ -49,7 +49,7 @@ export default defineConfig({
 						},
 					},
 					{
-						urlPattern: ({ url }) => url.hostname.endsWith(".basemaps.cartocdn.com"),
+						urlPattern: ({ url }) => url.hostname === "tiles.openfreemap.org",
 						handler: "StaleWhileRevalidate",
 						options: {
 							cacheName: "map-tiles",

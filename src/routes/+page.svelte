@@ -4,12 +4,14 @@ import AskAgain from "$lib/components/AskAgain.svelte";
 import Listening from "$lib/components/Listening.svelte";
 import RoadMap from "$lib/components/Map.svelte";
 import Question from "$lib/components/Question.svelte";
+import RoadStory from "$lib/components/RoadStory.svelte";
 import ShareCard from "$lib/components/ShareCard.svelte";
 import Wordmark from "$lib/components/Wordmark.svelte";
 import { roadNarrative, roadSubtitle } from "$lib/format.js";
 import { geocode } from "$lib/geocode.js";
 import type { LookupResult, RoadIndex } from "$lib/roads.js";
 import { rasterise, shareOrDownload } from "$lib/share.js";
+import { findStoryFor } from "$lib/stories.js";
 
 const ON_ROAD_THRESHOLD_M = 50;
 const VERY_CLOSE_THRESHOLD_M = 5;
@@ -151,6 +153,7 @@ const shareStory = () =>
 const onRoad = $derived(result ? result.distanceMeters <= ON_ROAD_THRESHOLD_M : false);
 const veryClose = $derived(result ? result.distanceMeters <= VERY_CLOSE_THRESHOLD_M : false);
 const minimised = $derived(phase !== "idle");
+const story = $derived(result ? findStoryFor(result.road) : null);
 </script>
 
 <svelte:head>
@@ -206,25 +209,33 @@ const minimised = $derived(phase !== "idle");
 				/>
 			</div>
 
-			<details class="more">
-				<summary>More about this road</summary>
-				<div class="more-body">
-					{#if roadSubtitle(result.road)}
-						<p class="more-sub">{roadSubtitle(result.road)}</p>
-					{/if}
-					<p>{roadNarrative(result.road)}</p>
-					{#if result.road.properties.citation || result.road.properties.bibliography}
-						<p class="cite">
-							<small>
-								Source: {result.road.properties.citation ?? ""}
-								{#if result.road.properties.bibliography}
-									· {result.road.properties.bibliography}
-								{/if}
-							</small>
-						</p>
-					{/if}
-				</div>
-			</details>
+			{#if story}
+				<RoadStory {story} />
+			{/if}
+
+			{#if !story || result.road.properties.citation || result.road.properties.bibliography}
+				<details class="more">
+					<summary>{story ? "Source" : "More about this road"}</summary>
+					<div class="more-body">
+						{#if !story}
+							{#if roadSubtitle(result.road)}
+								<p class="more-sub">{roadSubtitle(result.road)}</p>
+							{/if}
+							<p>{roadNarrative(result.road)}</p>
+						{/if}
+						{#if result.road.properties.citation || result.road.properties.bibliography}
+							<p class="cite">
+								<small>
+									Source: {result.road.properties.citation ?? ""}
+									{#if result.road.properties.bibliography}
+										· {result.road.properties.bibliography}
+									{/if}
+								</small>
+							</p>
+						{/if}
+					</div>
+				</details>
+			{/if}
 
 			<AskAgain
 				onAskAgain={reset}

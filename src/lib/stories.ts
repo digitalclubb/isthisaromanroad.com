@@ -90,6 +90,77 @@ export const STORIES: Story[] = [
 		match: ["King Street"],
 		body: "King Street ran north from <em>Durobrivae</em> near Water Newton to <em>Lindum</em> at Lincoln, a parallel route to Ermine Street through the Lincolnshire fens. It crossed the wetlands on a built causeway raised above the floods that drowned other Roman tracks. Where Ermine Street took the higher ground to the east, King Street kept lower and straighter through the levels. Today it survives in long sections as the B1180 and as parish lanes between Bourne and Sleaford. Antiquarian tradition gave it the royal name; Romans called it nothing in particular that has come down to us.",
 	},
+	{
+		key: "pye-road",
+		name: "Pye Road",
+		match: ["Pye Road"],
+		body: "Pye Road ran north from <em>Camulodunum</em> at Colchester to <em>Venta Icenorum</em> at Caistor St Edmund, binding the veterans' colony at Colchester to the Iceni capital in Norfolk. It crossed the Stour, the Waveney and the Tas, dropping in and out of the river valleys of east Suffolk. After the fall of Rome it remained the main road through East Anglia. Today the A140 follows almost the same line from Ipswich to Norwich. The medieval name is of disputed origin; most readings derive it from Old English <em>pie</em> for magpie, though why a road should take the bird's name is anyone's guess.",
+	},
+	{
+		key: "devils-highway",
+		name: "The Devil's Highway",
+		match: ["Devil's Highway", "Devils Highway"],
+		body: "The Devil's Highway ran west from <em>Londinium</em> to <em>Calleva Atrebatum</em> at Silchester, crossing the Thames at <em>Pontes</em> near Staines. It cut a fast line through the heathland of the Berkshire downs, the shortest road from London to the great inland town at Silchester. The name appeared in medieval surveys, long after the road had fallen out of use: country people who could not believe so straight a road could be human work attributed it to the devil. Today most of it lies under modern roads or under farmland, but a clear stretch survives across Crowthorne and Wokingham as a footpath through the pines.",
+	},
+	{
+		key: "ackling-dyke",
+		name: "Ackling Dyke",
+		match: ["Ackling Dyke"],
+		body: "Ackling Dyke ran south-west from <em>Sorviodunum</em> at Old Sarum to <em>Durnovaria</em> at Dorchester, climbing the chalk downs of Cranborne Chase. Long sections survive as a high, broad <em>agger</em> raised three metres above the surrounding fields, one of the most impressive Roman earthworks left in Britain. The road brushed past the Iron Age hillfort at Badbury Rings, where you can still walk it for several miles between barrows and beech clumps. The name is Anglo-Saxon, possibly from <em>æcca</em> meaning oak or from a personal name; nobody is certain. It is now a long-distance footpath through some of the quietest country in southern England.",
+	},
+	{
+		key: "stone-street",
+		name: "Stone Street",
+		match: ["Stone Street"],
+		body: "Stone Street ran south from <em>Durovernum Cantiacorum</em> at Canterbury to <em>Portus Lemanis</em> at Lympne on the Kent coast, joining the chief town of the Cantii to one of the Saxon Shore forts that watched the Channel. It is among the straightest of all British Roman roads, holding its line for twenty kilometres across the chalk of the North Downs. The B2068 still follows it almost exactly. Cleared of trees and waiting for the eye, the road's surveying is plain: stand at one end and you can see the other. The name is medieval, simply Stone Street for the road's metalled surface in a country of green lanes.",
+	},
+	{
+		key: "ryknild-street",
+		name: "Ryknild Street",
+		match: ["Ryknild Street", "Ricknild Street", "Riknild Street"],
+		body: "Ryknild Street ran north from the Fosse Way at Bourton-on-the-Water through the West Midlands to <em>Templeborough</em> south of Sheffield. It crossed Watling Street at <em>Letocetum</em>, the small Roman town that became Wall in Staffordshire, where the two great roads met at right angles. The medieval name echoes the prehistoric Icknield Way to the south, though whether the two names share an origin is disputed. Long sections survive as the modern A38 through Derbyshire and Yorkshire. North of Burton-on-Trent the road runs almost dead straight for fifty kilometres, the surveying made easy by the broad and level Trent valley.",
+	},
+	{
+		key: "maiden-way",
+		name: "Maiden Way",
+		match: ["Maiden Way"],
+		body: "Maiden Way ran north from <em>Bravoniacum</em> at Kirkby Thore through the Pennine moorland to the fort at <em>Magnis</em> at Carvoran on the line of Hadrian's Wall. It is the most desolate of the great British Roman roads, climbing across exposed fell country at over four hundred metres for much of its length. The name comes from the Old English <em>mægden</em>, maiden in the older sense of unspoilt or never taken, as with Maiden Castle further south. The road served the lead mines of Alston Moor as well as the wall garrisons. Sections survive as bridleway through some of the emptiest country in England, particularly across the moor above Kirkland where the road is plain as a pale ribbon in the heather.",
+	},
+	{
+		key: "devils-causeway",
+		name: "The Devil's Causeway",
+		match: ["Devil's Causeway", "Devils Causeway"],
+		body: "The Devil's Causeway branched off Dere Street at Beukley north of Corbridge and ran north-east to the mouth of the Tweed at Berwick. It was one of the Roman roads built deep into northern Britain after the conquest of the lowlands, probably serving the network of forts that watched the north-east coast. Long stretches survive as 'Roman Road' on Ordnance Survey maps, a straight line of footpath and farm track across the open Northumberland uplands. The name is medieval and predictable: a road too straight to be the work of men. The B6342 follows part of its line; for the rest you walk.",
+	},
+	{
+		// "High Street" is a generic enough name that the match has to be
+		// specific. The Lake District Roman road's standard archaeological
+		// label is "High Street" usually paired with "Roman" or with the
+		// fort names. Restrict to forms unlikely to false-match modern
+		// urban-thoroughfare references.
+		key: "high-street",
+		name: "High Street",
+		match: ["High Street Roman", "Galava-Brocavum", "Brocavum-Galava"],
+		body: "High Street is the name of the Roman road that crossed the high fells of the Lake District between the forts at <em>Galava</em> at Ambleside and <em>Brocavum</em> at Brougham. It climbed straight up onto the long ridge that gives the road and the mountain their shared name, holding to ground above seven hundred metres for most of its length before descending into the Eden valley. It was the highest Roman road in Britain and may have been the most exposed. Today the line is a popular high-level walking route, with cairns and the broken-up <em>agger</em> still visible across the bare summits. Walkers come for the views; the Romans came because no easier line existed.",
+	},
+	{
+		key: "icknield-way",
+		name: "Icknield Way",
+		match: ["Icknield Way"],
+		body: "The Icknield Way is older than the Romans. A prehistoric trackway running along the chalk from East Anglia to the Wessex downs, it was the principal route between Norfolk and the south coast for many centuries before the conquest. The Romans paved sections of it where the line suited their road network, particularly between Ivinghoe and Tring, but they never built it whole. The medieval name is from the Iceni tribe of Norfolk and Suffolk, whose territory the eastern end crossed. Today it is one of the oldest continuously used paths in Europe, a designated National Trail from Norfolk to Ivinghoe Beacon in the Chilterns.",
+	},
+	{
+		key: "military-way",
+		name: "The Military Way",
+		match: ["Military Way"],
+		body: "The Military Way was the Roman supply road that ran along a frontier wall behind the line itself, linking the forts, milecastles and turrets along its length. Two Roman walls in Britain had one: a longer route behind Hadrian's Wall in Cumbria and Northumberland with a shorter twin behind the Antonine Wall across the central belt of Scotland. The road stayed in use through the centuries of Roman occupation in the north. It is still walkable in many places as a slightly raised line of grass and stone: an unspectacular thing on its own but the backbone of the most remote frontier the empire ever held.",
+	},
+	{
+		key: "stainmore-pass",
+		name: "Stainmore Pass road",
+		match: ["Stainmore"],
+		body: "The Stainmore Pass road carried Roman supplies west across the Pennines from <em>Cataractonium</em> at Catterick to <em>Glannoventa</em> at Ravenglass on the Cumbrian coast. It climbed to four hundred and fifty metres at the top of Stainmore, where the fort at <em>Lavatris</em> at Bowes guarded the bleak summit. It was the connecting line between Dere Street and the Cumbrian forts: without it Roman Cumbria would have been cut off from the eastern half of the empire by the Pennine hills. The modern A66 follows the same pass. In bad weather it closes for the same reasons the Romans must have closed it.",
+	},
 ];
 
 /**

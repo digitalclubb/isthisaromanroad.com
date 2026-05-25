@@ -1,0 +1,13 @@
+node_modules
+.DS_Store
+.env
+.env.*
+!.env.example
+
+.svelte-kit
+build
+.vercel
+dev-dist
+
+# Raw downloaded source data (kept out of repo; rebuild with pnpm data:build)
+data/raw

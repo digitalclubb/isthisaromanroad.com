@@ -85,11 +85,11 @@ export function roadNarrative(r: RoadFeature): string {
 		pieces.push(`${verb} a confirmed Roman ${type}.`);
 	} else if (certainty === "conjectured") {
 		pieces.push(
-			`${verb} a conjectured Roman ${type} — the general line is well-supported by evidence but the exact route here is inferred.`,
+			`${verb} a conjectured Roman ${type}: the general line is well-supported by evidence but the exact route here is inferred.`,
 		);
 	} else if (certainty === "hypothetical") {
 		pieces.push(
-			`${verb} a hypothesised Roman ${type} — scholars suggest this line, but it remains unproven.`,
+			`${verb} a hypothesised Roman ${type}: scholars suggest this line but it remains unproven.`,
 		);
 	} else {
 		pieces.push(`${verb} a Roman ${type}.`);

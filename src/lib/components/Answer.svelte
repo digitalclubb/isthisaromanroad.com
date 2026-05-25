@@ -34,8 +34,8 @@ const dir = $derived(bearingToWords(result.bearingFromUser));
 		<h2 class="word">Yes.</h2>
 		<RuleGold animated />
 		<p class="sub">
-			And you're <em class="emph">walking it</em> —
-			{#if name}you're on the line of <em class="roman">{name}</em>.{:else}you're on the line of an unnamed Roman road.{/if}
+			And you're <em class="emph">walking</em> the line of
+			{#if name}<em class="roman">{name}</em>.{:else}an unnamed Roman road.{/if}
 		</p>
 	{:else if onRoad}
 		<h2 class="word">Yes.</h2>

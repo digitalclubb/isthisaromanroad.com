@@ -41,7 +41,7 @@ const subPrefix = $derived(
 	tooFar
 		? "The nearest known line is"
 		: onRoad && veryClose
-			? "And you're walking it —"
+			? "And you're walking the line of"
 			: onRoad
 				? "You stand on the line of"
 				: "The nearest is",

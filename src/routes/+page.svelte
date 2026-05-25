@@ -65,7 +65,7 @@ function getGeolocation(): Promise<GeolocationPosition> {
 						? "Location permission denied. Try searching a place instead."
 						: err.code === err.POSITION_UNAVAILABLE
 							? "Your location couldn't be determined."
-							: "Locating timed out — try again or search a place.";
+							: "Locating timed out. Try again or search a place.";
 				reject(new Error(msg));
 			},
 			{ enableHighAccuracy: true, maximumAge: 30_000, timeout: 15_000 },

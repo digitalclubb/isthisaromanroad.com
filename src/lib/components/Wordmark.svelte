@@ -6,6 +6,9 @@ let { minimised = false }: Props = $props();
 <h1 class="wordmark" class:minimised>Is this a Roman road?</h1>
 
 <style>
+	/* font-size animation is layout-affecting, but one-shot per phase change.
+	   contain: layout limits the heading's internal layout work — the grid
+	   row above still resizes; reduced-motion snaps the whole thing. */
 	.wordmark {
 		font-family: var(--font-display);
 		font-weight: 700;
@@ -14,8 +17,8 @@ let { minimised = false }: Props = $props();
 		margin: 0;
 		color: var(--ink);
 		letter-spacing: -0.015em;
-		transition: font-size 400ms var(--ease), opacity 400ms var(--ease),
-			letter-spacing 400ms var(--ease);
+		contain: layout;
+		transition: font-size 280ms var(--ease), opacity 280ms var(--ease);
 	}
 	.wordmark.minimised {
 		font-size: 0.78rem;

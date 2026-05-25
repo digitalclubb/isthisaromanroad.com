@@ -36,6 +36,20 @@ export default defineConfig({
 			},
 			workbox: {
 				globPatterns: ["client/**/*.{js,css,html,svg,png,webp,woff2}", "prerendered/**/*.html"],
+				// Site is UK-only. The road dataset's non-ASCII content is just
+				// `é` (Latin-1, in the `latin` subset) and a smart quote (general
+				// punctuation, always in latin). No Welsh ŵ, no Gaelic accents.
+				// Verified via `grep -oE '[^\x00-\x7F]+' static/roads.geojson`.
+				// Skipping the other subsets saves ~260 KiB of precache storage.
+				globIgnores: [
+					"**/cormorant-garamond-cyrillic-*.woff2",
+					"**/cormorant-garamond-vietnamese-*.woff2",
+					"**/cormorant-garamond-latin-ext-*.woff2",
+					"**/inter-cyrillic*.woff2",
+					"**/inter-greek*.woff2",
+					"**/inter-vietnamese*.woff2",
+					"**/inter-latin-ext-*.woff2",
+				],
 				runtimeCaching: [
 					{
 						urlPattern: ({ url }) => url.pathname === "/roads.geojson",

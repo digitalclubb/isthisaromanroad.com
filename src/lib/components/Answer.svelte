@@ -68,6 +68,7 @@ const dir = $derived(bearingToWords(result.bearingFromUser));
 		letter-spacing: -0.04em;
 		color: var(--ink);
 		margin: 0 0 0.7rem;
+		transform-origin: left center;
 		animation: inscribe 720ms var(--ease-out) both;
 	}
 	.sub {
@@ -109,14 +110,20 @@ const dir = $derived(bearingToWords(result.bearingFromUser));
 			transform: translateY(0);
 		}
 	}
+	/*
+	 * Inscribe is transform-only (scaleX) — visually approximates the
+	 * "settling from looser to tighter" effect of the previous
+	 * letter-spacing animation without triggering layout each frame.
+	 * scaleX is compositor-only; letter-spacing isn't.
+	 */
 	@keyframes inscribe {
 		from {
 			opacity: 0;
-			letter-spacing: -0.06em;
+			transform: scaleX(1.018);
 		}
 		to {
 			opacity: 1;
-			letter-spacing: -0.04em;
+			transform: scaleX(1);
 		}
 	}
 </style>

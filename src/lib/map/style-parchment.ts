@@ -1,3 +1,4 @@
+import { PALETTE, type PaletteName } from "$lib/theme.js";
 /**
  * A bespoke MapLibre style that renders the basemap as aged parchment (or
  * walnut, in dark mode). Tiles come from OpenFreeMap's planet vector tiles
@@ -15,49 +16,40 @@ const GLYPHS_URL = "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf"
 const ATTRIBUTION =
 	'© <a href="https://www.openstreetmap.org/copyright" rel="noopener" target="_blank">OpenStreetMap</a> · © <a href="https://openfreemap.org" rel="noopener" target="_blank">OpenFreeMap</a> · Roads © <a href="https://itiner-e.org" rel="noopener" target="_blank">Itiner-e</a> (CC BY 4.0)';
 
-type Palette = {
-	bg: string;
-	water: string;
-	waterLine: string;
-	vegetation: string;
-	residential: string;
-	boundary: string;
-	roadMajor: string;
-	road: string;
-	label: string;
-	labelSoft: string;
-};
+// Map-only tints (water, vegetation, roads, etc.) aren't part of the
+// canonical UI palette in `src/lib/theme.ts`. They live here, derived from
+// the base palette in spirit but tuned for cartographic context.
+const mapExtras = {
+	parchment: {
+		water: "#d4c5a3",
+		vegetation: "#d8cba5",
+		residential: "#ead9b6",
+		boundary: "#8a7556",
+		roadMajor: "#6b5a47",
+		road: "#8a7558",
+		labelSoft: "#5a4b3a",
+	},
+	walnut: {
+		water: "#0f0a07",
+		vegetation: "#241a13",
+		residential: "#26201a",
+		boundary: "#5a4533",
+		roadMajor: "#a4896a",
+		road: "#7d6645",
+		labelSoft: "#9c8a72",
+	},
+} as const;
 
-const parchment: Palette = {
-	bg: "#efe4cd",
-	water: "#d4c5a3",
-	waterLine: "#bca775",
-	vegetation: "#d8cba5",
-	residential: "#ead9b6",
-	boundary: "#8a7556",
-	roadMajor: "#6b5a47",
-	road: "#8a7558",
-	label: "#2a1f17",
-	labelSoft: "#5a4b3a",
-};
-
-const walnut: Palette = {
-	bg: "#1b1410",
-	water: "#0f0a07",
-	waterLine: "#3a2c1f",
-	vegetation: "#241a13",
-	residential: "#26201a",
-	boundary: "#5a4533",
-	roadMajor: "#a4896a",
-	road: "#7d6645",
-	label: "#f0e6d2",
-	labelSoft: "#9c8a72",
-};
-
-export type StyleVariant = "parchment" | "walnut";
+export type StyleVariant = PaletteName;
 
 export function buildStyle(variant: StyleVariant): StyleSpecification {
-	const c = variant === "walnut" ? walnut : parchment;
+	const base = PALETTE[variant];
+	const extras = mapExtras[variant];
+	const c = {
+		bg: base.bg,
+		label: base.ink,
+		...extras,
+	};
 	return {
 		version: 8,
 		glyphs: GLYPHS_URL,

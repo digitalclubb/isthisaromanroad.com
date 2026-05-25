@@ -308,12 +308,15 @@ const minimised = $derived(phase !== "idle");
 		font-weight: 500;
 		cursor: pointer;
 		list-style: none;
-		padding: 0.6rem 0;
+		/* Bumped from 0.6rem to push toward WCAG 2.2 SC 2.5.5 (AAA, 44px). */
+		padding: 0.95rem 0.5rem;
+		margin: 0 -0.5rem;
 		display: inline-flex;
 		align-items: center;
 		gap: 0.4rem;
 		color: var(--ink-soft);
 		transition: color 200ms var(--ease);
+		border-radius: 4px;
 	}
 	.more summary::-webkit-details-marker {
 		display: none;

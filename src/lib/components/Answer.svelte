@@ -83,9 +83,13 @@ const dir = $derived(bearingToWords(result.bearingFromUser));
 	}
 	.roman {
 		font-style: italic;
-		font-variant: small-caps;
+		/* Cormorant Garamond doesn't ship the `smcp` feature; leave
+		   font-feature-settings off so the browser can synthesize small caps
+		   from the loaded glyphs. (Listing "smcp" would *block* synthesis.) */
+		font-variant-caps: small-caps;
 		font-weight: 500;
 		color: var(--ink);
+		letter-spacing: 0.04em;
 		border-bottom: 1px solid var(--gold);
 		padding-bottom: 1px;
 		white-space: nowrap;

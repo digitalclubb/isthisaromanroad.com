@@ -113,6 +113,15 @@ function toggleSearch() {
 	}
 
 	.text-link {
+		/* Expands the tap target to meet WCAG 2.2 SC 2.5.8 (24px AA) with
+		   headroom toward AAA (44px), without changing the apparent baseline.
+		   The inline-flex centring is necessary — min-height alone leaves
+		   the text near the top of the 44px box. */
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 44px;
+		padding: 0.4rem 0.5rem;
 		font-family: var(--font-body);
 		font-size: 0.95rem;
 		color: var(--ink-soft);
@@ -120,6 +129,7 @@ function toggleSearch() {
 		text-decoration-color: var(--gold);
 		text-decoration-thickness: 1px;
 		text-underline-offset: 4px;
+		border-radius: 4px;
 	}
 	.text-link:hover {
 		color: var(--ink);

@@ -9,16 +9,16 @@
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { Resvg } from "@resvg/resvg-js";
+import { PALETTE } from "../src/lib/theme.ts";
 
-// Palette mirrors src/app.css
-const TERRACOTTA = "#a24b36";
-const OXBLOOD = "#6e2a22";
-const PARCHMENT = "#efe4cd";
-const VELLUM = "#f6ecd6";
-const WALNUT = "#1b1410";
-const WALNUT_DEEP = "#100a07";
-const BRONZE = "#9e7b3f";
-const GOLD_SOFT = "#c8a35a";
+// Use the canonical palette as the source of truth.
+const TERRACOTTA = PALETTE.parchment.brand;
+const OXBLOOD = PALETTE.parchment.brandDeep;
+const PARCHMENT = PALETTE.parchment.bg;
+const WALNUT = PALETTE.walnut.bg;
+const WALNUT_DEEP = "#100a07"; // Derived: a slightly deeper walnut for the OG gradient end
+const BRONZE = PALETTE.parchment.gold;
+const GOLD_SOFT = PALETTE.parchment.goldSoft;
 
 function iconSvg(size: number, maskable = false) {
 	const inset = maskable ? size * 0.18 : 0;

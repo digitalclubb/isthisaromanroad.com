@@ -1,6 +1,7 @@
 <script lang="ts">
 import { roadDisplayName } from "$lib/format.js";
 import type { LookupResult } from "$lib/roads.js";
+import { PALETTE } from "$lib/theme.js";
 
 type Props = {
 	result: LookupResult;
@@ -12,6 +13,22 @@ let { result, onRoad, veryClose, userPoint }: Props = $props();
 
 const W = 1200;
 const H = 630;
+
+// The share card always renders in parchment, regardless of the user's
+// system theme — atmospheric on social regardless of where it's posted.
+const p = PALETTE.parchment;
+const cardStyle = `
+		--p-bg: ${p.bg};
+		--p-ink: ${p.ink};
+		--p-ink-soft: ${p.inkSoft};
+		--p-brand: ${p.brand};
+		--p-brand-deep: ${p.brandDeep};
+		--p-gold: ${p.gold};
+		--p-gold-soft: ${p.goldSoft};
+		--p-surface-deep: ${p.surfaceDeep};
+		width: ${W}px;
+		height: ${H}px;
+	`;
 
 const tooFar = $derived(result.distanceMeters > 50_000);
 const name = $derived(roadDisplayName(result.road));
@@ -49,7 +66,6 @@ function buildPath(r: LookupResult) {
 	const lines: number[][][] =
 		g.type === "LineString" ? [g.coordinates as number[][]] : (g.coordinates as number[][][]);
 
-	// Compute bbox of all coords + the user point
 	const all = lines.flat();
 	if (userPoint) all.push(userPoint);
 	let minLng = Number.POSITIVE_INFINITY;
@@ -89,14 +105,14 @@ function buildPath(r: LookupResult) {
 }
 </script>
 
-<div class="card" style="width: {W}px; height: {H}px;">
+<div class="card" style={cardStyle}>
 	<div class="frame">
 		<div class="row top">
 			<div class="rule"></div>
 			<span class="eyebrow">VIA ROMANA</span>
 		</div>
 
-		<h1 class="word">{word}</h1>
+		<p class="word">{word}</p>
 		<div class="rule-big"></div>
 		<p class="sub">
 			{subPrefix}
@@ -104,7 +120,14 @@ function buildPath(r: LookupResult) {
 		</p>
 
 		<svg class="sketch" viewBox="0 0 480 280" aria-hidden="true">
-			<path d={pathD} stroke="#a24b36" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+			<path
+				d={pathD}
+				stroke={p.brand}
+				stroke-width="3"
+				fill="none"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			/>
 		</svg>
 
 		<div class="footer">
@@ -116,9 +139,10 @@ function buildPath(r: LookupResult) {
 
 <style>
 	.card {
-		background: #efe4cd;
-		color: #2a1f17;
+		background: var(--p-bg);
+		color: var(--p-ink);
 		font-family: var(--font-display);
+		font-feature-settings: "kern", "liga", "onum";
 		position: relative;
 		overflow: hidden;
 	}
@@ -140,7 +164,7 @@ function buildPath(r: LookupResult) {
 	.rule {
 		width: 64px;
 		height: 4px;
-		background: linear-gradient(90deg, #9e7b3f, #c8a35a);
+		background: linear-gradient(90deg, var(--p-gold), var(--p-gold-soft));
 		border-radius: 2px;
 	}
 	.eyebrow {
@@ -148,7 +172,7 @@ function buildPath(r: LookupResult) {
 		font-style: italic;
 		font-size: 28px;
 		letter-spacing: 8px;
-		color: #6e2a22;
+		color: var(--p-brand-deep);
 	}
 	.word {
 		grid-column: 1;
@@ -157,7 +181,7 @@ function buildPath(r: LookupResult) {
 		font-size: 160px;
 		line-height: 0.95;
 		letter-spacing: -0.04em;
-		color: #2a1f17;
+		color: var(--p-ink);
 		margin: 0;
 		align-self: end;
 	}
@@ -165,7 +189,7 @@ function buildPath(r: LookupResult) {
 		grid-column: 1;
 		width: 80px;
 		height: 4px;
-		background: linear-gradient(90deg, #9e7b3f, #c8a35a);
+		background: linear-gradient(90deg, var(--p-gold), var(--p-gold-soft));
 		border-radius: 2px;
 	}
 	.sub {
@@ -174,16 +198,20 @@ function buildPath(r: LookupResult) {
 		font-style: italic;
 		font-size: 34px;
 		line-height: 1.35;
-		color: #5a4b3a;
+		color: var(--p-ink-soft);
 		margin: 0;
 		max-width: 18ch;
 	}
 	.roman {
 		font-style: italic;
-		font-variant: small-caps;
-		color: #2a1f17;
+		/* See Answer.svelte — explicit smcp via font-feature-settings would
+		   block browser synthesis since Cormorant Garamond doesn't ship the
+		   small-caps feature. font-variant-caps alone lets synthesis run. */
+		font-variant-caps: small-caps;
+		color: var(--p-ink);
 		font-weight: 500;
-		border-bottom: 2px solid #9e7b3f;
+		letter-spacing: 0.04em;
+		border-bottom: 2px solid var(--p-gold);
 		padding-bottom: 2px;
 		white-space: nowrap;
 	}
@@ -203,11 +231,11 @@ function buildPath(r: LookupResult) {
 		font-size: 22px;
 		letter-spacing: 3px;
 		text-transform: uppercase;
-		color: #6b5a47;
-		border-top: 1px solid #d6c4a1;
+		color: var(--p-ink-soft);
+		border-top: 1px solid var(--p-surface-deep);
 		padding-top: 18px;
 	}
 	.coords {
-		font-variant-numeric: oldstyle-nums;
+		font-variant-numeric: oldstyle-nums tabular-nums;
 	}
 </style>

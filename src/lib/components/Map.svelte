@@ -1,5 +1,6 @@
 <script lang="ts">
 import { type StyleVariant, buildStyle } from "$lib/map/style-parchment.js";
+import { PALETTE } from "$lib/theme.js";
 import type { Feature, LineString, MultiLineString } from "geojson";
 import type { GeoJSONSource, Map as MaplibreMap } from "maplibre-gl";
 import { onMount } from "svelte";
@@ -16,8 +17,8 @@ let container: HTMLDivElement;
 let map: MaplibreMap | null = null;
 let loaded = $state(false);
 
-let roadColour = "#a24b36";
-let casingColour = "#f6ecd6";
+let roadColour: string = PALETTE.parchment.brand;
+let casingColour: string = PALETTE.parchment.surface;
 let drawnRoadKey: string | null = null;
 let drawAnimFrame = 0;
 
@@ -43,12 +44,12 @@ onMount(() => {
 
 		map.on("load", () => {
 			if (disposed || !map) return;
-			// Roman-road overlay colours mirror the design tokens in src/app.css.
-			const COLOUR_VELLUM = variant === "walnut" ? "#26201a" : "#f6ecd6";
-			const COLOUR_TERRACOTTA = variant === "walnut" ? "#d2735a" : "#a24b36";
-			const COLOUR_GOLD = variant === "walnut" ? "#d4a75a" : "#9e7b3f";
-			const COLOUR_VERDIGRIS = variant === "walnut" ? "#6fa89e" : "#3d6e66";
-			const COLOUR_INK = variant === "walnut" ? "#f0e6d2" : "#2a1f17";
+			const p = PALETTE[variant];
+			const COLOUR_VELLUM = p.surface;
+			const COLOUR_TERRACOTTA = p.brand;
+			const COLOUR_GOLD = p.gold;
+			const COLOUR_VERDIGRIS = p.ok;
+			const COLOUR_INK = p.ink;
 
 			// lineMetrics: true is required for the line-gradient + line-progress
 			// "draw-on" animation below.

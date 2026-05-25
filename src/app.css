@@ -144,6 +144,15 @@ button {
 	background: var(--gold-soft);
 	color: var(--ink);
 }
+@media (prefers-color-scheme: dark) {
+	/* In dark mode `--gold-soft` is bright candlelight and `--ink` is parchment
+	   — both light. Use the deeper gold + walnut bg instead so highlighted
+	   text actually reads. */
+	::selection {
+		background: var(--gold);
+		color: var(--bg);
+	}
+}
 
 @media (prefers-reduced-motion: reduce) {
 	*,

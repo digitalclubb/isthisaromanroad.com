@@ -130,4 +130,12 @@ let { onAskAgain, onShare, onShareStory, sharing = false, shareDisabled = false 
 		background: var(--brand-deep);
 		border-color: var(--brand-deep);
 	}
+	@media (prefers-color-scheme: dark) {
+		/* Dark `--brand-deep` is lighter than `--brand` (for text-contrast
+		   reasons), so swapping on hover is barely visible. Add a gold halo
+		   so the hover affordance reads. */
+		.share:hover:not(:disabled) {
+			box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 45%, transparent);
+		}
+	}
 </style>

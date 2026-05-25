@@ -168,6 +168,11 @@ function toggleSearch() {
 	.search-go:hover:not(:disabled) {
 		background: var(--brand-deep);
 	}
+	@media (prefers-color-scheme: dark) {
+		.search-go:hover:not(:disabled) {
+			box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 45%, transparent);
+		}
+	}
 	.search-go:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;

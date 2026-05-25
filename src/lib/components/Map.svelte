@@ -297,11 +297,22 @@ $effect(() => {
 	.map :global(.maplibregl-ctrl-attrib) {
 		font-size: 10px;
 		background: rgb(239 228 205 / 0.7);
+		color: var(--ink-soft);
 		font-family: var(--font-body);
+	}
+	.map :global(.maplibregl-ctrl-attrib a) {
+		color: var(--ink-soft);
+		text-decoration-color: var(--gold);
+	}
+	.map :global(.maplibregl-ctrl-attrib a:hover) {
+		color: var(--brand-deep);
 	}
 	@media (prefers-color-scheme: dark) {
 		.map :global(.maplibregl-ctrl-attrib) {
 			background: rgb(27 20 16 / 0.75);
+		}
+		.map :global(.maplibregl-ctrl-attrib a:hover) {
+			color: var(--gold-soft);
 		}
 	}
 	.map :global(.maplibregl-ctrl-group) {
@@ -312,5 +323,8 @@ $effect(() => {
 	}
 	.map :global(.maplibregl-ctrl-group button) {
 		color: var(--ink);
+	}
+	.map :global(.maplibregl-ctrl-group button:hover) {
+		background: var(--surface-deep);
 	}
 </style>

@@ -5,7 +5,6 @@
  * renders rather than the fallback.
  */
 
-const SHARE_FILENAME = "is-this-a-roman-road.png";
 const SHARE_TITLE = "Is this a Roman road?";
 const SHARE_TEXT = "I asked the road. isthisaromanroad.com";
 
@@ -35,8 +34,8 @@ export async function rasterise(node: HTMLElement, width: number, height: number
 	return blob;
 }
 
-export async function shareOrDownload(blob: Blob): Promise<ShareOutcome> {
-	const file = new File([blob], SHARE_FILENAME, { type: "image/png" });
+export async function shareOrDownload(blob: Blob, filename: string): Promise<ShareOutcome> {
+	const file = new File([blob], filename, { type: "image/png" });
 
 	if (typeof navigator !== "undefined" && navigator.canShare?.({ files: [file] })) {
 		try {
@@ -55,7 +54,7 @@ export async function shareOrDownload(blob: Blob): Promise<ShareOutcome> {
 	const url = URL.createObjectURL(blob);
 	const a = document.createElement("a");
 	a.href = url;
-	a.download = SHARE_FILENAME;
+	a.download = filename;
 	document.body.appendChild(a);
 	a.click();
 	a.remove();

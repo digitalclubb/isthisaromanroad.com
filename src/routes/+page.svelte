@@ -120,23 +120,33 @@ function reset() {
 	error = null;
 }
 
-let shareHostEl: HTMLDivElement | undefined = $state();
+let shareLandscapeEl: HTMLDivElement | undefined = $state();
+let sharePortraitEl: HTMLDivElement | undefined = $state();
 let sharing = $state(false);
 let shareError = $state<string | null>(null);
 
-async function share() {
-	if (!shareHostEl || sharing) return;
+async function shareVariant(
+	node: HTMLDivElement | undefined,
+	width: number,
+	height: number,
+	filename: string,
+) {
+	if (!node || sharing) return;
 	sharing = true;
 	shareError = null;
 	try {
-		const blob = await rasterise(shareHostEl, 1200, 630);
-		await shareOrDownload(blob);
+		const blob = await rasterise(node, width, height);
+		await shareOrDownload(blob, filename);
 	} catch (e) {
 		shareError = e instanceof Error ? e.message : "Couldn't prepare the share image.";
 	} finally {
 		sharing = false;
 	}
 }
+
+const share = () => shareVariant(shareLandscapeEl, 1200, 630, "is-this-a-roman-road.png");
+const shareStory = () =>
+	shareVariant(sharePortraitEl, 1080, 1350, "is-this-a-roman-road-story.png");
 
 const onRoad = $derived(result ? result.distanceMeters <= ON_ROAD_THRESHOLD_M : false);
 const veryClose = $derived(result ? result.distanceMeters <= VERY_CLOSE_THRESHOLD_M : false);
@@ -216,7 +226,12 @@ const minimised = $derived(phase !== "idle");
 				</div>
 			</details>
 
-			<AskAgain onAskAgain={reset} onShare={share} {sharing} />
+			<AskAgain
+				onAskAgain={reset}
+				onShare={share}
+				onShareStory={shareStory}
+				{sharing}
+			/>
 			{#if shareError}
 				<p class="share-error" role="alert">{shareError}</p>
 			{/if}
@@ -236,12 +251,16 @@ const minimised = $derived(phase !== "idle");
 	</footer>
 </main>
 
-<!-- Off-screen render target for the share card. html-to-image rasterises
-     this node into a 1200×630 PNG. Kept in the DOM (not display:none) so
-     fonts apply; positioned far off-screen and aria-hidden. -->
+<!-- Off-screen render targets for the share cards. html-to-image rasterises
+     these nodes into PNG. Kept in the DOM (not display:none) so fonts apply;
+     positioned far off-screen and aria-hidden + inert. Two variants are
+     pre-rendered so either share button rasterises in one frame. -->
 {#if phase === "answered" && result}
-	<div class="share-host" bind:this={shareHostEl} aria-hidden="true" inert>
-		<ShareCard {result} {onRoad} {veryClose} {userPoint} />
+	<div class="share-host" bind:this={shareLandscapeEl} aria-hidden="true" inert>
+		<ShareCard {result} {onRoad} {veryClose} {userPoint} variant="landscape" />
+	</div>
+	<div class="share-host" bind:this={sharePortraitEl} aria-hidden="true" inert>
+		<ShareCard {result} {onRoad} {veryClose} {userPoint} variant="portrait" />
 	</div>
 {/if}
 

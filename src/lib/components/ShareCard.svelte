@@ -3,21 +3,23 @@ import { roadDisplayName } from "$lib/format.js";
 import type { LookupResult } from "$lib/roads.js";
 import { PALETTE } from "$lib/theme.js";
 
+export type ShareVariant = "landscape" | "portrait";
+
 type Props = {
 	result: LookupResult;
 	onRoad: boolean;
 	veryClose: boolean;
 	userPoint: [number, number] | null;
+	variant?: ShareVariant;
 };
-let { result, onRoad, veryClose, userPoint }: Props = $props();
+let { result, onRoad, veryClose, userPoint, variant = "landscape" }: Props = $props();
 
-const W = 1200;
-const H = 630;
+const dims = $derived(variant === "portrait" ? { w: 1080, h: 1350 } : { w: 1200, h: 630 });
 
 // The share card always renders in parchment, regardless of the user's
 // system theme — atmospheric on social regardless of where it's posted.
 const p = PALETTE.parchment;
-const cardStyle = `
+const cardStyle = $derived(`
 		--p-bg: ${p.bg};
 		--p-ink: ${p.ink};
 		--p-ink-soft: ${p.inkSoft};
@@ -26,9 +28,9 @@ const cardStyle = `
 		--p-gold: ${p.gold};
 		--p-gold-soft: ${p.goldSoft};
 		--p-surface-deep: ${p.surfaceDeep};
-		width: ${W}px;
-		height: ${H}px;
-	`;
+		width: ${dims.w}px;
+		height: ${dims.h}px;
+	`);
 
 const tooFar = $derived(result.distanceMeters > 50_000);
 const name = $derived(roadDisplayName(result.road));
@@ -57,10 +59,11 @@ function formatLng(lng: number) {
 }
 
 // Project the road's LineString (or MultiLineString) into the share-card
-// SVG so we have a small "this is the road we mean" sketch in the corner.
-const pathD = $derived(buildPath(result));
+// SVG so we have a small sketch of "the road we mean".
+const sketchSize = $derived(variant === "portrait" ? { w: 920, h: 420 } : { w: 480, h: 280 });
+const pathD = $derived(buildPath(result, sketchSize.w, sketchSize.h));
 
-function buildPath(r: LookupResult) {
+function buildPath(r: LookupResult, sketchW: number, sketchH: number) {
 	const g = r.road.geometry;
 	if (g.type !== "LineString" && g.type !== "MultiLineString") return "";
 	const lines: number[][][] =
@@ -78,8 +81,6 @@ function buildPath(r: LookupResult) {
 		if (lat < minLat) minLat = lat;
 		if (lat > maxLat) maxLat = lat;
 	}
-	const sketchW = 480;
-	const sketchH = 280;
 	const pad = 30;
 	const dLng = Math.max(maxLng - minLng, 0.001);
 	const dLat = Math.max(maxLat - minLat, 0.001);
@@ -105,7 +106,7 @@ function buildPath(r: LookupResult) {
 }
 </script>
 
-<div class="card" style={cardStyle}>
+<div class="card {variant}" style={cardStyle}>
 	<div class="frame">
 		<div class="row top">
 			<div class="rule"></div>
@@ -119,11 +120,16 @@ function buildPath(r: LookupResult) {
 			<em class="roman">{name ?? "an unnamed Roman road"}</em>.
 		</p>
 
-		<svg class="sketch" viewBox="0 0 480 280" aria-hidden="true">
+		<svg
+			class="sketch"
+			viewBox="0 0 {sketchSize.w} {sketchSize.h}"
+			preserveAspectRatio="xMidYMid meet"
+			aria-hidden="true"
+		>
 			<path
 				d={pathD}
 				stroke={p.brand}
-				stroke-width="3"
+				stroke-width={variant === "portrait" ? 4 : 3}
 				fill="none"
 				stroke-linecap="round"
 				stroke-linejoin="round"
@@ -146,20 +152,11 @@ function buildPath(r: LookupResult) {
 		position: relative;
 		overflow: hidden;
 	}
-	.frame {
-		position: absolute;
-		inset: 60px;
-		display: grid;
-		grid-template-columns: 1fr 480px;
-		grid-template-rows: auto 1fr auto;
-		gap: 24px 60px;
-		align-items: start;
-	}
 	.row.top {
-		grid-column: 1 / -1;
 		display: flex;
 		align-items: center;
 		gap: 16px;
+		grid-column: 1 / -1;
 	}
 	.rule {
 		width: 64px;
@@ -170,43 +167,32 @@ function buildPath(r: LookupResult) {
 	.eyebrow {
 		font-family: var(--font-display);
 		font-style: italic;
-		font-size: 28px;
 		letter-spacing: 8px;
 		color: var(--p-brand-deep);
 	}
 	.word {
-		grid-column: 1;
 		font-family: var(--font-display);
 		font-weight: 700;
-		font-size: 160px;
 		line-height: 0.95;
 		letter-spacing: -0.04em;
 		color: var(--p-ink);
 		margin: 0;
-		align-self: end;
 	}
 	.rule-big {
-		grid-column: 1;
 		width: 80px;
 		height: 4px;
 		background: linear-gradient(90deg, var(--p-gold), var(--p-gold-soft));
 		border-radius: 2px;
 	}
 	.sub {
-		grid-column: 1;
 		font-family: var(--font-display);
 		font-style: italic;
-		font-size: 34px;
 		line-height: 1.35;
 		color: var(--p-ink-soft);
 		margin: 0;
-		max-width: 18ch;
 	}
 	.roman {
 		font-style: italic;
-		/* See Answer.svelte — explicit smcp via font-feature-settings would
-		   block browser synthesis since Cormorant Garamond doesn't ship the
-		   small-caps feature. font-variant-caps alone lets synthesis run. */
 		font-variant-caps: small-caps;
 		color: var(--p-ink);
 		font-weight: 500;
@@ -215,27 +201,95 @@ function buildPath(r: LookupResult) {
 		padding-bottom: 2px;
 		white-space: nowrap;
 	}
-	.sketch {
+	.footer {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		font-family: var(--font-body);
+		letter-spacing: 3px;
+		text-transform: uppercase;
+		color: var(--p-ink-soft);
+		border-top: 1px solid var(--p-surface-deep);
+		padding-top: 18px;
+		grid-column: 1 / -1;
+	}
+	.coords {
+		font-variant-numeric: oldstyle-nums tabular-nums;
+	}
+
+	/* Landscape — 1200×630, classic OG / Twitter / FB / LinkedIn */
+	.card.landscape .frame {
+		position: absolute;
+		inset: 60px;
+		display: grid;
+		grid-template-columns: 1fr 480px;
+		grid-template-rows: auto 1fr auto;
+		gap: 24px 60px;
+		align-items: start;
+	}
+	.card.landscape .eyebrow {
+		font-size: 28px;
+	}
+	.card.landscape .word {
+		grid-column: 1;
+		font-size: 160px;
+		align-self: end;
+	}
+	.card.landscape .rule-big {
+		grid-column: 1;
+	}
+	.card.landscape .sub {
+		grid-column: 1;
+		font-size: 34px;
+		max-width: 18ch;
+	}
+	.card.landscape .sketch {
 		grid-column: 2;
 		grid-row: 2 / 4;
 		width: 480px;
 		height: 280px;
 		align-self: end;
 	}
-	.footer {
-		grid-column: 1 / -1;
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-		font-family: var(--font-body);
+	.card.landscape .footer {
 		font-size: 22px;
-		letter-spacing: 3px;
-		text-transform: uppercase;
-		color: var(--p-ink-soft);
-		border-top: 1px solid var(--p-surface-deep);
-		padding-top: 18px;
 	}
-	.coords {
-		font-variant-numeric: oldstyle-nums tabular-nums;
+
+	/* Portrait — 1080×1350, Instagram / TikTok / phone wallpaper */
+	.card.portrait .frame {
+		position: absolute;
+		inset: 80px;
+		display: grid;
+		grid-template-columns: 1fr;
+		grid-template-rows: auto auto auto auto 1fr auto;
+		gap: 32px 0;
+	}
+	.card.portrait .eyebrow {
+		font-size: 36px;
+		letter-spacing: 12px;
+	}
+	.card.portrait .word {
+		font-size: 200px;
+		line-height: 0.92;
+	}
+	.card.portrait .rule-big {
+		width: 120px;
+		height: 5px;
+	}
+	.card.portrait .sub {
+		font-size: 48px;
+		max-width: 20ch;
+		line-height: 1.3;
+	}
+	.card.portrait .sketch {
+		width: 100%;
+		height: 100%;
+		max-height: 420px;
+		align-self: center;
+		justify-self: center;
+	}
+	.card.portrait .footer {
+		font-size: 28px;
+		letter-spacing: 4px;
+		padding-top: 28px;
 	}
 </style>

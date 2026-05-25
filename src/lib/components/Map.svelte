@@ -16,6 +16,11 @@ let container: HTMLDivElement;
 let map: MaplibreMap | null = null;
 let loaded = $state(false);
 
+let roadColour = "#a24b36";
+let casingColour = "#f6ecd6";
+let drawnRoadKey: string | null = null;
+let drawAnimFrame = 0;
+
 onMount(() => {
 	let disposed = false;
 	(async () => {
@@ -45,7 +50,13 @@ onMount(() => {
 			const COLOUR_VERDIGRIS = variant === "walnut" ? "#6fa89e" : "#3d6e66";
 			const COLOUR_INK = variant === "walnut" ? "#f0e6d2" : "#2a1f17";
 
-			map.addSource("road", { type: "geojson", data: emptyFc() });
+			// lineMetrics: true is required for the line-gradient + line-progress
+			// "draw-on" animation below.
+			map.addSource("road", {
+				type: "geojson",
+				data: emptyFc(),
+				lineMetrics: true,
+			});
 			map.addLayer({
 				id: "road-line-casing",
 				type: "line",
@@ -64,6 +75,11 @@ onMount(() => {
 				paint: { "line-color": COLOUR_TERRACOTTA, "line-width": 4 },
 				layout: { "line-cap": "round", "line-join": "round" },
 			});
+
+			// Cache the final colours on the map object so the draw-on animation
+			// outside this scope can reach them without re-computing.
+			roadColour = COLOUR_TERRACOTTA;
+			casingColour = COLOUR_VELLUM;
 			map.addSource("point-on-road", { type: "geojson", data: emptyFc() });
 			map.addLayer({
 				id: "point-on-road-halo",
@@ -114,6 +130,7 @@ onMount(() => {
 
 	return () => {
 		disposed = true;
+		if (drawAnimFrame) cancelAnimationFrame(drawAnimFrame);
 		map?.remove();
 		map = null;
 	};
@@ -121,6 +138,79 @@ onMount(() => {
 
 function emptyFc(): GeoJSON.FeatureCollection {
 	return { type: "FeatureCollection", features: [] };
+}
+
+function roadKey(f: Feature<LineString | MultiLineString> | null): string | null {
+	if (!f) return null;
+	if (f.id != null) return String(f.id);
+	// Fall back to first coord — stable enough for distinct feature detection
+	const g = f.geometry;
+	const first = g.type === "LineString" ? g.coordinates[0] : g.coordinates[0]?.[0];
+	return first ? `${first[0]},${first[1]}` : null;
+}
+
+/**
+ * Animates the road's line-gradient so the Roman line draws itself onto the
+ * parchment from start to end. Uses line-progress (requires lineMetrics on
+ * the source). Respects prefers-reduced-motion by snapping to the final
+ * solid colour with no animation.
+ */
+function clearGradient() {
+	if (!map) return;
+	map.setPaintProperty("road-line", "line-gradient", null);
+	map.setPaintProperty("road-line-casing", "line-gradient", null);
+	map.setPaintProperty("road-line", "line-color", roadColour);
+	map.setPaintProperty("road-line-casing", "line-color", casingColour);
+}
+
+function animateDrawOn() {
+	if (!map) return;
+	if (drawAnimFrame) cancelAnimationFrame(drawAnimFrame);
+
+	const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+	if (reduced) {
+		// Clear any gradient left over from a prior animated render so
+		// `line-color` actually shows. (line-gradient takes precedence.)
+		clearGradient();
+		return;
+	}
+
+	const start = performance.now();
+	const duration = 1100;
+	const TRANSPARENT = "rgba(0,0,0,0)";
+
+	const step = (now: number) => {
+		if (!map) return;
+		const t = Math.min(1, (now - start) / duration);
+		const eased = 1 - (1 - t) ** 3; // easeOutCubic
+		// Clamp the boundary to (0, 1) — step expression with boundary
+		// exactly at 1 leaves the very last pixel transparent.
+		const cut = Math.max(0.001, Math.min(0.999, eased));
+		map.setPaintProperty("road-line", "line-gradient", [
+			"step",
+			["line-progress"],
+			roadColour,
+			cut,
+			TRANSPARENT,
+		]);
+		map.setPaintProperty("road-line-casing", "line-gradient", [
+			"step",
+			["line-progress"],
+			casingColour,
+			cut,
+			TRANSPARENT,
+		]);
+		if (t < 1) {
+			drawAnimFrame = requestAnimationFrame(step);
+		} else {
+			// Animation complete — drop the gradient and let the solid
+			// line-color render the final state cleanly (no clipped end-pixel,
+			// no lingering per-frame cost).
+			drawAnimFrame = 0;
+			clearGradient();
+		}
+	};
+	drawAnimFrame = requestAnimationFrame(step);
 }
 
 $effect(() => {
@@ -146,6 +236,15 @@ $effect(() => {
 	roadSrc?.setData(
 		roadFeature ? { type: "FeatureCollection", features: [roadFeature] } : emptyFc(),
 	);
+
+	// When the road feature changes, draw the new line onto the parchment.
+	const nextKey = roadKey(roadFeature);
+	if (nextKey && nextKey !== drawnRoadKey) {
+		drawnRoadKey = nextKey;
+		animateDrawOn();
+	} else if (!nextKey) {
+		drawnRoadKey = null;
+	}
 
 	const ponrSrc = map.getSource("point-on-road") as GeoJSONSource | undefined;
 	ponrSrc?.setData(

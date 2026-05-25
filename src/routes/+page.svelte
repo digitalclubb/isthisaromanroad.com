@@ -4,10 +4,12 @@ import AskAgain from "$lib/components/AskAgain.svelte";
 import Listening from "$lib/components/Listening.svelte";
 import RoadMap from "$lib/components/Map.svelte";
 import Question from "$lib/components/Question.svelte";
+import ShareCard from "$lib/components/ShareCard.svelte";
 import Wordmark from "$lib/components/Wordmark.svelte";
 import { roadNarrative, roadSubtitle } from "$lib/format.js";
 import { geocode } from "$lib/geocode.js";
 import type { LookupResult, RoadIndex } from "$lib/roads.js";
+import { rasterise, shareOrDownload } from "$lib/share.js";
 
 const ON_ROAD_THRESHOLD_M = 50;
 const VERY_CLOSE_THRESHOLD_M = 5;
@@ -118,6 +120,24 @@ function reset() {
 	error = null;
 }
 
+let shareHostEl: HTMLDivElement | undefined = $state();
+let sharing = $state(false);
+let shareError = $state<string | null>(null);
+
+async function share() {
+	if (!shareHostEl || sharing) return;
+	sharing = true;
+	shareError = null;
+	try {
+		const blob = await rasterise(shareHostEl, 1200, 630);
+		await shareOrDownload(blob);
+	} catch (e) {
+		shareError = e instanceof Error ? e.message : "Couldn't prepare the share image.";
+	} finally {
+		sharing = false;
+	}
+}
+
 const onRoad = $derived(result ? result.distanceMeters <= ON_ROAD_THRESHOLD_M : false);
 const veryClose = $derived(result ? result.distanceMeters <= VERY_CLOSE_THRESHOLD_M : false);
 const minimised = $derived(phase !== "idle");
@@ -196,7 +216,10 @@ const minimised = $derived(phase !== "idle");
 				</div>
 			</details>
 
-			<AskAgain onAskAgain={reset} />
+			<AskAgain onAskAgain={reset} onShare={share} {sharing} />
+			{#if shareError}
+				<p class="share-error" role="alert">{shareError}</p>
+			{/if}
 		{:else if phase === "error"}
 			<div class="error" aria-live="polite">
 				<h2 class="word">Hmm.</h2>
@@ -212,6 +235,15 @@ const minimised = $derived(phase !== "idle");
 		<span class="url">isthisaromanroad.com</span>
 	</footer>
 </main>
+
+<!-- Off-screen render target for the share card. html-to-image rasterises
+     this node into a 1200×630 PNG. Kept in the DOM (not display:none) so
+     fonts apply; positioned far off-screen and aria-hidden. -->
+{#if phase === "answered" && result}
+	<div class="share-host" bind:this={shareHostEl} aria-hidden="true" inert>
+		<ShareCard {result} {onRoad} {veryClose} {userPoint} />
+	</div>
+{/if}
 
 <style>
 	main {
@@ -369,5 +401,20 @@ const minimised = $derived(phase !== "idle");
 			opacity: 1;
 			transform: translateY(0);
 		}
+	}
+
+	.share-error {
+		text-align: center;
+		font-family: var(--font-body);
+		font-size: 0.85rem;
+		color: var(--warn);
+		margin: 0.6rem 0 0;
+	}
+
+	:global(.share-host) {
+		position: fixed;
+		left: -20000px;
+		top: 0;
+		pointer-events: none;
 	}
 </style>

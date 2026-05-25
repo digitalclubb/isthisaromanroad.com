@@ -9,7 +9,7 @@ import ShareCard from "$lib/components/ShareCard.svelte";
 import Wordmark from "$lib/components/Wordmark.svelte";
 import { answerTierFor, roadNarrative, roadSubtitle } from "$lib/format.js";
 import { geocode } from "$lib/geocode.js";
-import type { LookupResult, RoadIndex } from "$lib/roads.js";
+import { type LookupResult, type RoadIndex, roadKey } from "$lib/roads.js";
 import { rasterise, shareOrDownload } from "$lib/share.js";
 import { findStoryFor } from "$lib/stories.js";
 
@@ -24,7 +24,7 @@ let result = $state<LookupResult | null>(null);
 let userPoint = $state<[number, number] | null>(null);
 let error = $state<string | null>(null);
 
-let idx: RoadIndex | null = $state(null);
+let idx = $state<RoadIndex | null>(null);
 let pendingIndex: Promise<RoadIndex> | null = null;
 
 // Each user action increments this. In-flight promises bail if their token
@@ -155,6 +155,14 @@ const tier = $derived(
 );
 const minimised = $derived(phase !== "idle");
 const story = $derived(result ? findStoryFor(result.road) : null);
+
+// Whole road: every Itiner-e segment that shares the matched road's
+// canonical key. Used for the map overlay and the share-card sketch so
+// the user sees the line in its entirety, not just the nearest slice.
+const roadSegments = $derived(
+	result && idx ? idx.segmentsOfRoad(result.road) : result ? [result.road] : [],
+);
+const matchedRoadKey = $derived(result ? roadKey(result.road) || null : null);
 </script>
 
 <svelte:head>
@@ -205,7 +213,8 @@ const story = $derived(result ? findStoryFor(result.road) : null);
 			<div class="map-frame">
 				<RoadMap
 					{userPoint}
-					roadFeature={result.road}
+					{roadSegments}
+					{matchedRoadKey}
 					pointOnRoad={result.pointOnRoad}
 				/>
 			</div>
@@ -270,12 +279,12 @@ const story = $derived(result ? findStoryFor(result.road) : null);
 {#if phase === "answered" && result}
 	<div class="share-host" bind:this={shareLandscapeEl} aria-hidden="true" inert>
 		{#if tier}
-			<ShareCard {result} {tier} {userPoint} variant="landscape" />
+			<ShareCard {result} {tier} {roadSegments} {userPoint} variant="landscape" />
 		{/if}
 	</div>
 	<div class="share-host" bind:this={sharePortraitEl} aria-hidden="true" inert>
 		{#if tier}
-			<ShareCard {result} {tier} {userPoint} variant="portrait" />
+			<ShareCard {result} {tier} {roadSegments} {userPoint} variant="portrait" />
 		{/if}
 	</div>
 {/if}

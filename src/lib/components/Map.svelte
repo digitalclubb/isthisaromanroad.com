@@ -7,11 +7,12 @@ import { onMount } from "svelte";
 
 type Props = {
 	userPoint: [number, number] | null;
-	roadFeature: Feature<LineString | MultiLineString> | null;
+	roadSegments: Array<Feature<LineString | MultiLineString>>;
+	matchedRoadKey: string | null;
 	pointOnRoad: [number, number] | null;
 };
 
-const { userPoint, roadFeature, pointOnRoad }: Props = $props();
+const { userPoint, roadSegments, matchedRoadKey, pointOnRoad }: Props = $props();
 
 let container: HTMLDivElement;
 let map: MaplibreMap | null = null;
@@ -141,15 +142,6 @@ function emptyFc(): GeoJSON.FeatureCollection {
 	return { type: "FeatureCollection", features: [] };
 }
 
-function roadKey(f: Feature<LineString | MultiLineString> | null): string | null {
-	if (!f) return null;
-	if (f.id != null) return String(f.id);
-	// Fall back to first coord — stable enough for distinct feature detection
-	const g = f.geometry;
-	const first = g.type === "LineString" ? g.coordinates[0] : g.coordinates[0]?.[0];
-	return first ? `${first[0]},${first[1]}` : null;
-}
-
 /**
  * Animates the road's line-gradient so the Roman line draws itself onto the
  * parchment from start to end. Uses line-progress (requires lineMetrics on
@@ -235,15 +227,15 @@ $effect(() => {
 
 	const roadSrc = map.getSource("road") as GeoJSONSource | undefined;
 	roadSrc?.setData(
-		roadFeature ? { type: "FeatureCollection", features: [roadFeature] } : emptyFc(),
+		roadSegments.length > 0 ? { type: "FeatureCollection", features: roadSegments } : emptyFc(),
 	);
 
-	// When the road feature changes, draw the new line onto the parchment.
-	const nextKey = roadKey(roadFeature);
-	if (nextKey && nextKey !== drawnRoadKey) {
-		drawnRoadKey = nextKey;
+	// When the matched road changes (by canonical key, not by which
+	// segment within it), draw the new line onto the parchment.
+	if (matchedRoadKey && matchedRoadKey !== drawnRoadKey) {
+		drawnRoadKey = matchedRoadKey;
 		animateDrawOn();
-	} else if (!nextKey) {
+	} else if (!matchedRoadKey) {
 		drawnRoadKey = null;
 	}
 

@@ -74,12 +74,37 @@ function bearing(from: Position, to: Position): number {
 // whose closest point lies within `distanceMeters` of the query.
 const METRES_PER_DEGREE_LAT = 111_320;
 
+/**
+ * Normalises a road feature's itinerary/name into a grouping key. Itiner-e
+ * splits each road into many LineString segments, often labelled
+ * "Itinerarium Antonini, X" for routes from the Antonine Itinerary. We
+ * strip that prefix so "Itinerarium Antonini, Watling Street" and bare
+ * "Watling Street" group as the same road.
+ *
+ * Returns an empty string when the feature has no usable identifier — in
+ * that case `segmentsOfRoad` returns just the input feature, since we
+ * have no basis to group with anything else.
+ */
+export function roadKey(road: RoadFeature): string {
+	const itin = (road.properties.itinerary ?? "").trim();
+	// "Itinerarium Antonini" is a meta-tag for routes documented in the
+	// Antonine Itinerary; it appears both bare and as a prefix to a named
+	// road ("Itinerarium Antonini, Watling Street"). Strip it both ways so
+	// only the road's own identifier survives. When the itinerary field
+	// holds nothing else, fall back to `name` for grouping.
+	const stripped = itin.replace(/^Itinerarium Antonini,?\s*/i, "").trim();
+	const name = (road.properties.name ?? "").trim();
+	return (stripped || name).toLowerCase();
+}
+
 export class RoadIndex {
 	private tree = new RBush<IndexedItem>();
+	private byKey: Map<string, RoadFeature[]>;
 	readonly featureCount: number;
 
 	constructor(fc: RoadCollection) {
 		const items: IndexedItem[] = [];
+		this.byKey = new Map();
 		for (const feature of fc.features) {
 			const g = feature.geometry;
 			if (g.type === "LineString") {
@@ -89,9 +114,27 @@ export class RoadIndex {
 					items.push(makeItem(line, feature));
 				}
 			}
+			const k = roadKey(feature);
+			if (k) {
+				const bucket = this.byKey.get(k);
+				if (bucket) bucket.push(feature);
+				else this.byKey.set(k, [feature]);
+			}
 		}
 		this.tree.load(items);
 		this.featureCount = fc.features.length;
+	}
+
+	/**
+	 * Returns every segment that shares a `roadKey` with the input — i.e.
+	 * the whole of "Watling Street" across the dataset rather than just the
+	 * single segment nearest the user. Returns just the input feature when
+	 * its key is empty (no name and no itinerary to group on).
+	 */
+	segmentsOfRoad(road: RoadFeature): RoadFeature[] {
+		const k = roadKey(road);
+		if (!k) return [road];
+		return this.byKey.get(k) ?? [road];
 	}
 
 	findNearest(lng: number, lat: number): LookupResult | null {

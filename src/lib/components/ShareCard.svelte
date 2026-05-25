@@ -1,5 +1,6 @@
 <script lang="ts">
 import { type AnswerTier, bearingToWords, formatDistance, roadDisplayName } from "$lib/format.js";
+import type { RoadFeature } from "$lib/roads.js";
 import type { LookupResult } from "$lib/roads.js";
 import { PALETTE } from "$lib/theme.js";
 
@@ -8,10 +9,11 @@ export type ShareVariant = "landscape" | "portrait";
 type Props = {
 	result: LookupResult;
 	tier: AnswerTier;
+	roadSegments: RoadFeature[];
 	userPoint: [number, number] | null;
 	variant?: ShareVariant;
 };
-let { result, tier, userPoint, variant = "landscape" }: Props = $props();
+let { result, tier, roadSegments, userPoint, variant = "landscape" }: Props = $props();
 
 const dims = $derived(variant === "portrait" ? { w: 1080, h: 1350 } : { w: 1200, h: 630 });
 
@@ -70,51 +72,94 @@ function formatLng(lng: number) {
 	return `${Math.abs(lng).toFixed(4)}° ${h}`;
 }
 
-// Project the road's LineString (or MultiLineString) into the share-card
-// SVG so we have a small sketch of "the road we mean".
+// Project the full road (every segment that shares its name) plus the user
+// point into the share-card SVG. One pass: compute the bbox of all coords
+// across all segments + user point, fit to the sketch viewport, project,
+// then emit one SVG path with multiple sub-paths (one M per segment).
 const sketchSize = $derived(variant === "portrait" ? { w: 920, h: 420 } : { w: 480, h: 280 });
-const pathD = $derived(buildPath(result, sketchSize.w, sketchSize.h));
+const pathD = $derived(buildPath(roadSegments, userPoint, sketchSize.w, sketchSize.h));
+const pointMarker = $derived(
+	userPoint ? projectPoint(roadSegments, userPoint, sketchSize.w, sketchSize.h) : null,
+);
 
-function buildPath(r: LookupResult, sketchW: number, sketchH: number) {
-	const g = r.road.geometry;
-	if (g.type !== "LineString" && g.type !== "MultiLineString") return "";
-	const lines: number[][][] =
-		g.type === "LineString" ? [g.coordinates as number[][]] : (g.coordinates as number[][][]);
+function gatherLines(segments: RoadFeature[]): number[][][] {
+	const lines: number[][][] = [];
+	for (const seg of segments) {
+		const g = seg.geometry;
+		if (g.type === "LineString") {
+			lines.push(g.coordinates as number[][]);
+		} else if (g.type === "MultiLineString") {
+			for (const line of g.coordinates) lines.push(line as number[][]);
+		}
+	}
+	return lines;
+}
 
-	const all = lines.flat();
-	if (userPoint) all.push(userPoint);
+function bboxOf(lines: number[][][], extra: [number, number] | null) {
+	const flat = lines.flat();
+	if (extra) flat.push(extra);
 	let minLng = Number.POSITIVE_INFINITY;
 	let maxLng = Number.NEGATIVE_INFINITY;
 	let minLat = Number.POSITIVE_INFINITY;
 	let maxLat = Number.NEGATIVE_INFINITY;
-	for (const [lng, lat] of all) {
+	for (const [lng, lat] of flat) {
 		if (lng < minLng) minLng = lng;
 		if (lng > maxLng) maxLng = lng;
 		if (lat < minLat) minLat = lat;
 		if (lat > maxLat) maxLat = lat;
 	}
+	return { minLng, maxLng, minLat, maxLat };
+}
+
+function projector(
+	bbox: { minLng: number; maxLng: number; minLat: number; maxLat: number },
+	sketchW: number,
+	sketchH: number,
+) {
 	const pad = 30;
-	const dLng = Math.max(maxLng - minLng, 0.001);
-	const dLat = Math.max(maxLat - minLat, 0.001);
+	const dLng = Math.max(bbox.maxLng - bbox.minLng, 0.001);
+	const dLat = Math.max(bbox.maxLat - bbox.minLat, 0.001);
 	const s = Math.min((sketchW - 2 * pad) / dLng, (sketchH - 2 * pad) / dLat);
 	const offX = (sketchW - dLng * s) / 2;
 	const offY = (sketchH - dLat * s) / 2;
-
-	const project = (lng: number, lat: number): [number, number] => [
-		offX + (lng - minLng) * s,
-		offY + (maxLat - lat) * s,
+	return (lng: number, lat: number): [number, number] => [
+		offX + (lng - bbox.minLng) * s,
+		offY + (bbox.maxLat - lat) * s,
 	];
+}
+
+function buildPath(
+	segments: RoadFeature[],
+	user: [number, number] | null,
+	sketchW: number,
+	sketchH: number,
+) {
+	const lines = gatherLines(segments);
+	if (lines.length === 0) return "";
+	const project = projector(bboxOf(lines, user), sketchW, sketchH);
 
 	const parts: string[] = [];
 	for (const line of lines) {
+		if (line.length === 0) continue;
 		const pts = line.map(([lng, lat]) => project(lng, lat));
-		if (pts.length === 0) continue;
 		parts.push(`M ${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`);
 		for (let i = 1; i < pts.length; i++) {
 			parts.push(`L ${pts[i][0].toFixed(1)} ${pts[i][1].toFixed(1)}`);
 		}
 	}
 	return parts.join(" ");
+}
+
+function projectPoint(
+	segments: RoadFeature[],
+	user: [number, number],
+	sketchW: number,
+	sketchH: number,
+): [number, number] | null {
+	const lines = gatherLines(segments);
+	if (lines.length === 0) return null;
+	const project = projector(bboxOf(lines, user), sketchW, sketchH);
+	return project(user[0], user[1]);
 }
 </script>
 
@@ -146,6 +191,25 @@ function buildPath(r: LookupResult, sketchW: number, sketchH: number) {
 				stroke-linecap="round"
 				stroke-linejoin="round"
 			/>
+			{#if pointMarker}
+				<!-- Dark ink fill with gold ring matches the live map's
+				     point-on-road treatment for visual consistency. -->
+				<circle
+					cx={pointMarker[0]}
+					cy={pointMarker[1]}
+					r={variant === "portrait" ? 14 : 9}
+					fill={p.gold}
+					opacity="0.35"
+				/>
+				<circle
+					cx={pointMarker[0]}
+					cy={pointMarker[1]}
+					r={variant === "portrait" ? 8 : 5}
+					fill={p.ink}
+					stroke={p.gold}
+					stroke-width={variant === "portrait" ? 3 : 2}
+				/>
+			{/if}
 		</svg>
 
 		<div class="footer">

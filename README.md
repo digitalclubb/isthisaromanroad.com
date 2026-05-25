@@ -2,7 +2,7 @@
 
 A single-page PWA that answers a child's question from the back seat: **is this a Roman road?**
 
-Tap *Use my location* (or search a UK town / postcode) and the site checks your point against the full Itiner-e Roman roads dataset for Britain. If you're within 50 m of a known Roman line, it tells you yes — and gives you the road's Roman name, type, certainty, and historical context. Otherwise it shows the nearest, how far away, and which direction.
+Tap *Use my location* (or search a UK town / postcode) and the site checks your point against the full Itiner-e Roman roads dataset for Britain. The answer comes in five tiers — walking the line, standing on it, nearly there, probably not, or out of reach — and the bands honour the dataset's own reconstructive uncertainty. You get the road's Roman name, type, certainty, and historical context.
 
 ## Stack
 
@@ -74,7 +74,7 @@ data/raw/                  # cached Itiner-e download (gitignored)
 
 The road data is **Itiner-e** (de Soto et al., *Scientific Data* 2025, CC BY 4.0): https://itiner-e.org. The build script downloads the empire-wide GeoJSON (~78 MB), reprojects from EPSG:3395 (World Mercator) to WGS84, filters to the UK + Isle of Man + Channel Islands bbox, slims the properties to the fields used by the UI, and writes `static/roads.geojson` (1,392 features, ~600 KB raw / ~150 KB gzipped).
 
-Geometry is matched with a 50 m buffer for the "yes, you're on it" answer (`ON_ROAD_THRESHOLD_M` in `src/routes/+page.svelte`). This is intentionally lenient — Roman road centrelines have positional uncertainty and consumer GPS adds another ~10 m.
+Distance is graded into five tiers by `answerTierFor` in `src/lib/format.ts`. The bands respect the road's own certainty rating: ≤10 m is "walking", ≤80 m on a Certain segment (≤150 m on a Conjectured or Hypothetical one) is "standing on the line", ≤500 m is "nearly", ≤50 km is "probably not", beyond that is "out of reach". The wider bands on uncertain segments reflect what the dataset actually claims to know: an Itiner-e line on a Hypothetical reconstruction can sit 50–200 m from the road's true position on the ground.
 
 ## Attribution requirements
 

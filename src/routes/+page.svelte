@@ -7,14 +7,12 @@ import Question from "$lib/components/Question.svelte";
 import RoadStory from "$lib/components/RoadStory.svelte";
 import ShareCard from "$lib/components/ShareCard.svelte";
 import Wordmark from "$lib/components/Wordmark.svelte";
-import { roadNarrative, roadSubtitle } from "$lib/format.js";
+import { answerTierFor, roadNarrative, roadSubtitle } from "$lib/format.js";
 import { geocode } from "$lib/geocode.js";
 import type { LookupResult, RoadIndex } from "$lib/roads.js";
 import { rasterise, shareOrDownload } from "$lib/share.js";
 import { findStoryFor } from "$lib/stories.js";
 
-const ON_ROAD_THRESHOLD_M = 50;
-const VERY_CLOSE_THRESHOLD_M = 5;
 const TITLE = "Is this a Roman road?";
 const DESCRIPTION =
 	"A small oracle for the road ahead. Tap once on your phone and find out if you stand on (or near) a Roman road in Britain.";
@@ -150,8 +148,11 @@ const share = () => shareVariant(shareLandscapeEl, 1200, 630, "is-this-a-roman-r
 const shareStory = () =>
 	shareVariant(sharePortraitEl, 1080, 1350, "is-this-a-roman-road-story.png");
 
-const onRoad = $derived(result ? result.distanceMeters <= ON_ROAD_THRESHOLD_M : false);
-const veryClose = $derived(result ? result.distanceMeters <= VERY_CLOSE_THRESHOLD_M : false);
+// Five-tier classifier honours both physical proximity and the road's own
+// reconstructive certainty. See `answerTierFor` in src/lib/format.ts.
+const tier = $derived(
+	result ? answerTierFor(result.distanceMeters, result.road.properties.certainty) : null,
+);
 const minimised = $derived(phase !== "idle");
 const story = $derived(result ? findStoryFor(result.road) : null);
 </script>
@@ -199,7 +200,7 @@ const story = $derived(result ? findStoryFor(result.road) : null);
 		{:else if phase === "listening"}
 			<Listening />
 		{:else if phase === "answered" && result}
-			<Answer {result} {onRoad} {veryClose} />
+			{#if tier}<Answer {result} {tier} />{/if}
 
 			<div class="map-frame">
 				<RoadMap
@@ -268,10 +269,14 @@ const story = $derived(result ? findStoryFor(result.road) : null);
      pre-rendered so either share button rasterises in one frame. -->
 {#if phase === "answered" && result}
 	<div class="share-host" bind:this={shareLandscapeEl} aria-hidden="true" inert>
-		<ShareCard {result} {onRoad} {veryClose} {userPoint} variant="landscape" />
+		{#if tier}
+			<ShareCard {result} {tier} {userPoint} variant="landscape" />
+		{/if}
 	</div>
 	<div class="share-host" bind:this={sharePortraitEl} aria-hidden="true" inert>
-		<ShareCard {result} {onRoad} {veryClose} {userPoint} variant="portrait" />
+		{#if tier}
+			<ShareCard {result} {tier} {userPoint} variant="portrait" />
+		{/if}
 	</div>
 {/if}
 

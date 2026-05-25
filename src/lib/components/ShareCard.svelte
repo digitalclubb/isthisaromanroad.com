@@ -1,5 +1,5 @@
 <script lang="ts">
-import { roadDisplayName } from "$lib/format.js";
+import { type AnswerTier, bearingToWords, formatDistance, roadDisplayName } from "$lib/format.js";
 import type { LookupResult } from "$lib/roads.js";
 import { PALETTE } from "$lib/theme.js";
 
@@ -7,12 +7,11 @@ export type ShareVariant = "landscape" | "portrait";
 
 type Props = {
 	result: LookupResult;
-	onRoad: boolean;
-	veryClose: boolean;
+	tier: AnswerTier;
 	userPoint: [number, number] | null;
 	variant?: ShareVariant;
 };
-let { result, onRoad, veryClose, userPoint, variant = "landscape" }: Props = $props();
+let { result, tier, userPoint, variant = "landscape" }: Props = $props();
 
 const dims = $derived(variant === "portrait" ? { w: 1080, h: 1350 } : { w: 1200, h: 630 });
 
@@ -32,20 +31,33 @@ const cardStyle = $derived(`
 		height: ${dims.h}px;
 	`);
 
-const tooFar = $derived(result.distanceMeters > 50_000);
 const name = $derived(roadDisplayName(result.road));
+const dist = $derived(formatDistance(result.distanceMeters));
+const dir = $derived(bearingToWords(result.bearingFromUser));
 const word = $derived(
-	tooFar ? "Out of reach." : onRoad && veryClose ? "Yes." : onRoad ? "Yes." : "Probably not.",
+	tier === "out"
+		? "Out of reach."
+		: tier === "walking" || tier === "on"
+			? "Yes."
+			: tier === "close"
+				? "Nearly."
+				: "Probably not.",
 );
 const subPrefix = $derived(
-	tooFar
+	tier === "out"
 		? "The nearest known line is"
-		: onRoad && veryClose
+		: tier === "walking"
 			? "And you're walking the line of"
-			: onRoad
+			: tier === "on"
 				? "You stand on the line of"
-				: "The nearest is",
+				: tier === "close"
+					? "Close to"
+					: "The nearest is",
 );
+// Closing punctuation: tiers that show distance get a comma so the sub-line
+// can continue with "..., 320m east of here."; tiers that don't (walking/on)
+// end with a full stop after the road name.
+const showsDistance = $derived(tier === "out" || tier === "close" || tier === "far");
 
 const coords = $derived(userPoint ? `${formatLat(userPoint[1])} · ${formatLng(userPoint[0])}` : "");
 
@@ -117,7 +129,7 @@ function buildPath(r: LookupResult, sketchW: number, sketchH: number) {
 		<div class="rule-big"></div>
 		<p class="sub">
 			{subPrefix}
-			<em class="roman">{name ?? "an unnamed Roman road"}</em>.
+			<em class="roman">{name ?? "an unnamed Roman road"}</em>{#if showsDistance}, {dist} {dir}.{:else}.{/if}
 		</p>
 
 		<svg

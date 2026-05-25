@@ -3,6 +3,44 @@ import type { RoadFeature } from "./roads.js";
 const UNNAMED = "an unnamed Roman road";
 const MAX_DESCRIPTION_CHARS = 280;
 
+/**
+ * Five-tier classifier for "how close is the user to a Roman road?".
+ *
+ * The bands honour the dataset's own uncertainty. Itiner-e tags every
+ * segment as Certain, Conjectured or Hypothetical because the reconstructed
+ * line may sit 20–200 m off the ground truth depending on how the route
+ * was derived. We tighten the "on the line" band for Certain segments and
+ * widen it for the others so the verdict matches what the data actually
+ * claims to know.
+ *
+ *   walking  ≤ 10 m   "Yes. You're walking the line of X."
+ *   on       ≤ 80 m (Certain) / ≤ 150 m (Conjectured / Hypothetical)
+ *                    "Yes. You stand on the line of X."
+ *   close    ≤ 500 m  "Nearly. Close to X, Ym Z."
+ *   far      ≤ 50 km  "Probably not. The nearest is X, Ym Z."
+ *   out      > 50 km  "Out of reach."
+ */
+export type AnswerTier = "walking" | "on" | "close" | "far" | "out";
+
+const WALKING_M = 10;
+const ON_CERTAIN_M = 80;
+const ON_UNCERTAIN_M = 150;
+const CLOSE_M = 500;
+const OUT_OF_REACH_M = 50_000;
+
+export function answerTierFor(distanceMeters: number, certainty: string | undefined): AnswerTier {
+	if (distanceMeters > OUT_OF_REACH_M) return "out";
+	if (distanceMeters <= WALKING_M) return "walking";
+	// Only "Certain" gets the tighter 80 m band. Everything else (including
+	// missing / unknown values from future dataset additions) defaults to
+	// the wider 150 m band — the safer choice when we can't trust the line.
+	const isCertain = (certainty ?? "").toLowerCase() === "certain";
+	const onLimit = isCertain ? ON_CERTAIN_M : ON_UNCERTAIN_M;
+	if (distanceMeters <= onLimit) return "on";
+	if (distanceMeters <= CLOSE_M) return "close";
+	return "far";
+}
+
 export function bearingToCompass(deg: number): string {
 	const dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
 	return dirs[Math.round(deg / 45) % 8];

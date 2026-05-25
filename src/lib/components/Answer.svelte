@@ -1,23 +1,21 @@
 <script lang="ts">
-import { bearingToWords, formatDistance, roadDisplayName } from "$lib/format.js";
+import { type AnswerTier, bearingToWords, formatDistance, roadDisplayName } from "$lib/format.js";
 import type { LookupResult } from "$lib/roads.js";
 import RuleGold from "./RuleGold.svelte";
 
 type Props = {
 	result: LookupResult;
-	onRoad: boolean;
-	veryClose: boolean;
+	tier: AnswerTier;
 };
-let { result, onRoad, veryClose }: Props = $props();
+let { result, tier }: Props = $props();
 
-const tooFar = $derived(result.distanceMeters > 50_000);
 const name = $derived(roadDisplayName(result.road));
 const dist = $derived(formatDistance(result.distanceMeters));
 const dir = $derived(bearingToWords(result.bearingFromUser));
 </script>
 
 <div class="answer" aria-live="polite" aria-atomic="true">
-	{#if tooFar}
+	{#if tier === "out"}
 		<h2 class="word">Out of reach.</h2>
 		<RuleGold animated />
 		<p class="sub">
@@ -30,19 +28,27 @@ const dir = $derived(bearingToWords(result.bearingFromUser));
 			{/if}
 			{dist} {dir}.
 		</p>
-	{:else if onRoad && veryClose}
+	{:else if tier === "walking"}
 		<h2 class="word">Yes.</h2>
 		<RuleGold animated />
 		<p class="sub">
 			And you're <em class="emph">walking</em> the line of
 			{#if name}<em class="roman">{name}</em>.{:else}an unnamed Roman road.{/if}
 		</p>
-	{:else if onRoad}
+	{:else if tier === "on"}
 		<h2 class="word">Yes.</h2>
 		<RuleGold animated />
 		<p class="sub">
 			You stand on the line of
 			{#if name}<em class="roman">{name}</em>.{:else}an unnamed Roman road.{/if}
+		</p>
+	{:else if tier === "close"}
+		<h2 class="word">Nearly.</h2>
+		<RuleGold animated />
+		<p class="sub">
+			Close to
+			{#if name}<em class="roman">{name}</em>,{:else}an unnamed Roman road,{/if}
+			{dist} {dir}.
 		</p>
 	{:else}
 		<h2 class="word">Probably not.</h2>

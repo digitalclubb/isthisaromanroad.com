@@ -1,29 +1,35 @@
 <script lang="ts">
+import Answer from "$lib/components/Answer.svelte";
+import AskAgain from "$lib/components/AskAgain.svelte";
+import Listening from "$lib/components/Listening.svelte";
 import RoadMap from "$lib/components/Map.svelte";
-import {
-	bearingToCompass,
-	formatDistance,
-	roadDisplayName,
-	roadNarrative,
-	roadSubtitle,
-} from "$lib/format.js";
+import Question from "$lib/components/Question.svelte";
+import Wordmark from "$lib/components/Wordmark.svelte";
+import { roadNarrative, roadSubtitle } from "$lib/format.js";
 import { geocode } from "$lib/geocode.js";
 import type { LookupResult, RoadIndex } from "$lib/roads.js";
 
 const ON_ROAD_THRESHOLD_M = 50;
+const VERY_CLOSE_THRESHOLD_M = 5;
 const TITLE = "Is this a Roman road?";
 const DESCRIPTION =
-	"Tap a button and find out instantly if you are standing on (or near) a Roman road in Britain. Geolocation, postcode search, and historical context for over a thousand Roman routes.";
+	"A small oracle for the road ahead. Tap once on your phone and find out if you stand on (or near) a Roman road in Britain.";
 
-let idx = $state<RoadIndex | null>(null);
+type Phase = "idle" | "listening" | "answered" | "error";
+
+let phase = $state<Phase>("idle");
 let result = $state<LookupResult | null>(null);
 let userPoint = $state<[number, number] | null>(null);
-let searchQuery = $state("");
-let loading = $state(false);
 let error = $state<string | null>(null);
-let queried = $state(false);
 
+let idx: RoadIndex | null = $state(null);
 let pendingIndex: Promise<RoadIndex> | null = null;
+
+// Each user action increments this. In-flight promises bail if their token
+// doesn't match the current one — fixes the race where a slow geolocation
+// resolves after the user has hit "ask again".
+let requestId = 0;
+
 async function ensureIndex(): Promise<RoadIndex> {
 	if (idx) return idx;
 	if (!pendingIndex) {
@@ -52,10 +58,10 @@ function getGeolocation(): Promise<GeolocationPosition> {
 			(err) => {
 				const msg =
 					err.code === err.PERMISSION_DENIED
-						? "Location permission denied. Try the search below instead."
+						? "Location permission denied. Try searching a place instead."
 						: err.code === err.POSITION_UNAVAILABLE
 							? "Your location couldn't be determined."
-							: "Locating timed out — try again or use search.";
+							: "Locating timed out — try again or search a place.";
 				reject(new Error(msg));
 			},
 			{ enableHighAccuracy: true, maximumAge: 30_000, timeout: 15_000 },
@@ -63,68 +69,58 @@ function getGeolocation(): Promise<GeolocationPosition> {
 	});
 }
 
-async function checkHere() {
+async function askHere() {
+	const id = ++requestId;
+	phase = "listening";
 	error = null;
-	queried = true;
-	loading = true;
 	try {
-		const i = await ensureIndex();
-		const pos = await getGeolocation();
+		const [i, pos] = await Promise.all([ensureIndex(), getGeolocation()]);
+		if (id !== requestId) return;
 		userPoint = [pos.coords.longitude, pos.coords.latitude];
 		result = i.findNearest(pos.coords.longitude, pos.coords.latitude);
+		phase = "answered";
 	} catch (e) {
-		error = e instanceof Error ? e.message : "Something went wrong";
+		if (id !== requestId) return;
+		error = e instanceof Error ? e.message : "Something went wrong.";
 		result = null;
-	} finally {
-		loading = false;
+		phase = "error";
 	}
 }
 
-async function searchAndCheck(event: SubmitEvent) {
-	event.preventDefault();
-	const q = searchQuery.trim();
-	if (!q) return;
+async function askForPlace(query: string) {
+	const id = ++requestId;
+	phase = "listening";
 	error = null;
-	queried = true;
-	loading = true;
 	try {
 		const i = await ensureIndex();
-		const hits = await geocode(q);
+		const hits = await geocode(query);
+		if (id !== requestId) return;
 		if (hits.length === 0) {
-			error = `No place matched "${q}".`;
-			result = null;
+			error = `No place matched "${query}".`;
+			phase = "error";
 			return;
 		}
 		userPoint = [hits[0].lng, hits[0].lat];
 		result = i.findNearest(hits[0].lng, hits[0].lat);
+		phase = "answered";
 	} catch (e) {
+		if (id !== requestId) return;
 		error = e instanceof Error ? e.message : "Search failed.";
-		result = null;
-	} finally {
-		loading = false;
+		phase = "error";
 	}
 }
 
-const onRoad = $derived(result ? result.distanceMeters <= ON_ROAD_THRESHOLD_M : null);
+function reset() {
+	requestId++;
+	phase = "idle";
+	result = null;
+	userPoint = null;
+	error = null;
+}
 
-const headline = $derived.by(() => {
-	if (loading) return "Looking…";
-	if (!queried) return "Tap to find out";
-	if (error) return "Hmm.";
-	if (result === null) return "No Roman roads found nearby.";
-	return onRoad ? "Yes!" : "No.";
-});
-
-const subline = $derived.by(() => {
-	if (loading || !queried || error || !result) return null;
-	const dist = formatDistance(result.distanceMeters);
-	const dir = bearingToCompass(result.bearingFromUser);
-	const name = roadDisplayName(result.road);
-	if (onRoad) {
-		return `You're on ${name} — about ${dist} from its centreline.`;
-	}
-	return `The nearest is ${name}, ${dist} ${dir}.`;
-});
+const onRoad = $derived(result ? result.distanceMeters <= ON_ROAD_THRESHOLD_M : false);
+const veryClose = $derived(result ? result.distanceMeters <= VERY_CLOSE_THRESHOLD_M : false);
+const minimised = $derived(phase !== "idle");
 </script>
 
 <svelte:head>
@@ -153,342 +149,225 @@ const subline = $derived.by(() => {
 	}).replace(/</g, "\\u003c")}</` + `script>`}
 </svelte:head>
 
-<main>
-	<header class="hero">
-		<h1>Is this a Roman road?</h1>
-		<p class="tag">
-			Stand still, tap, and find out. Powered by the
-			<a href="https://itiner-e.org" rel="noopener" target="_blank">Itiner-e</a>
-			dataset of nearly 300,000 km of mapped Roman routes.
-		</p>
+<main class:answered={phase === "answered" || phase === "error"}>
+	<header class="masthead" class:minimised>
+		{#if phase !== "idle"}
+			<button class="home" type="button" onclick={reset} aria-label="Ask another question">
+				<Wordmark minimised />
+			</button>
+		{:else}
+			<Wordmark />
+		{/if}
 	</header>
 
-	<section class="answer-card">
-		<div class="answer-live" aria-live="polite" aria-atomic="true">
-			{#if !queried && !loading}
-				<div class="answer answer--neutral">
-					<span class="answer-text">{headline}</span>
-				</div>
-			{:else if loading}
-				<div class="answer answer--neutral">
-					<span class="answer-text">{headline}</span>
-				</div>
-			{:else if error}
-				<div class="answer answer--neutral">
-					<span class="answer-text">{headline}</span>
-					<p class="answer-sub error">{error}</p>
-				</div>
-			{:else if result}
-				<div class="answer {onRoad ? 'answer--yes' : 'answer--no'}">
-					<span class="answer-text">{headline}</span>
-					<p class="answer-sub">{subline}</p>
-				</div>
-			{/if}
-		</div>
+	<section class="stage">
+		{#if phase === "idle"}
+			<Question onAsk={askHere} onSearch={askForPlace} />
+		{:else if phase === "listening"}
+			<Listening />
+		{:else if phase === "answered" && result}
+			<Answer {result} {onRoad} {veryClose} />
 
-		<div class="controls">
-			<button class="btn btn--primary" type="button" onclick={checkHere} disabled={loading}>
-				<svg
-					aria-hidden="true"
-					viewBox="0 0 24 24"
-					width="20"
-					height="20"
-					fill="currentColor"
-				>
-					<path d="M12 2a8 8 0 0 0-8 8c0 5.4 7.05 11.5 7.35 11.76a1 1 0 0 0 1.3 0C12.95 21.5 20 15.4 20 10a8 8 0 0 0-8-8Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" />
-				</svg>
-				Use my location
-			</button>
-
-			<form class="search" onsubmit={searchAndCheck}>
-				<label class="visually-hidden" for="search">Search by town or postcode</label>
-				<input
-					id="search"
-					type="search"
-					placeholder="Or search a town, postcode…"
-					bind:value={searchQuery}
-					autocomplete="off"
-					autocapitalize="words"
-					enterkeyhint="search"
+			<div class="map-frame">
+				<RoadMap
+					{userPoint}
+					roadFeature={result.road}
+					pointOnRoad={result.pointOnRoad}
 				/>
-				<button class="btn btn--ghost" type="submit" disabled={loading || !searchQuery.trim()}>
-					Search
-				</button>
-			</form>
-		</div>
-	</section>
+			</div>
 
-	<section class="map-wrap" aria-label="Map">
-		<RoadMap
-			{userPoint}
-			roadFeature={result?.road ?? null}
-			pointOnRoad={result?.pointOnRoad ?? null}
-		/>
-	</section>
+			<details class="more">
+				<summary>More about this road</summary>
+				<div class="more-body">
+					{#if roadSubtitle(result.road)}
+						<p class="more-sub">{roadSubtitle(result.road)}</p>
+					{/if}
+					<p>{roadNarrative(result.road)}</p>
+					{#if result.road.properties.citation || result.road.properties.bibliography}
+						<p class="cite">
+							<small>
+								Source: {result.road.properties.citation ?? ""}
+								{#if result.road.properties.bibliography}
+									· {result.road.properties.bibliography}
+								{/if}
+							</small>
+						</p>
+					{/if}
+				</div>
+			</details>
 
-	{#if result && !error}
-		<section class="info">
-			<h2>{roadDisplayName(result.road)}</h2>
-			{#if roadSubtitle(result.road)}
-				<p class="info-sub">{roadSubtitle(result.road)}</p>
-			{/if}
-			<p>{roadNarrative(result.road)}</p>
-			{#if result.road.properties.citation || result.road.properties.bibliography}
-				<p class="cite">
-					<small>
-						Source: {result.road.properties.citation ?? ""}
-						{#if result.road.properties.bibliography}
-							· {result.road.properties.bibliography}
-						{/if}
-					</small>
-				</p>
-			{/if}
-		</section>
-	{/if}
+			<AskAgain onAskAgain={reset} />
+		{:else if phase === "error"}
+			<div class="error" aria-live="polite">
+				<h2 class="word">Hmm.</h2>
+				<p class="sub">{error}</p>
+			</div>
+			<AskAgain onAskAgain={reset} />
+		{/if}
+	</section>
 
 	<footer>
-		<p>
-			Road data:
-			<a href="https://itiner-e.org" rel="noopener" target="_blank">Itiner-e</a>
-			(de Soto et al. 2025, CC BY 4.0). Base map © OpenStreetMap contributors, © CARTO.
-			Place search via Nominatim.
-		</p>
-		<p>Made because my son keeps asking.</p>
+		<span class="edition">Editio · II</span>
+		<span class="sep" aria-hidden="true">·</span>
+		<span class="url">isthisaromanroad.com</span>
 	</footer>
 </main>
 
 <style>
 	main {
-		max-width: 760px;
+		min-height: 100dvh;
+		display: grid;
+		grid-template-rows: auto 1fr auto;
+		gap: 0;
+		padding: clamp(1rem, 3vw, 1.75rem);
+		max-width: 720px;
 		margin: 0 auto;
-		padding: clamp(1rem, 2vw, 1.5rem);
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
 	}
 
-	.hero {
-		padding-top: 0.5rem;
+	.masthead {
+		padding-top: clamp(0.5rem, 3vh, 1.5rem);
+		transition: padding 400ms var(--ease);
 	}
-	.hero h1 {
-		font-size: clamp(2rem, 6vw, 3rem);
-		margin: 0 0 0.4rem;
-		color: var(--brand);
-		display: inline-block;
-		position: relative;
+	.masthead.minimised {
+		padding-top: 0;
 	}
-	.hero h1::after {
-		content: "";
-		display: block;
-		height: 4px;
-		width: 56px;
-		margin-top: 0.4rem;
-		background: linear-gradient(90deg, var(--gold) 0%, var(--gold-deep) 100%);
-		border-radius: 2px;
-	}
-	.tag {
-		margin: 0;
-		color: var(--ink-soft);
-		font-size: 0.95rem;
-		max-width: 56ch;
-	}
-
-	.answer-card {
-		background: var(--surface);
-		border-radius: var(--radius);
-		box-shadow: var(--shadow);
-		padding: clamp(1rem, 2.5vw, 1.5rem);
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	.answer {
-		display: flex;
-		flex-direction: column;
-		gap: 0.4rem;
-		padding: 1.1rem 1.3rem;
-		border-radius: 12px;
-		border-left: 6px solid transparent;
-		transition: background 200ms ease, border-color 200ms ease;
-	}
-	.answer-text {
-		font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
-		font-size: clamp(1.9rem, 6vw, 2.8rem);
-		line-height: 1.05;
-		font-weight: 700;
-		letter-spacing: -0.02em;
-	}
-	.answer-sub {
-		margin: 0;
-		color: var(--ink-soft);
-		font-size: 1rem;
-		line-height: 1.5;
-	}
-	.answer-sub.error {
-		color: var(--warn);
-	}
-	.answer--neutral {
-		background: var(--surface-warm);
-		border-left-color: var(--gold);
-	}
-	.answer--neutral .answer-text {
-		color: var(--ink);
-	}
-	.answer--yes {
-		background: var(--ok-bg);
-		border-left-color: var(--ok);
-	}
-	.answer--yes .answer-text {
-		color: var(--ok-deep);
-	}
-	.answer--no {
-		background: var(--brand-bg);
-		border-left-color: var(--brand);
-	}
-	.answer--no .answer-text {
-		color: var(--brand-deep);
-	}
-
-	/* Dark-mode contrast fixes: in dark mode, *-deep tokens are too dim on the
-	   tinted card backgrounds. Use the brighter *-brand tokens for headline
-	   text and the deeper one for the button so white-on-red still clears AA. */
-	@media (prefers-color-scheme: dark) {
-		.answer--yes .answer-text {
-			color: var(--ok);
-		}
-		.answer--no .answer-text {
-			color: var(--brand);
-		}
-	}
-
-	.controls {
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-	}
-
-	.btn {
+	.home {
 		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-		padding: 0.85rem 1.1rem;
-		border-radius: 12px;
-		font-weight: 600;
-		font-size: 1rem;
-		border: 1px solid transparent;
-		transition: transform 80ms ease, background 120ms ease;
-	}
-	.btn:active {
-		transform: scale(0.98);
-	}
-	.btn:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
-	.btn--primary {
-		background: var(--brand);
-		color: #fff;
-		box-shadow: inset 0 -2px 0 0 rgb(0 0 0 / 0.12);
-	}
-	.btn--primary:hover:not(:disabled) {
-		background: var(--brand-deep);
-	}
-	@media (prefers-color-scheme: dark) {
-		/* Dark `--brand` (#e64b41) is intentionally light for text contrast on
-		   dark bg, but white-on-it falls below AA. Swap to `--brand-deep`
-		   (#c8312b in dark) for the button face. */
-		.btn--primary {
-			background: var(--brand-deep);
-		}
-		.btn--primary:hover:not(:disabled) {
-			background: var(--brand);
-		}
-	}
-	.btn--ghost {
-		background: var(--surface);
-		color: var(--ink);
-		border-color: color-mix(in srgb, var(--ink) 14%, transparent);
-	}
-	.btn--ghost:hover:not(:disabled) {
-		border-color: var(--gold);
-		color: var(--brand-deep);
+		cursor: pointer;
+		/* Expand the hit area without changing the visual position so the tiny
+		   minimised wordmark still meets a 44px tap target on mobile. */
+		padding: 12px 8px;
+		margin: -12px -8px;
 	}
 
-	.search {
+	.stage {
 		display: flex;
-		gap: 0.5rem;
-	}
-	.search input {
-		flex: 1;
-		font: inherit;
-		padding: 0.75rem 1rem;
-		border-radius: 12px;
-		border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
-		background: var(--surface);
-		color: var(--ink);
-		min-width: 0;
+		flex-direction: column;
+		justify-content: flex-start;
 	}
 
-	.map-wrap {
-		height: clamp(360px, 55vh, 560px);
+	/* Vertical-centre the question on the cold load so the page feels like a
+	   single thought rather than a UI. Once answered, content stacks naturally
+	   from the top. */
+	main:not(.answered) .stage {
+		justify-content: center;
+		min-height: calc(100dvh - 8rem);
+	}
+
+	.map-frame {
+		margin-top: clamp(1.5rem, 4vh, 2rem);
+		height: clamp(280px, 45vh, 460px);
 		border-radius: var(--radius);
 		overflow: hidden;
 		box-shadow: var(--shadow);
+		border: 1px solid var(--surface-deep);
+		background: var(--surface);
 	}
 
-	.info {
-		background: var(--surface);
-		border-radius: var(--radius);
-		box-shadow: var(--shadow);
-		padding: clamp(1rem, 2.5vw, 1.5rem);
-	}
-	.info h2 {
-		margin: 0 0 0.4rem;
-		font-size: 1.5rem;
-		color: var(--brand-deep);
-	}
-	@media (prefers-color-scheme: dark) {
-		.info h2 {
-			color: var(--brand);
-		}
-	}
-	.info-sub {
-		margin: 0 0 0.75rem;
+	.more {
+		margin-top: clamp(1.25rem, 3vh, 1.75rem);
+		font-family: var(--font-body);
 		color: var(--ink-soft);
-		font-size: 0.95rem;
-		text-transform: capitalize;
 	}
-	.info p {
-		margin: 0 0 0.5rem;
+	.more summary {
+		font-size: 0.85rem;
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+		font-weight: 500;
+		cursor: pointer;
+		list-style: none;
+		padding: 0.6rem 0;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		color: var(--ink-soft);
+		transition: color 200ms var(--ease);
+	}
+	.more summary::-webkit-details-marker {
+		display: none;
+	}
+	.more summary::after {
+		content: "+";
+		font-family: var(--font-display);
+		font-size: 1.1rem;
+		line-height: 1;
+		color: var(--gold);
+		transition: transform 240ms var(--ease);
+	}
+	.more[open] summary::after {
+		transform: rotate(45deg);
+	}
+	.more summary:hover {
+		color: var(--ink);
+	}
+	.more-body {
+		padding-top: 0.5rem;
+		max-width: 60ch;
+		font-size: 0.95rem;
 		line-height: 1.6;
+		animation: fadeUp 300ms var(--ease-out);
+	}
+	.more-sub {
+		font-style: italic;
+		margin: 0 0 0.5rem;
+		font-size: 0.85rem;
+		text-transform: lowercase;
 	}
 	.cite {
+		margin-top: 0.6rem;
+		opacity: 0.7;
+		font-size: 0.85rem;
+	}
+
+	.error {
+		text-align: left;
+		animation: fadeUp 500ms var(--ease-out) both;
+	}
+	.error .word {
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: clamp(2.8rem, 12vw, 5rem);
+		line-height: 1;
+		color: var(--ink);
+		margin: 0 0 0.5rem;
+		letter-spacing: -0.02em;
+	}
+	.error .sub {
+		font-family: var(--font-display);
+		font-style: italic;
 		color: var(--ink-soft);
-		margin-top: 0.5rem;
+		font-size: clamp(1.05rem, 3vw, 1.2rem);
+		max-width: 36ch;
+		margin: 0.8rem 0 0;
 	}
 
 	footer {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.7rem;
+		padding: clamp(1.2rem, 5vh, 2rem) 0 max(env(safe-area-inset-bottom), 1rem);
+		font-family: var(--font-body);
+		font-size: 0.72rem;
+		text-transform: uppercase;
+		letter-spacing: 0.18em;
 		color: var(--ink-soft);
-		font-size: 0.85rem;
-		text-align: center;
-		padding: 1rem 0 2rem;
-		line-height: 1.5;
 	}
-	footer p {
-		margin: 0.25rem 0;
+	footer .edition {
+		font-variant-numeric: oldstyle-nums;
+	}
+	footer .sep {
+		color: var(--gold);
 	}
 
-	.visually-hidden {
-		position: absolute;
-		width: 1px;
-		height: 1px;
-		padding: 0;
-		margin: -1px;
-		overflow: hidden;
-		clip: rect(0, 0, 0, 0);
-		white-space: nowrap;
-		border: 0;
+	@keyframes fadeUp {
+		from {
+			opacity: 0;
+			transform: translateY(8px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 </style>

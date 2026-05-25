@@ -1,65 +1,76 @@
 @import "maplibre-gl/dist/maplibre-gl.css";
 
+@import "@fontsource-variable/inter";
+@import "@fontsource/cormorant-garamond/700.css";
+@import "@fontsource/cormorant-garamond/500-italic.css";
+
 /*
- * Palette grounded in actual Roman pigments:
- *   brand     — Pompeii Vermilion (#C8312B) cinnabar fresco red
- *   ok        — Verdigris Teal (#2E8B7F) bronze-patina green for "yes"
- *   gold      — Imperial Gold (#D4A437) mosaic & military standard
- *   blue      — Egyptian Blue (#1034A6) reserved for the user pin
- *   bg        — Travertine Cream (#F7F1E3) limestone of Tibur quarries
- *   ink       — Atramentum (#1F1A14) lamp-black with a brown undertone
- *   ink-soft  — Stone Grey (#7A6E5D) weathered travertine
+ * Two-mode palette grounded in muted Roman material colour:
+ * Parchment (light) is the canonical look. Walnut (dark) follows the
+ * system preference. Every text/background pair clears WCAG AA.
+ *
+ *   bg / surface      parchment, vellum, tea-stain (aged paper)
+ *   ink / ink-soft    walnut & smoke (lamp-black brown undertones)
+ *   brand             muted terracotta — baked clay (was vermilion)
+ *   brand-deep        oxblood — hover & dense text
+ *   ok                verdigris — reserved for the YES affirmation
+ *   gold / gold-soft  bronze hairlines & highlights
  */
 :root {
-	--bg: #f7f1e3;
-	--surface: #fcf8ec;
-	--surface-warm: #fbeaca;
+	--bg: #efe4cd;
+	--surface: #f6ecd6;
+	--surface-deep: #e4d5b7;
 
-	--ink: #1f1a14;
-	--ink-soft: #6f6353;
+	--ink: #2a1f17;
+	--ink-soft: #6b5a47;
 
-	--brand: #c8312b;
-	--brand-deep: #9d2620;
-	--brand-bg: #fbe7e3;
+	--brand: #a24b36;
+	--brand-deep: #6e2a22;
 
-	--ok: #2e8b7f;
-	--ok-deep: #1f665c;
-	--ok-bg: #e3f2ef;
+	--ok: #3d6e66;
 
-	--gold: #d4a437;
-	--gold-deep: #ad8423;
+	--gold: #9e7b3f;
+	--gold-soft: #c8a35a;
 
-	--blue: #1034a6;
-	--warn: #b45309;
+	--warn: #8a4a16;
 
-	--shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -10px rgb(31 26 20 / 0.22);
-	--radius: 14px;
+	--font-display: "Cormorant Garamond", "Iowan Old Style", Charter, Georgia, "Times New Roman",
+		serif;
+	--font-body: "Inter Variable", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		"Helvetica Neue", Arial, sans-serif;
+
+	--radius: 12px;
+	--rule-gold: 48px;
+
+	--ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+	--shadow: 0 1px 2px rgb(31 22 14 / 0.06), 0 14px 32px -16px rgb(31 22 14 / 0.24);
+
 	color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--bg: #1a150f;
-		--surface: #261f16;
-		--surface-warm: #322618;
+		--bg: #1b1410;
+		--surface: #2a1f18;
+		--surface-deep: #36281e;
 
 		--ink: #f0e6d2;
 		--ink-soft: #b8a98f;
 
-		--brand: #e64b41;
-		--brand-deep: #c8312b;
-		--brand-bg: #3a1a17;
+		--brand: #d2735a;
+		--brand-deep: #d77a5d;
 
-		--ok: #4dafa0;
-		--ok-deep: #2e8b7f;
-		--ok-bg: #1c3531;
+		--ok: #6fa89e;
 
-		--gold: #e5bb55;
-		--gold-deep: #d4a437;
+		--gold: #d4a75a;
+		--gold-soft: #e9c887;
 
-		--blue: #5878d6;
+		--warn: #d2a06a;
 
-		--shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 28px -10px rgb(0 0 0 / 0.55);
+		--shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 14px 32px -16px rgb(0 0 0 / 0.6);
+
 		color-scheme: dark;
 	}
 }
@@ -76,8 +87,8 @@ body {
 	padding: 0;
 	background: var(--bg);
 	color: var(--ink);
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-		sans-serif;
+	font-family: var(--font-body);
+	font-feature-settings: "kern", "liga", "onum";
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 }
@@ -86,37 +97,60 @@ body {
 	min-height: 100dvh;
 }
 
+/* Old-style numerals for serif display contexts (e.g. coordinates on the
+   share card or the year of a road). */
+.display,
+h1,
+h2,
+h3,
+.serif {
+	font-family: var(--font-display);
+	font-feature-settings: "kern", "liga", "onum";
+	letter-spacing: -0.01em;
+}
+
 a {
-	color: var(--brand-deep);
+	color: inherit;
 	text-decoration-color: var(--gold);
-	text-decoration-thickness: 2px;
-	text-underline-offset: 2px;
+	text-decoration-thickness: 1.5px;
+	text-underline-offset: 3px;
+	transition: color 160ms var(--ease), text-decoration-color 160ms var(--ease);
 }
 a:hover {
-	color: var(--brand);
+	color: var(--brand-deep);
+	text-decoration-color: currentColor;
 }
 
 a:focus-visible,
 button:focus-visible,
-input:focus-visible {
+input:focus-visible,
+summary:focus-visible,
+details:focus-visible {
 	outline: 3px solid var(--gold);
-	outline-offset: 2px;
+	outline-offset: 3px;
 	border-radius: 6px;
 }
 
 button {
 	font: inherit;
 	cursor: pointer;
-}
-
-h1,
-h2,
-h3 {
-	font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
-	letter-spacing: -0.01em;
+	color: inherit;
+	background: transparent;
+	border: none;
+	padding: 0;
 }
 
 ::selection {
-	background: var(--gold);
+	background: var(--gold-soft);
 	color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+	}
 }

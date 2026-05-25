@@ -12,9 +12,10 @@ export default defineConfig({
 			manifest: {
 				name: "Is this a Roman Road?",
 				short_name: "RomanRoad?",
-				description: "Find out instantly if you are standing on (or near) a Roman road in Britain.",
-				theme_color: "#c8312b",
-				background_color: "#f7f1e3",
+				description:
+					"A small oracle for the road ahead. Find out if you stand on (or near) a Roman road in Britain.",
+				theme_color: "#a24b36",
+				background_color: "#efe4cd",
 				display: "standalone",
 				start_url: "/",
 				scope: "/",

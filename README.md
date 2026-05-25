@@ -13,8 +13,13 @@ Tap *Use my location* (or search a UK town / postcode) and the site checks your 
 - **Nominatim** for postcode / place geocoding
 - **RBush** spatial index + **Turf.js** for distance/nearest-point queries
 - **@vite-pwa/sveltekit** (Workbox) for offline PWA
+- **Cormorant Garamond** (display) + **Inter** (body), self-hosted via Fontsource
 - **Vercel** for hosting (`@sveltejs/adapter-vercel`)
 - **Itiner-e** dataset (CC BY 4.0) for road geometry — see `scripts/build-roads.ts`
+
+## Design language
+
+The current edition is **Editio II — Parchment & Walnut**: a muted, atmospheric palette grounded in actual Roman material colour (Pompeii terracotta, oxblood, verdigris, travertine, bronze) and a serif-led type system (Cormorant Garamond for the display headlines and italic Latin names, Inter for everything else). Design tokens live in `src/app.css`; the same names work as Tailwind v4 `@theme` variables if the project ever migrates.
 
 ## Quickstart
 

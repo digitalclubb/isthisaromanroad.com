@@ -269,8 +269,42 @@ $effect(() => {
 		);
 	} else if (userPoint) {
 		map.flyTo({ center: userPoint, zoom: 13, duration: 900 });
+	} else if (roadSegments.length > 0) {
+		// Road-only view (no user point): frame the whole road. Used by
+		// the per-road SEO pages so they don't land on a Britain-wide
+		// default centre.
+		const bbox = bboxOfSegments(roadSegments);
+		if (bbox) {
+			map.fitBounds(bbox, { padding: 60, maxZoom: 11, duration: 900 });
+		}
 	}
 });
+
+function bboxOfSegments(
+	segments: Array<Feature<LineString | MultiLineString>>,
+): [[number, number], [number, number]] | null {
+	let minX = Number.POSITIVE_INFINITY;
+	let minY = Number.POSITIVE_INFINITY;
+	let maxX = Number.NEGATIVE_INFINITY;
+	let maxY = Number.NEGATIVE_INFINITY;
+	for (const f of segments) {
+		const g = f.geometry;
+		const lines = g.type === "LineString" ? [g.coordinates] : g.coordinates;
+		for (const line of lines) {
+			for (const c of line) {
+				if (c[0] < minX) minX = c[0];
+				if (c[0] > maxX) maxX = c[0];
+				if (c[1] < minY) minY = c[1];
+				if (c[1] > maxY) maxY = c[1];
+			}
+		}
+	}
+	if (minX === Number.POSITIVE_INFINITY) return null;
+	return [
+		[minX, minY],
+		[maxX, maxY],
+	];
+}
 </script>
 
 <div

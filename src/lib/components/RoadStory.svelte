@@ -11,6 +11,7 @@ let { story }: Props = $props();
 	<!-- Static authored content; no user input flows here. -->
 	<!-- biome-ignore lint/security/noDangerouslySetInnerHtml: trusted, authored -->
 	<div class="body">{@html story.body}</div>
+	<a class="more" href="/road/{story.key}">More on {story.name} →</a>
 </section>
 
 <style>
@@ -47,6 +48,26 @@ let { story }: Props = $props();
 	.body :global(em) {
 		font-style: italic;
 		font-weight: 500;
+	}
+	.more {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: 1rem;
+		padding: 0.6rem 0.5rem;
+		margin-left: -0.5rem;
+		font-family: var(--font-body);
+		font-size: 0.9rem;
+		color: var(--ink-soft);
+		text-decoration: underline;
+		text-decoration-color: var(--gold);
+		text-decoration-thickness: 1px;
+		text-underline-offset: 4px;
+		border-radius: 4px;
+		min-height: 44px;
+	}
+	.more:hover {
+		color: var(--ink);
 	}
 
 	@keyframes fadeUp {

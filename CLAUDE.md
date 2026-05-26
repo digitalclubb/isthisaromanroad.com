@@ -119,11 +119,15 @@ src/
   routes/
     +layout.{ts,svelte}         # prerender=true, global wrapper
     +page.svelte                # state machine + composition
-    sitemap.xml/+server.ts      # generated sitemap
+    sitemap.xml/+server.ts      # generated sitemap (homepage + every road page)
+    road/[slug]/                # one prerendered page per famous road
+      +page.server.ts           # server load reads roads.geojson, filters segments
+      +page.svelte              # road headline, story body, full road on map
   lib/
     roads.ts                    # RoadIndex (RBush + Turf nearest-point-on-line)
+    stories.ts                  # 22 hand-written stories + segmentsForStory helper
     geocode.ts                  # Nominatim wrapper (browser, with timeout)
-    format.ts                   # display helpers + bearingToWords
+    format.ts                   # display helpers + bearingToWords + answerTierFor
     share.ts                    # html-to-image + Web Share API + download fallback
     map/
       style-parchment.ts        # bespoke MapLibre style, parchment + walnut variants

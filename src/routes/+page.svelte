@@ -120,33 +120,23 @@ function reset() {
 	error = null;
 }
 
-let shareLandscapeEl: HTMLDivElement | undefined = $state();
-let sharePortraitEl: HTMLDivElement | undefined = $state();
+let shareCardEl: HTMLDivElement | undefined = $state();
 let sharing = $state(false);
 let shareError = $state<string | null>(null);
 
-async function shareVariant(
-	node: HTMLDivElement | undefined,
-	width: number,
-	height: number,
-	filename: string,
-) {
-	if (!node || sharing) return;
+async function share() {
+	if (!shareCardEl || sharing) return;
 	sharing = true;
 	shareError = null;
 	try {
-		const blob = await rasterise(node, width, height);
-		await shareOrDownload(blob, filename);
+		const blob = await rasterise(shareCardEl, 1200, 630);
+		await shareOrDownload(blob, "is-this-a-roman-road.png");
 	} catch (e) {
 		shareError = e instanceof Error ? e.message : "Couldn't prepare the share image.";
 	} finally {
 		sharing = false;
 	}
 }
-
-const share = () => shareVariant(shareLandscapeEl, 1200, 630, "is-this-a-roman-road.png");
-const shareStory = () =>
-	shareVariant(sharePortraitEl, 1080, 1350, "is-this-a-roman-road-story.png");
 
 // Five-tier classifier honours both physical proximity and the road's own
 // reconstructive certainty. See `answerTierFor` in src/lib/format.ts.
@@ -250,7 +240,6 @@ const matchedRoadKey = $derived(result ? roadKey(result.road) || null : null);
 			<AskAgain
 				onAskAgain={reset}
 				onShare={share}
-				onShareStory={shareStory}
 				{sharing}
 			/>
 			{#if shareError}
@@ -272,19 +261,13 @@ const matchedRoadKey = $derived(result ? roadKey(result.road) || null : null);
 	</footer>
 </main>
 
-<!-- Off-screen render targets for the share cards. html-to-image rasterises
-     these nodes into PNG. Kept in the DOM (not display:none) so fonts apply;
-     positioned far off-screen and aria-hidden + inert. Two variants are
-     pre-rendered so either share button rasterises in one frame. -->
+<!-- Off-screen render target for the share card. html-to-image rasterises
+     this node into PNG. Kept in the DOM (not display:none) so fonts apply;
+     positioned far off-screen and aria-hidden + inert. -->
 {#if phase === "answered" && result}
-	<div class="share-host" bind:this={shareLandscapeEl} aria-hidden="true" inert>
+	<div class="share-host" bind:this={shareCardEl} aria-hidden="true" inert>
 		{#if tier}
-			<ShareCard {result} {tier} {roadSegments} {userPoint} variant="landscape" />
-		{/if}
-	</div>
-	<div class="share-host" bind:this={sharePortraitEl} aria-hidden="true" inert>
-		{#if tier}
-			<ShareCard {result} {tier} {roadSegments} {userPoint} variant="portrait" />
+			<ShareCard {result} {tier} {roadSegments} {userPoint} />
 		{/if}
 	</div>
 {/if}

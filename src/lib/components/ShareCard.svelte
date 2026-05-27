@@ -4,23 +4,23 @@ import type { RoadFeature } from "$lib/roads.js";
 import type { LookupResult } from "$lib/roads.js";
 import { PALETTE } from "$lib/theme.js";
 
-export type ShareVariant = "landscape" | "portrait";
-
 type Props = {
 	result: LookupResult;
 	tier: AnswerTier;
 	roadSegments: RoadFeature[];
 	userPoint: [number, number] | null;
-	variant?: ShareVariant;
 };
-let { result, tier, roadSegments, userPoint, variant = "landscape" }: Props = $props();
+let { result, tier, roadSegments, userPoint }: Props = $props();
 
-const dims = $derived(variant === "portrait" ? { w: 1080, h: 1350 } : { w: 1200, h: 630 });
+const CARD_W = 1200;
+const CARD_H = 630;
+const SKETCH_W = 480;
+const SKETCH_H = 280;
 
 // The share card always renders in parchment, regardless of the user's
 // system theme — atmospheric on social regardless of where it's posted.
 const p = PALETTE.parchment;
-const cardStyle = $derived(`
+const cardStyle = `
 		--p-bg: ${p.bg};
 		--p-ink: ${p.ink};
 		--p-ink-soft: ${p.inkSoft};
@@ -29,9 +29,9 @@ const cardStyle = $derived(`
 		--p-gold: ${p.gold};
 		--p-gold-soft: ${p.goldSoft};
 		--p-surface-deep: ${p.surfaceDeep};
-		width: ${dims.w}px;
-		height: ${dims.h}px;
-	`);
+		width: ${CARD_W}px;
+		height: ${CARD_H}px;
+	`;
 
 const name = $derived(roadDisplayName(result.road));
 const dist = $derived(formatDistance(result.distanceMeters));
@@ -76,10 +76,9 @@ function formatLng(lng: number) {
 // point into the share-card SVG. One pass: compute the bbox of all coords
 // across all segments + user point, fit to the sketch viewport, project,
 // then emit one SVG path with multiple sub-paths (one M per segment).
-const sketchSize = $derived(variant === "portrait" ? { w: 920, h: 420 } : { w: 480, h: 280 });
-const pathD = $derived(buildPath(roadSegments, userPoint, sketchSize.w, sketchSize.h));
+const pathD = $derived(buildPath(roadSegments, userPoint, SKETCH_W, SKETCH_H));
 const pointMarker = $derived(
-	userPoint ? projectPoint(roadSegments, userPoint, sketchSize.w, sketchSize.h) : null,
+	userPoint ? projectPoint(roadSegments, userPoint, SKETCH_W, SKETCH_H) : null,
 );
 
 function gatherLines(segments: RoadFeature[]): number[][][] {
@@ -163,7 +162,7 @@ function projectPoint(
 }
 </script>
 
-<div class="card {variant}" style={cardStyle}>
+<div class="card" style={cardStyle}>
 	<div class="frame">
 		<div class="row top">
 			<div class="rule"></div>
@@ -179,14 +178,14 @@ function projectPoint(
 
 		<svg
 			class="sketch"
-			viewBox="0 0 {sketchSize.w} {sketchSize.h}"
+			viewBox="0 0 {SKETCH_W} {SKETCH_H}"
 			preserveAspectRatio="xMidYMid meet"
 			aria-hidden="true"
 		>
 			<path
 				d={pathD}
 				stroke={p.brand}
-				stroke-width={variant === "portrait" ? 4 : 3}
+				stroke-width="3"
 				fill="none"
 				stroke-linecap="round"
 				stroke-linejoin="round"
@@ -194,20 +193,14 @@ function projectPoint(
 			{#if pointMarker}
 				<!-- Dark ink fill with gold ring matches the live map's
 				     point-on-road treatment for visual consistency. -->
+				<circle cx={pointMarker[0]} cy={pointMarker[1]} r="9" fill={p.gold} opacity="0.35" />
 				<circle
 					cx={pointMarker[0]}
 					cy={pointMarker[1]}
-					r={variant === "portrait" ? 14 : 9}
-					fill={p.gold}
-					opacity="0.35"
-				/>
-				<circle
-					cx={pointMarker[0]}
-					cy={pointMarker[1]}
-					r={variant === "portrait" ? 8 : 5}
+					r="5"
 					fill={p.ink}
 					stroke={p.gold}
-					stroke-width={variant === "portrait" ? 3 : 2}
+					stroke-width="2"
 				/>
 			{/if}
 		</svg>
@@ -240,30 +233,47 @@ function projectPoint(
 		background: linear-gradient(90deg, var(--p-gold), var(--p-gold-soft));
 		border-radius: 2px;
 	}
+	.frame {
+		position: absolute;
+		inset: 60px;
+		display: grid;
+		grid-template-columns: 1fr 480px;
+		grid-template-rows: auto 1fr auto;
+		gap: 24px 60px;
+		align-items: start;
+	}
 	.eyebrow {
 		font-family: var(--font-display);
 		font-style: italic;
+		font-size: 28px;
 		letter-spacing: 8px;
 		color: var(--p-brand-deep);
 	}
 	.word {
+		grid-column: 1;
 		font-family: var(--font-display);
 		font-weight: 700;
+		font-size: 160px;
 		line-height: 0.95;
 		letter-spacing: -0.04em;
 		color: var(--p-ink);
 		margin: 0;
+		align-self: end;
 	}
 	.rule-big {
+		grid-column: 1;
 		width: 80px;
 		height: 4px;
 		background: linear-gradient(90deg, var(--p-gold), var(--p-gold-soft));
 		border-radius: 2px;
 	}
 	.sub {
+		grid-column: 1;
 		font-family: var(--font-display);
 		font-style: italic;
+		font-size: 34px;
 		line-height: 1.35;
+		max-width: 18ch;
 		color: var(--p-ink-soft);
 		margin: 0;
 	}
@@ -277,95 +287,27 @@ function projectPoint(
 		padding-bottom: 2px;
 		white-space: nowrap;
 	}
-	.footer {
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-		font-family: var(--font-body);
-		letter-spacing: 3px;
-		text-transform: uppercase;
-		color: var(--p-ink-soft);
-		border-top: 1px solid var(--p-surface-deep);
-		padding-top: 18px;
-		grid-column: 1 / -1;
-	}
-	.coords {
-		font-variant-numeric: oldstyle-nums tabular-nums;
-	}
-
-	/* Landscape — 1200×630, classic OG / Twitter / FB / LinkedIn */
-	.card.landscape .frame {
-		position: absolute;
-		inset: 60px;
-		display: grid;
-		grid-template-columns: 1fr 480px;
-		grid-template-rows: auto 1fr auto;
-		gap: 24px 60px;
-		align-items: start;
-	}
-	.card.landscape .eyebrow {
-		font-size: 28px;
-	}
-	.card.landscape .word {
-		grid-column: 1;
-		font-size: 160px;
-		align-self: end;
-	}
-	.card.landscape .rule-big {
-		grid-column: 1;
-	}
-	.card.landscape .sub {
-		grid-column: 1;
-		font-size: 34px;
-		max-width: 18ch;
-	}
-	.card.landscape .sketch {
+	.sketch {
 		grid-column: 2;
 		grid-row: 2 / 4;
 		width: 480px;
 		height: 280px;
 		align-self: end;
 	}
-	.card.landscape .footer {
+	.footer {
+		grid-column: 1 / -1;
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		font-family: var(--font-body);
 		font-size: 22px;
+		letter-spacing: 3px;
+		text-transform: uppercase;
+		color: var(--p-ink-soft);
+		border-top: 1px solid var(--p-surface-deep);
+		padding-top: 18px;
 	}
-
-	/* Portrait — 1080×1350, Instagram / TikTok / phone wallpaper */
-	.card.portrait .frame {
-		position: absolute;
-		inset: 80px;
-		display: grid;
-		grid-template-columns: 1fr;
-		grid-template-rows: auto auto auto auto 1fr auto;
-		gap: 32px 0;
-	}
-	.card.portrait .eyebrow {
-		font-size: 36px;
-		letter-spacing: 12px;
-	}
-	.card.portrait .word {
-		font-size: 200px;
-		line-height: 0.92;
-	}
-	.card.portrait .rule-big {
-		width: 120px;
-		height: 5px;
-	}
-	.card.portrait .sub {
-		font-size: 48px;
-		max-width: 20ch;
-		line-height: 1.3;
-	}
-	.card.portrait .sketch {
-		width: 100%;
-		height: 100%;
-		max-height: 420px;
-		align-self: center;
-		justify-self: center;
-	}
-	.card.portrait .footer {
-		font-size: 28px;
-		letter-spacing: 4px;
-		padding-top: 28px;
+	.coords {
+		font-variant-numeric: oldstyle-nums tabular-nums;
 	}
 </style>

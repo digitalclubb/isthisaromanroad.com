@@ -2,11 +2,10 @@
 type Props = {
 	onAskAgain: () => void;
 	onShare?: () => void;
-	onShareStory?: () => void;
 	sharing?: boolean;
 	shareDisabled?: boolean;
 };
-let { onAskAgain, onShare, onShareStory, sharing = false, shareDisabled = false }: Props = $props();
+let { onAskAgain, onShare, sharing = false, shareDisabled = false }: Props = $props();
 </script>
 
 <div class="actions">
@@ -16,7 +15,7 @@ let { onAskAgain, onShare, onShareStory, sharing = false, shareDisabled = false 
 			type="button"
 			onclick={onShare}
 			disabled={sharing || shareDisabled}
-			aria-label={sharing ? "Sharing…" : "Share this answer as a landscape image"}
+			aria-label={sharing ? "Sharing…" : "Share this answer as an image"}
 		>
 			<svg
 				viewBox="0 0 24 24"
@@ -34,31 +33,6 @@ let { onAskAgain, onShare, onShareStory, sharing = false, shareDisabled = false 
 				<line x1="12" y1="2" x2="12" y2="15" />
 			</svg>
 			<span>{sharing ? "Sharing…" : "Share"}</span>
-		</button>
-	{/if}
-	{#if onShareStory}
-		<button
-			class="btn"
-			type="button"
-			onclick={onShareStory}
-			disabled={sharing || shareDisabled}
-			aria-label="Share this answer as a portrait image for Instagram or TikTok"
-		>
-			<svg
-				viewBox="0 0 24 24"
-				width="18"
-				height="18"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				aria-hidden="true"
-			>
-				<rect x="7" y="3" width="10" height="18" rx="2" />
-				<line x1="11" y1="18" x2="13" y2="18" />
-			</svg>
-			<span>Story</span>
 		</button>
 	{/if}
 	<button class="btn" type="button" onclick={onAskAgain}>

@@ -5,6 +5,8 @@
  * renders rather than the fallback.
  */
 
+import { PALETTE } from "$lib/theme.js";
+
 const SHARE_TITLE = "Is this a Roman road?";
 const SHARE_TEXT = "I asked the road. isthisaromanroad.com";
 
@@ -23,12 +25,24 @@ export async function rasterise(node: HTMLElement, width: number, height: number
 		}
 	}
 
+	// The share-host wrapper sits at `position: fixed; left: -20000px` so the
+	// card renders with real fonts/layout without ever being visible on the
+	// page. html-to-image clones the node into a <foreignObject> at (0, 0) but
+	// preserves those styles on the clone — so the card paints 20,000px to the
+	// left of the capture viewport and we get a blank PNG. Reset position on
+	// the clone (inline styles win over the .share-host CSS rule).
 	const blob = await toBlob(node, {
 		width,
 		height,
 		pixelRatio: 2,
 		cacheBust: true,
-		backgroundColor: getComputedStyle(node).backgroundColor || "#efe4cd",
+		backgroundColor: PALETTE.parchment.bg,
+		style: {
+			position: "static",
+			left: "0",
+			top: "0",
+			transform: "none",
+		},
 	});
 	if (!blob) throw new Error("Couldn't rasterise the share card.");
 	return blob;

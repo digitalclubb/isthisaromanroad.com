@@ -2,7 +2,7 @@
 
 A single-page PWA that answers a child's question from the back seat: **is this a Roman road?**
 
-Tap *Use my location* (or search a UK town / postcode) and the site checks your point against the full Itiner-e Roman roads dataset for Britain. The answer comes in five tiers — walking the line, standing on it, nearly there, probably not, or out of reach — and the bands honour the dataset's own reconstructive uncertainty. You get the road's Roman name, type, certainty, and historical context.
+Tap *Use my location* (or search any town / postcode) and the site checks your point against the full empire-wide Itiner-e Roman roads dataset. The answer comes in five tiers — walking the line, standing on it, nearly there, probably not, or out of reach — and the bands honour the dataset's own reconstructive uncertainty. You get the road's Roman name, type, certainty, and historical context. Hand-written stories cover the famous roads of Britain; everywhere else falls back gracefully to the dataset's own record.
 
 ## Stack
 
@@ -11,7 +11,7 @@ Tap *Use my location* (or search a UK town / postcode) and the site checks your 
 - **Biome** for lint + format
 - **MapLibre GL JS** with free CartoDB Voyager raster tiles (no API key, no billing surprises)
 - **Nominatim** for postcode / place geocoding
-- **RBush** spatial index + **Turf.js** for distance/nearest-point queries
+- **Location-partitioned static data** (a 1°×1° cell grid is the spatial index) + **Turf.js** for nearest-point queries
 - **@vite-pwa/sveltekit** (Workbox) for offline PWA
 - **Cormorant Garamond** (display) + **Inter** (body), self-hosted via Fontsource
 - **Vercel** for hosting (`@sveltejs/adapter-vercel`)
@@ -25,7 +25,7 @@ The current edition is **Editio II — Parchment & Walnut**: a muted, atmospheri
 
 ```bash
 pnpm install
-pnpm data:build    # one-time: download Itiner-e (~78 MB) and write static/roads.geojson
+pnpm data:build    # one-time: download Itiner-e (~78 MB) and write static/roads/ cells
 pnpm icons:build   # render PWA icons + og.png from inline SVG
 pnpm dev           # local dev server
 ```
@@ -42,7 +42,8 @@ Then open http://localhost:5173.
 | `pnpm check` | `svelte-check` typecheck across .ts and .svelte |
 | `pnpm lint` | Biome lint + format check |
 | `pnpm fix` | Biome auto-fix |
-| `pnpm data:build` | Re-download Itiner-e and rebuild `static/roads.geojson` |
+| `pnpm data:build` | Re-download Itiner-e and rebuild the `static/roads/` cell grid |
+| `pnpm data:smoke` | Probe the partitioned index against known locations (via `tsx`) |
 | `pnpm icons:build` | Re-render PWA icons + Open Graph card |
 
 ## Project layout
@@ -56,23 +57,26 @@ src/
     +page.svelte           # the single page UI
     sitemap.xml/+server.ts # generated sitemap
   lib/
-    roads.ts               # RoadIndex (RBush + Turf nearest-point-on-line)
+    roads.ts               # lazy cell-based RoadIndex + Turf nearest-point-on-line
     geocode.ts             # Nominatim wrapper
     format.ts              # display helpers + narrative generator
+    server/roads-data.ts   # build-time: reassemble all features from cells (road pages)
     components/Map.svelte  # MapLibre lifecycle + overlay layers
 scripts/
-  build-roads.ts           # Itiner-e download → reproject → UK filter
+  build-roads.ts           # Itiner-e download → reproject → partition into cells
   generate-icons.ts        # SVG → PNG icon set + OG card
-  smoke-test.ts            # sanity check the road index against known UK points
+  smoke-test.ts            # probe the partitioned index against known locations
 static/
-  roads.geojson            # built artefact (UK subset, ~600 KB)
+  roads/                   # built artefacts: cells/<ix>_<iy>.json + manifest + road-cells
   icons/, og.png, ...      # built artefacts
 data/raw/                  # cached Itiner-e download (gitignored)
 ```
 
 ## Data
 
-The road data is **Itiner-e** (de Soto et al., *Scientific Data* 2025, CC BY 4.0): https://itiner-e.org. The build script downloads the empire-wide GeoJSON (~78 MB), reprojects from EPSG:3395 (World Mercator) to WGS84, filters to the UK + Isle of Man + Channel Islands bbox, slims the properties to the fields used by the UI, and writes `static/roads.geojson` (1,392 features, ~600 KB raw / ~150 KB gzipped).
+The road data is **Itiner-e** (de Soto et al., *Scientific Data* 2025, CC BY 4.0): https://itiner-e.org. The build script downloads the empire-wide GeoJSON (~78 MB), reprojects from EPSG:3395 (World Mercator) to WGS84, slims the properties to the fields used by the UI, and partitions all 14,769 features into a 1°×1° cell grid under `static/roads/` (726 cell files, plus `manifest.json` and `road-cells.json`). The live app fetches only the cells around a query point — a few KB to ~90 KB gzipped per location — so the whole world's data is never shipped at once. The grid is the spatial index; there is no client-side tree to build.
+
+The prerendered `/road/[slug]` pages run at build time and need every feature, so `src/lib/server/roads-data.ts` reassembles the full set from the cells (server-only, memoised) — that file is never sent to the browser.
 
 Distance is graded into five tiers by `answerTierFor` in `src/lib/format.ts`. The bands respect the road's own certainty rating: ≤10 m is "walking", ≤80 m on a Certain segment (≤150 m on a Conjectured or Hypothetical one) is "standing on the line", ≤500 m is "nearly", ≤50 km is "probably not", beyond that is "out of reach". The wider bands on uncertain segments reflect what the dataset actually claims to know: an Itiner-e line on a Hypothetical reconstruction can sit 50–200 m from the road's true position on the ground.
 

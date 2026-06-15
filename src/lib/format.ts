@@ -1,4 +1,4 @@
-import type { RoadFeature } from "./roads.js";
+import { type RoadFeature, itineraryRoadName } from "./roads.js";
 
 const UNNAMED = "an unnamed Roman road";
 const MAX_DESCRIPTION_CHARS = 280;
@@ -88,10 +88,10 @@ export function formatDistance(m: number): string {
 
 export function roadDisplayName(r: RoadFeature): string | null {
 	const p = r.properties;
-	if (p.itinerary && p.name && p.itinerary !== p.name) {
-		return p.itinerary;
-	}
-	return p.itinerary || p.name || null;
+	// Prefer a real road name from the itinerary (e.g. "Via Appia") over the
+	// bibliographic catalogues it also lists; fall back to the segment's own
+	// "A-B" endpoint name (e.g. "Carthago-Ammaedara").
+	return itineraryRoadName(p.itinerary) ?? p.name ?? null;
 }
 
 export function roadDisplayNameOrUnnamed(r: RoadFeature): string {
@@ -133,7 +133,7 @@ export function roadNarrative(r: RoadFeature): string {
 		pieces.push(`${verb} a Roman ${type}.`);
 	}
 
-	if (p.name && p.itinerary && p.name !== p.itinerary) {
+	if (p.name && p.name !== name) {
 		pieces.push(`The segment is known as ${p.name}.`);
 	}
 	if (p.description) {

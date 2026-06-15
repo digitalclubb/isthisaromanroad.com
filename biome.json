@@ -13,7 +13,7 @@
 			".vercel",
 			"build",
 			"node_modules",
-			"static/roads.geojson",
+			"static/roads",
 			"pnpm-lock.yaml",
 			"dev-dist",
 			"data"

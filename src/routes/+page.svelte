@@ -9,13 +9,13 @@ import ShareCard from "$lib/components/ShareCard.svelte";
 import Wordmark from "$lib/components/Wordmark.svelte";
 import { answerTierFor, roadNarrative, roadSubtitle } from "$lib/format.js";
 import { geocode } from "$lib/geocode.js";
-import { type LookupResult, type RoadIndex, roadKey } from "$lib/roads.js";
+import { type LookupResult, type RoadFeature, type RoadIndex, roadKey } from "$lib/roads.js";
 import { rasterise, shareOrDownload } from "$lib/share.js";
 import { findStoryFor } from "$lib/stories.js";
 
 const TITLE = "Is this a Roman road?";
 const DESCRIPTION =
-	"A small oracle for the road ahead. Tap once on your phone and find out if you stand on (or near) a Roman road in Britain.";
+	"A small oracle for the road ahead. Tap once on your phone and find out if you stand on (or near) a Roman road.";
 
 type Phase = "idle" | "listening" | "answered" | "error";
 
@@ -79,7 +79,9 @@ async function askHere() {
 		const [i, pos] = await Promise.all([ensureIndex(), getGeolocation()]);
 		if (id !== requestId) return;
 		userPoint = [pos.coords.longitude, pos.coords.latitude];
-		result = i.findNearest(pos.coords.longitude, pos.coords.latitude);
+		const r = await i.findNearest(pos.coords.longitude, pos.coords.latitude);
+		if (id !== requestId) return;
+		result = r;
 		phase = "answered";
 	} catch (e) {
 		if (id !== requestId) return;
@@ -103,7 +105,9 @@ async function askForPlace(query: string) {
 			return;
 		}
 		userPoint = [hits[0].lng, hits[0].lat];
-		result = i.findNearest(hits[0].lng, hits[0].lat);
+		const r = await i.findNearest(hits[0].lng, hits[0].lat);
+		if (id !== requestId) return;
+		result = r;
 		phase = "answered";
 	} catch (e) {
 		if (id !== requestId) return;
@@ -149,9 +153,24 @@ const story = $derived(result ? findStoryFor(result.road) : null);
 // Whole road: every Itiner-e segment that shares the matched road's
 // canonical key. Used for the map overlay and the share-card sketch so
 // the user sees the line in its entirety, not just the nearest slice.
-const roadSegments = $derived(
-	result && idx ? idx.segmentsOfRoad(result.road) : result ? [result.road] : [],
-);
+// Assembling it pulls in the road's other cells, so it's async: show the
+// matched segment immediately, then widen to the whole road when it lands.
+let roadSegments = $state<RoadFeature[]>([]);
+$effect(() => {
+	const current = result;
+	const i = idx;
+	if (!current) {
+		roadSegments = [];
+		return;
+	}
+	roadSegments = [current.road];
+	if (i) {
+		i.segmentsOfRoad(current.road).then((segs) => {
+			// Guard against a slow assembly resolving after the user moved on.
+			if (result === current) roadSegments = segs;
+		});
+	}
+});
 const matchedRoadKey = $derived(result ? roadKey(result.road) || null : null);
 </script>
 
@@ -177,7 +196,7 @@ const matchedRoadKey = $derived(result ? roadKey(result.road) || null : null);
 		applicationCategory: "TravelApplication",
 		operatingSystem: "Any",
 		offers: { "@type": "Offer", price: "0", priceCurrency: "GBP" },
-		about: { "@type": "Thing", name: "Roman roads in Britain" },
+		about: { "@type": "Thing", name: "Roman roads" },
 	}).replace(/</g, "\\u003c")}</` + `script>`}
 </svelte:head>
 
@@ -187,8 +206,6 @@ const matchedRoadKey = $derived(result ? roadKey(result.road) || null : null);
 			<button class="home" type="button" onclick={reset} aria-label="Ask another question">
 				<Wordmark minimised />
 			</button>
-		{:else}
-			<Wordmark />
 		{/if}
 	</header>
 
@@ -245,6 +262,12 @@ const matchedRoadKey = $derived(result ? roadKey(result.road) || null : null);
 			{#if shareError}
 				<p class="share-error" role="alert">{shareError}</p>
 			{/if}
+		{:else if phase === "answered" && !result}
+			<div class="error" aria-live="polite">
+				<h2 class="word">Beyond the roads.</h2>
+				<p class="sub">No Roman road for hundreds of miles. You're well outside the empire's reach.</p>
+			</div>
+			<AskAgain onAskAgain={reset} />
 		{:else if phase === "error"}
 			<div class="error" aria-live="polite">
 				<h2 class="word">Hmm.</h2>

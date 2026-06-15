@@ -13,6 +13,7 @@
 		"format": "biome format --write .",
 		"fix": "biome check --write .",
 		"data:build": "node --experimental-strip-types scripts/build-roads.ts",
+		"data:smoke": "tsx scripts/smoke-test.ts",
 		"icons:build": "node --experimental-strip-types scripts/generate-icons.ts"
 	},
 	"devDependencies": {
@@ -24,11 +25,11 @@
 		"@types/geojson": "^7946.0.15",
 		"@types/node": "^22.10.5",
 		"@types/proj4": "^2.19.0",
-		"@types/rbush": "^4.0.0",
 		"@vite-pwa/sveltekit": "^1.1.0",
 		"proj4": "^2.20.8",
 		"svelte": "^5.16.0",
 		"svelte-check": "^4.1.1",
+		"tsx": "^4.22.4",
 		"typescript": "^5.7.2",
 		"vite": "^6.0.7"
 	},
@@ -40,8 +41,7 @@
 		"@turf/nearest-point-on-line": "^7.2.0",
 		"@vercel/analytics": "^2.0.1",
 		"html-to-image": "^1.11.13",
-		"maplibre-gl": "^5.0.0",
-		"rbush": "^4.0.1"
+		"maplibre-gl": "^5.0.0"
 	},
 	"packageManager": "pnpm@10.30.3",
 	"pnpm": {

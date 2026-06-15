@@ -28,7 +28,6 @@ export async function geocode(query: string, signal?: AbortSignal): Promise<Geoc
 			q: query,
 			format: "jsonv2",
 			limit: "5",
-			countrycodes: "gb,im,je,gg",
 			addressdetails: "0",
 		});
 		const res = await fetch(`${ENDPOINT}?${params}`, {

@@ -4,7 +4,7 @@ Project context for Claude Code sessions on isthisaromanroad.com. Loaded automat
 
 ## What this is
 
-A single-page PWA that tells you whether you're standing on (or near) a Roman road in Britain. Inspired by a child's question from the back seat of a car. Mobile-first, geolocation-driven, single-tap interaction.
+A single-page PWA that tells you whether you're standing on (or near) a Roman road, anywhere the Romans built — the full empire-wide Itiner-e dataset, not just Britain. Inspired by a child's question from the back seat of a car. Mobile-first, geolocation-driven, single-tap interaction. (Hand-written road stories are still Britain-only; everywhere else falls back to the dataset's own record.)
 
 ## Stack
 
@@ -13,7 +13,7 @@ A single-page PWA that tells you whether you're standing on (or near) a Roman ro
 - **Biome** for lint + format (see `biome.json`)
 - **MapLibre GL JS** with a bespoke vector style served from OpenFreeMap (`src/lib/map/style-parchment.ts`) — no API key, no rate limits
 - **Cormorant Garamond** (display) + **Inter Variable** (body), self-hosted via Fontsource
-- **RBush** spatial index + **Turf.js** for nearest-point queries
+- **Location-partitioned static data** — a 1°×1° cell grid (built by `scripts/build-roads.ts`) is itself the spatial index; the client lazily fetches only nearby cells. **Turf.js** does the nearest-point maths. No client-side tree.
 - **@vite-pwa/sveltekit** (Workbox) for the PWA layer
 - **Vercel** adapter for hosting
 - **html-to-image** for the shareable answer-card PNG export (dynamic-imported on first share)
@@ -27,9 +27,9 @@ pnpm build             # production build
 pnpm preview           # serve the production build locally
 pnpm check             # svelte-check
 pnpm lint  / pnpm fix  # biome
-pnpm data:build        # rebuild static/roads.geojson from Itiner-e (~78 MB d/l)
+pnpm data:build        # rebuild the static/roads/ cell grid from Itiner-e (~78 MB d/l)
 pnpm icons:build       # regenerate PWA icons + og.png
-node --experimental-strip-types scripts/smoke-test.ts  # sanity-check the road index
+pnpm data:smoke        # probe the partitioned index against known locations (tsx)
 ```
 
 ## Workflow
@@ -121,14 +121,16 @@ src/
     +page.svelte                # state machine + composition
     sitemap.xml/+server.ts      # generated sitemap (homepage + every road page)
     road/[slug]/                # one prerendered page per famous road
-      +page.server.ts           # server load reads roads.geojson, filters segments
+      +page.server.ts           # server load reassembles features from cells, filters segments
       +page.svelte              # road headline, story body, full road on map
   lib/
-    roads.ts                    # RoadIndex (RBush + Turf nearest-point-on-line)
+    roads.ts                    # lazy cell-based RoadIndex + Turf nearest-point-on-line
     stories.ts                  # 22 hand-written stories + segmentsForStory helper
     geocode.ts                  # Nominatim wrapper (browser, with timeout)
     format.ts                   # display helpers + bearingToWords + answerTierFor
     share.ts                    # html-to-image + Web Share API + download fallback
+    server/
+      roads-data.ts             # build-time only: full feature set from cells (memoised)
     map/
       style-parchment.ts        # bespoke MapLibre style, parchment + walnut variants
     components/
@@ -141,11 +143,12 @@ src/
       RuleGold.svelte           # the 48px gold gradient bar
       Map.svelte                # MapLibre lifecycle + draw-on motion
 scripts/
-  build-roads.ts                # Itiner-e download → reproject → UK filter
+  build-roads.ts                # Itiner-e download → reproject → partition into cells
   generate-icons.ts             # SVG → PNG icon set + OG card
-  smoke-test.ts                 # sanity-check the road index
+  smoke-test.ts                 # probe the partitioned index (run via pnpm data:smoke)
 static/
-  roads.geojson                 # 1,392 UK features, ~600 KB
+  roads/                        # cells/<ix>_<iy>.json (726) + manifest.json + road-cells.json
+                                # 14,769 worldwide features; ~5–90 KB gzipped per cell
   icons/, og.png, favicon.svg
 data/raw/                       # cached Itiner-e download (gitignored)
 .impeccable.md                  # canonical Design Context (read by all design skills)

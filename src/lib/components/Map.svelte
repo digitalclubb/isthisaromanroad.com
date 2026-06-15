@@ -36,8 +36,10 @@ onMount(() => {
 		map = new maplibregl.Map({
 			container,
 			style: buildStyle(variant),
-			center: [-2.5, 54],
-			zoom: 5,
+			// Neutral starting frame over the heart of the road network. Barely
+			// seen: every render path below fitBounds/flyTo to the data at hand.
+			center: [12, 43],
+			zoom: 3,
 			attributionControl: { compact: true },
 			maxPitch: 0,
 		});
@@ -271,8 +273,8 @@ $effect(() => {
 		map.flyTo({ center: userPoint, zoom: 13, duration: 900 });
 	} else if (roadSegments.length > 0) {
 		// Road-only view (no user point): frame the whole road. Used by
-		// the per-road SEO pages so they don't land on a Britain-wide
-		// default centre.
+		// the per-road SEO pages so they don't land on the default
+		// network-wide centre.
 		const bbox = bboxOfSegments(roadSegments);
 		if (bbox) {
 			map.fitBounds(bbox, { padding: 60, maxZoom: 11, duration: 900 });

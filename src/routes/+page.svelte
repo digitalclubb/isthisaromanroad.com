@@ -6,6 +6,7 @@ import RoadMap from "$lib/components/Map.svelte";
 import Question from "$lib/components/Question.svelte";
 import RoadStory from "$lib/components/RoadStory.svelte";
 import ShareCard from "$lib/components/ShareCard.svelte";
+import SiteFooter from "$lib/components/SiteFooter.svelte";
 import Wordmark from "$lib/components/Wordmark.svelte";
 import { answerTierFor, roadNarrative, roadSubtitle } from "$lib/format.js";
 import { geocode } from "$lib/geocode.js";
@@ -277,11 +278,7 @@ const matchedRoadKey = $derived(result ? roadKey(result.road) || null : null);
 		{/if}
 	</section>
 
-	<footer>
-		<span class="edition">Editio · II</span>
-		<span class="sep" aria-hidden="true">·</span>
-		<span class="url">isthisaromanroad.com</span>
-	</footer>
+	<SiteFooter current="home" />
 </main>
 
 <!-- Off-screen render target for the share card. html-to-image rasterises
@@ -426,24 +423,6 @@ const matchedRoadKey = $derived(result ? roadKey(result.road) || null : null);
 		margin: 0.8rem 0 0;
 	}
 
-	footer {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.7rem;
-		padding: clamp(1.2rem, 5vh, 2rem) 0 max(env(safe-area-inset-bottom), 1rem);
-		font-family: var(--font-body);
-		font-size: 0.72rem;
-		text-transform: uppercase;
-		letter-spacing: 0.18em;
-		color: var(--ink-soft);
-	}
-	footer .edition {
-		font-variant-numeric: oldstyle-nums;
-	}
-	footer .sep {
-		color: var(--gold);
-	}
 
 	@keyframes fadeUp {
 		from {

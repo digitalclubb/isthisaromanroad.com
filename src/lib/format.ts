@@ -86,6 +86,24 @@ export function formatDistance(m: number): string {
 	return `${Math.round(m / 1000)} km`;
 }
 
+/**
+ * First sentence of a block of authored HTML, tags stripped. Used for both the
+ * road page's meta description and the hub's per-road teaser, which is why the
+ * length cap is a parameter rather than baked in: a meta description has to fit
+ * Google's ~155 character snippet, a teaser on the page does not.
+ *
+ * A full stop inside the first 40 characters is treated as an abbreviation
+ * rather than a sentence end, so "St. Albans was…" doesn't truncate to "St.".
+ */
+export function firstSentence(html: string, fallback: string, maxLen?: number): string {
+	const text = html.replace(/<[^>]+>/g, "").trim();
+	if (!text) return fallback;
+	const period = text.indexOf(". ");
+	const sentence = period > 40 ? `${text.slice(0, period)}.` : text;
+	if (maxLen === undefined || sentence.length <= maxLen) return sentence;
+	return `${sentence.slice(0, maxLen - 1).trimEnd()}…`;
+}
+
 export function roadDisplayName(r: RoadFeature): string | null {
 	const p = r.properties;
 	// Prefer a real road name from the itinerary (e.g. "Via Appia") over the

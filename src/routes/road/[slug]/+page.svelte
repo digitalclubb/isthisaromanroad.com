@@ -1,65 +1,81 @@
 <script lang="ts">
+import { type Crumb, SITE, breadcrumbSchema, jsonLd } from "$lib/breadcrumbs.js";
 import RoadMap from "$lib/components/Map.svelte";
 import RuleGold from "$lib/components/RuleGold.svelte";
+import SiteFooter from "$lib/components/SiteFooter.svelte";
+import SiteMasthead from "$lib/components/SiteMasthead.svelte";
+import { firstSentence } from "$lib/format.js";
+import { formatYear } from "$lib/geometry.js";
 import { roadKey } from "$lib/roads.js";
 import type { PageData } from "./$types.js";
 
 type Props = { data: PageData };
 let { data }: Props = $props();
 
-const { story, segments } = $derived(data);
+const { story, segments, siblings, detail, lengthKm, segmentCount, certainty, dates } =
+	$derived(data);
 const matchedRoadKey = $derived(segments.length > 0 ? roadKey(segments[0]) || null : null);
 
-// First sentence of the story body, stripped of HTML, used as the
-// meta description. Falls back to the road name if the body is empty.
-const description = $derived(buildDescription(story.body, story.name));
+// Google truncates the snippet around 155 characters, so cap there rather
+// than let a long opening sentence run past the fold.
+const description = $derived(firstSentence(story.body, story.name, 155));
 
-function buildDescription(html: string, fallback: string): string {
-	const text = html.replace(/<[^>]+>/g, "").trim();
-	if (!text) return fallback;
-	const period = text.indexOf(". ");
-	const first = period > 40 ? `${text.slice(0, period)}.` : text;
-	return first.length > 200 ? `${first.slice(0, 197).trimEnd()}…` : first;
-}
-
-const canonical = $derived(`https://isthisaromanroad.com/road/${story.key}`);
-const title = $derived(`${story.name} · Is this a Roman road?`);
+const canonical = $derived(`${SITE}/road/${story.key}`);
+const title = $derived(`${story.name}: Route, Map and History`);
+const crumbs: Crumb[] = $derived([
+	{ name: "Is this a Roman road?", href: "/" },
+	{ name: "The roads", href: "/roads" },
+	{ name: story.name },
+]);
 </script>
 
 <svelte:head>
 	<title>{title}</title>
 	<meta name="description" content={description} />
 	<link rel="canonical" href={canonical} />
-	<meta property="og:type" content="article" />
+	<meta property="og:type" content="website" />
 	<meta property="og:title" content={title} />
 	<meta property="og:description" content={description} />
 	<meta property="og:url" content={canonical} />
-	<meta property="og:image" content="https://isthisaromanroad.com/og.png" />
+	<meta property="og:image" content="{SITE}/og.png" />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={title} />
 	<meta name="twitter:description" content={description} />
-	<meta name="twitter:image" content="https://isthisaromanroad.com/og.png" />
-	{@html `<script type="application/ld+json">${JSON.stringify({
-		"@context": "https://schema.org",
-		"@type": "Article",
-		headline: story.name,
-		description,
-		url: canonical,
-		about: { "@type": "Thing", name: story.name },
-		isPartOf: {
-			"@type": "WebSite",
-			name: "Is this a Roman road?",
-			url: "https://isthisaromanroad.com/",
+	<meta name="twitter:image" content="{SITE}/og.png" />
+	{@html `<script type="application/ld+json">${jsonLd([
+		breadcrumbSchema(crumbs),
+		{
+			"@context": "https://schema.org",
+			// A road is a place, not an article. `LandmarksOrHistoricalBuildings`
+			// is the closest schema.org type for a named historic route.
+			"@type": "LandmarksOrHistoricalBuildings",
+			name: story.name,
+			description,
+			url: canonical,
+			isPartOf: {
+				"@type": "WebSite",
+				name: "Is this a Roman road?",
+				url: `${SITE}/`,
+			},
 		},
-	}).replace(/</g, "\\u003c")}</` + `script>`}
+		...(detail && detail.faq.length > 0
+			? [
+					{
+						"@context": "https://schema.org",
+						"@type": "FAQPage",
+						mainEntity: detail.faq.map((f) => ({
+							"@type": "Question",
+							name: f.q,
+							acceptedAnswer: { "@type": "Answer", text: f.a },
+						})),
+					},
+				]
+			: []),
+	])}</` + `script>`}
 </svelte:head>
 
 <main>
-	<header class="masthead">
-		<a class="home" href="/" aria-label="Back to the main question">
-			<span class="wordmark">Is this a Roman road?</span>
-		</a>
-	</header>
+	<SiteMasthead {crumbs} />
 
 	<article class="road">
 		<h1 class="word">{story.name}</h1>
@@ -75,23 +91,107 @@ const title = $derived(`${story.name} · Is this a Roman road?`);
 		<!-- biome-ignore lint/security/noDangerouslySetInnerHtml: trusted, authored -->
 		<div class="body">{@html story.body}</div>
 
-		<div class="map-frame">
-			<RoadMap
-				userPoint={null}
-				roadSegments={segments}
-				{matchedRoadKey}
-				pointOnRoad={null}
-			/>
-		</div>
+		{#if detail}
+			<h2 class="section">The route</h2>
+			<!-- biome-ignore lint/security/noDangerouslySetInnerHtml: trusted, authored -->
+			<div class="body">{@html detail.route}</div>
+		{/if}
+
+		{#if segmentCount > 0}
+			<h2 class="section">The surveyed line</h2>
+			<div class="map-frame">
+				<RoadMap
+					userPoint={null}
+					roadSegments={segments}
+					{matchedRoadKey}
+					pointOnRoad={null}
+				/>
+			</div>
+
+			<dl class="facts">
+				<div>
+					<dt>Mapped length</dt>
+					<dd>{lengthKm} km</dd>
+				</div>
+				<div>
+					<dt>Mapped segments</dt>
+					<dd>{segmentCount}</dd>
+				</div>
+				{#if certainty}
+					<div>
+						<dt>Line certainty</dt>
+						<dd>{certainty.label}</dd>
+					</div>
+				{/if}
+				{#if dates}
+					<div>
+						<dt>Dated to</dt>
+						<dd>{formatYear(dates.from)} – {formatYear(dates.to)}</dd>
+					</div>
+				{/if}
+			</dl>
+			{#if certainty}
+				<p class="facts-note">
+					Measured across every <em>Itiner-e</em> segment attributed to this road.
+					{#if certainty.label === "Certain"}
+						A certain stretch is one whose course is fixed by excavated or visible remains;
+						that covers {certainty.percent}% of the mapped length here.
+					{:else if certainty.label === "Hypothetical"}
+						A hypothetical stretch is one scholars propose but cannot yet demonstrate; that
+						covers {certainty.percent}% of the mapped length here. The road's existence is not
+						in doubt, only the line drawn for it.
+					{:else}
+						A conjectured stretch is one whose course is inferred from evidence either side of
+						it; that covers {certainty.percent}% of the mapped length here. This describes how
+						precisely the line is known, not whether the road existed.
+					{/if}
+				</p>
+			{/if}
+		{:else}
+			<h2 class="section">The surveyed line</h2>
+			<p class="facts-note standalone">
+				The <em>Itiner-e</em> survey maps Roman roads across this part of the empire, but
+				attributes no segment to {story.name} by name, so there is no measured line to draw here.
+				The road is well attested by archaeology and by the modern roads that still follow it.
+			</p>
+		{/if}
+
+		{#if detail}
+			<h2 class="section">The road today</h2>
+			<!-- biome-ignore lint/security/noDangerouslySetInnerHtml: trusted, authored -->
+			<div class="body">{@html detail.modern}</div>
+
+			<h2 class="section">Where to see it</h2>
+			<!-- biome-ignore lint/security/noDangerouslySetInnerHtml: trusted, authored -->
+			<div class="body">{@html detail.seeing}</div>
+
+			{#if detail.faq.length > 0}
+				<h2 class="section">Common questions</h2>
+				<div class="faq">
+					{#each detail.faq as item (item.q)}
+						<details>
+							<summary>{item.q}</summary>
+							<p>{item.a}</p>
+						</details>
+					{/each}
+				</div>
+			{/if}
+		{/if}
 
 		<a class="cta" href="/">Am I on it?</a>
+
+		<nav class="siblings" aria-labelledby="siblings-title">
+			<h2 class="section" id="siblings-title">The other roads</h2>
+			<ul role="list">
+				{#each siblings as s (s.key)}
+					<li><a href="/road/{s.key}">{s.name}</a></li>
+				{/each}
+			</ul>
+			<p class="all"><a href="/roads">All Roman roads of Britain →</a></p>
+		</nav>
 	</article>
 
-	<footer>
-		<span class="edition">Editio · II</span>
-		<span class="sep" aria-hidden="true">·</span>
-		<a class="url" href="/">isthisaromanroad.com</a>
-	</footer>
+	<SiteFooter current="road" />
 </main>
 
 <style>
@@ -105,23 +205,6 @@ const title = $derived(`${story.name} · Is this a Roman road?`);
 		margin: 0 auto;
 	}
 
-	.masthead {
-		padding-top: clamp(0.5rem, 3vh, 1.5rem);
-	}
-	.home {
-		display: inline-flex;
-		padding: 12px 8px;
-		margin: -12px -8px;
-		text-decoration: none;
-	}
-	.wordmark {
-		font-family: var(--font-display);
-		font-size: 0.78rem;
-		font-weight: 500;
-		text-transform: uppercase;
-		letter-spacing: 0.12em;
-		color: var(--ink-soft);
-	}
 
 	.road {
 		animation: fadeUp 600ms var(--ease-out) both;
@@ -145,15 +228,6 @@ const title = $derived(`${story.name} · Is this a Roman road?`);
 		margin: 0.9rem 0 0;
 		letter-spacing: 0.01em;
 	}
-	.roman {
-		font-style: italic;
-		font-variant-caps: small-caps;
-		font-weight: 500;
-		color: var(--ink);
-		letter-spacing: 0.04em;
-		border-bottom: 1px solid var(--gold);
-		padding-bottom: 1px;
-	}
 
 	.body {
 		font-family: var(--font-display);
@@ -168,6 +242,167 @@ const title = $derived(`${story.name} · Is this a Roman road?`);
 	.body :global(em) {
 		font-style: italic;
 		font-weight: 500;
+	}
+	.body :global(p) {
+		margin: 0;
+	}
+	.body :global(p + p) {
+		margin-top: 0.9rem;
+	}
+
+
+	.section {
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: clamp(1.35rem, 3.6vw, 1.65rem);
+		line-height: 1.15;
+		letter-spacing: -0.015em;
+		color: var(--ink);
+		margin: clamp(2rem, 5vh, 2.75rem) 0 0;
+	}
+
+	.facts {
+		margin: clamp(1.25rem, 3vh, 1.6rem) 0 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+		gap: 1px;
+		background: var(--surface-deep);
+		border: 1px solid var(--surface-deep);
+		border-radius: var(--radius);
+		overflow: hidden;
+	}
+	.facts > div {
+		background: var(--surface);
+		padding: 0.9rem 1rem;
+	}
+	.facts dt {
+		font-family: var(--font-body);
+		font-size: 0.66rem;
+		text-transform: uppercase;
+		letter-spacing: 0.14em;
+		color: var(--ink-soft);
+	}
+	.facts dd {
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 1.45rem;
+		color: var(--ink);
+		margin: 0.25rem 0 0;
+		font-feature-settings: "onum";
+	}
+
+	.facts-note.standalone {
+		font-family: var(--font-display);
+		font-size: clamp(1rem, 2.6vw, 1.1rem);
+		font-weight: 500;
+		color: var(--ink);
+		margin-top: clamp(1.25rem, 3vh, 1.6rem);
+		line-height: 1.6;
+	}
+	.facts-note em {
+		font-style: italic;
+	}
+
+	.faq {
+		margin-top: 1.1rem;
+		max-width: 62ch;
+		border-top: 1px solid color-mix(in srgb, var(--gold) 38%, transparent);
+	}
+	.faq details {
+		border-bottom: 1px solid color-mix(in srgb, var(--gold) 38%, transparent);
+	}
+	.faq summary {
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 1.15rem;
+		color: var(--ink);
+		cursor: pointer;
+		list-style: none;
+		padding: 1rem 2rem 1rem 0;
+		min-height: 44px;
+		display: flex;
+		align-items: center;
+		position: relative;
+		transition: color 200ms var(--ease);
+	}
+	.faq summary::-webkit-details-marker {
+		display: none;
+	}
+	.faq summary::after {
+		content: "+";
+		position: absolute;
+		right: 0.25rem;
+		font-size: 1.3rem;
+		line-height: 1;
+		color: var(--gold);
+		transition: transform 240ms var(--ease);
+	}
+	.faq details[open] summary::after {
+		transform: rotate(45deg);
+	}
+	.faq summary:hover {
+		color: var(--brand);
+	}
+	.faq details p {
+		margin: 0;
+		padding: 0 0 1.1rem;
+		font-family: var(--font-display);
+		font-weight: 500;
+		font-size: 1.05rem;
+		line-height: 1.6;
+		color: var(--ink);
+	}
+
+	.facts-note {
+		font-family: var(--font-body);
+		font-size: 0.8rem;
+		line-height: 1.55;
+		color: var(--ink-soft);
+		margin: 0.8rem 0 0;
+		max-width: 62ch;
+	}
+
+	.siblings ul {
+		list-style: none;
+		margin: 1rem 0 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem 0.5rem;
+	}
+	.siblings li a {
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+		padding: 0.5rem 0.9rem;
+		border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--gold) 6%, transparent);
+		color: var(--ink);
+		font-family: var(--font-display);
+		font-weight: 500;
+		font-size: 1rem;
+		text-decoration: none;
+		transition: border-color 200ms var(--ease), color 200ms var(--ease);
+	}
+	.siblings li a:hover {
+		border-color: var(--gold);
+		color: var(--brand);
+	}
+	.siblings .all {
+		margin: 1.1rem 0 0;
+		font-family: var(--font-display);
+		font-size: 1.05rem;
+	}
+	.siblings .all a {
+		color: var(--brand);
+		text-decoration: none;
+		border-bottom: 1px solid var(--gold);
+		padding-bottom: 1px;
+	}
+	.siblings .all a:hover {
+		color: var(--brand-deep);
 	}
 
 	.map-frame {
@@ -214,28 +449,6 @@ const title = $derived(`${story.name} · Is this a Roman road?`);
 		}
 	}
 
-	footer {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.7rem;
-		padding: clamp(1.2rem, 5vh, 2rem) 0 max(env(safe-area-inset-bottom), 1rem);
-		font-family: var(--font-body);
-		font-size: 0.72rem;
-		text-transform: uppercase;
-		letter-spacing: 0.18em;
-		color: var(--ink-soft);
-	}
-	footer .sep {
-		color: var(--gold);
-	}
-	footer .url {
-		color: inherit;
-		text-decoration: none;
-	}
-	footer .url:hover {
-		color: var(--ink);
-	}
 
 	@keyframes fadeUp {
 		from {

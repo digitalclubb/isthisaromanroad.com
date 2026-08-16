@@ -109,6 +109,20 @@ h3,
 	letter-spacing: -0.01em;
 }
 
+/* The project's most important typographic convention: Roman names render in
+   italic small caps with a thin gold underline. Global so every surface picks
+   up the same treatment — it was previously redefined per component and had
+   already begun to drift. */
+.roman {
+	font-style: italic;
+	font-variant-caps: small-caps;
+	font-weight: 500;
+	color: var(--ink);
+	letter-spacing: 0.04em;
+	border-bottom: 1px solid var(--gold);
+	padding-bottom: 1px;
+}
+
 a {
 	color: inherit;
 	text-decoration-color: var(--gold);

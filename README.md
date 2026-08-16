@@ -4,6 +4,8 @@ A single-page PWA that answers a child's question from the back seat: **is this 
 
 Tap *Use my location* (or search any town / postcode) and the site checks your point against the full empire-wide Itiner-e Roman roads dataset. The answer comes in five tiers — walking the line, standing on it, nearly there, probably not, or out of reach — and the bands honour the dataset's own reconstructive uncertainty. You get the road's Roman name, type, certainty, and historical context. Hand-written stories cover the famous roads of Britain; everywhere else falls back gracefully to the dataset's own record.
 
+Alongside the app there is a small set of static, crawlable pages: `/roads` lists every named Roman road in Britain, and `/road/<slug>` gives each one its route, the modern roads that follow it, where to see it on the ground, and a short FAQ.
+
 ## Stack
 
 - **SvelteKit 2** (Svelte 5 runes) + TypeScript
@@ -55,11 +57,17 @@ src/
   routes/
     +layout.{ts,svelte}    # prerender=true, global wrapper
     +page.svelte           # the single page UI
+    roads/                 # /roads hub: every named road, with measured figures
+    road/[slug]/           # one prerendered page per famous road
     sitemap.xml/+server.ts # generated sitemap
   lib/
     roads.ts               # lazy cell-based RoadIndex + Turf nearest-point-on-line
     geocode.ts             # Nominatim wrapper
     format.ts              # display helpers + narrative generator
+    geometry.ts            # build-time length / date / certainty maths over features
+    stories.ts             # 22 road stories (also client-side: keep it small)
+    road-detail.ts         # long-form road-page copy (server-only, never bundled)
+    breadcrumbs.ts         # Crumb type + BreadcrumbList JSON-LD from one source
     server/roads-data.ts   # build-time: reassemble all features from cells (road pages)
     components/Map.svelte  # MapLibre lifecycle + overlay layers
 scripts/
@@ -77,6 +85,8 @@ data/raw/                  # cached Itiner-e download (gitignored)
 The road data is **Itiner-e** (de Soto et al., *Scientific Data* 2025, CC BY 4.0): https://itiner-e.org. The build script downloads the empire-wide GeoJSON (~78 MB), reprojects from EPSG:3395 (World Mercator) to WGS84, slims the properties to the fields used by the UI, and partitions all 14,769 features into a 1°×1° cell grid under `static/roads/` (726 cell files, plus `manifest.json` and `road-cells.json`). The live app fetches only the cells around a query point — a few KB to ~90 KB gzipped per location — so the whole world's data is never shipped at once. The grid is the spatial index; there is no client-side tree to build.
 
 The prerendered `/road/[slug]` pages run at build time and need every feature, so `src/lib/server/roads-data.ts` reassembles the full set from the cells (server-only, memoised) — that file is never sent to the browser.
+
+**A caveat the road pages surface honestly.** Itiner-e's `itinerary` field names only six British roads (Watling Street, Ermine Street, the Fosse Way, Stane Street, Akeman Street and Dere Street), plus one segment matching High Street. The other fifteen stories are well attested by archaeology but have no line attributable to them by name in the dataset, so those pages say so rather than reporting a measured length. `totalLengthKm` returns `null`, never `0`, for an empty segment set precisely so this can't be rendered as "0 km surveyed".
 
 Distance is graded into five tiers by `answerTierFor` in `src/lib/format.ts`. The bands respect the road's own certainty rating: ≤10 m is "walking", ≤80 m on a Certain segment (≤150 m on a Conjectured or Hypothetical one) is "standing on the line", ≤500 m is "nearly", ≤50 km is "probably not", beyond that is "out of reach". The wider bands on uncertain segments reflect what the dataset actually claims to know: an Itiner-e line on a Hypothetical reconstruction can sit 50–200 m from the road's true position on the ground.
 

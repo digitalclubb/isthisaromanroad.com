@@ -1,3 +1,5 @@
+import { dateRangeOf, dominantCertainty, totalLengthKm } from "$lib/geometry.js";
+import { ROAD_DETAIL } from "$lib/road-detail.js";
 import type { RoadFeature } from "$lib/roads.js";
 import { loadAllFeatures } from "$lib/server/roads-data.js";
 import { STORIES, segmentsForStory } from "$lib/stories.js";
@@ -26,5 +28,25 @@ export const load: PageServerLoad = async ({ params }) => {
 	const features = await loadAllFeatures();
 	const segments: RoadFeature[] = segmentsForStory(story, features);
 
-	return { story, segments };
+	// Every other road, so each page links to all 21 siblings. Before this the
+	// only inbound link to /road/* sat behind a geolocation prompt, leaving the
+	// set uncrawlable — Search Console reported them "unknown to Google".
+	const siblings = STORIES.filter((s) => s.key !== story.key).map((s) => ({
+		key: s.key,
+		name: s.name,
+	}));
+
+	return {
+		story,
+		segments,
+		siblings,
+		// Long-form sections live in a server-only module so the ~14,000 words
+		// are inlined into these 22 prerendered pages rather than shipped in
+		// the client bundle the way stories.ts is.
+		detail: ROAD_DETAIL[story.key] ?? null,
+		lengthKm: totalLengthKm(segments),
+		segmentCount: segments.length,
+		certainty: dominantCertainty(segments),
+		dates: dateRangeOf(segments),
+	};
 };

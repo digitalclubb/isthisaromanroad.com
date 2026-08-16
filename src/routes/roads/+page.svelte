@@ -8,7 +8,7 @@ import type { PageData } from "./$types.js";
 type Props = { data: PageData };
 let { data }: Props = $props();
 
-const { roads, mappedRoadCount, mappedKm } = $derived(data);
+const { roads, regions, mappedRoadCount, mappedKm } = $derived(data);
 
 const TITLE = "Roman Roads of Britain: Map and Guide";
 const DESCRIPTION =
@@ -95,6 +95,19 @@ const crumbs: Crumb[] = [{ name: "Is this a Roman road?", href: "/" }, { name: "
 		</ol>
 
 		<a class="cta" href="/">Am I on one right now?</a>
+
+		<section class="empire" aria-labelledby="empire-title">
+			<h2 class="section" id="empire-title">Elsewhere in the empire</h2>
+			<p class="prose">
+				The survey covers the whole Roman world, not just Britain. These are the modern countries
+				with mapped Roman road, largest network first.
+			</p>
+			<ul class="countries" role="list">
+				{#each regions as r (r.slug)}
+					<li><a href="/roads/{r.slug}">{r.name}</a></li>
+				{/each}
+			</ul>
+		</section>
 	</article>
 
 	<SiteFooter current="roads" />
@@ -218,6 +231,52 @@ const crumbs: Crumb[] = [{ name: "Is this a Roman road?", href: "/" }, { name: "
 		font-style: italic;
 		text-transform: none;
 		letter-spacing: 0.06em;
+	}
+
+	.section {
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: clamp(1.35rem, 3.6vw, 1.65rem);
+		line-height: 1.15;
+		letter-spacing: -0.015em;
+		color: var(--ink);
+		margin: clamp(2.5rem, 6vh, 3.25rem) 0 0;
+	}
+	.prose {
+		font-family: var(--font-display);
+		font-weight: 500;
+		font-size: clamp(1.05rem, 2.8vw, 1.15rem);
+		line-height: 1.6;
+		color: var(--ink);
+		max-width: 62ch;
+		margin: 0.9rem 0 0;
+	}
+	.countries {
+		list-style: none;
+		margin: 1.1rem 0 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem 0.5rem;
+	}
+	.countries a {
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+		padding: 0.5rem 0.9rem;
+		border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--gold) 6%, transparent);
+		color: var(--ink);
+		font-family: var(--font-display);
+		font-weight: 500;
+		font-size: 1rem;
+		text-decoration: none;
+		transition: border-color 200ms var(--ease), color 200ms var(--ease);
+	}
+	.countries a:hover {
+		border-color: var(--gold);
+		color: var(--brand);
 	}
 
 	.cta {

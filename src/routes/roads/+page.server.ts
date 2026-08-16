@@ -1,5 +1,6 @@
 import { firstSentence } from "$lib/format.js";
 import { totalLengthKm, totalLengthMeters } from "$lib/geometry.js";
+import { loadRegions } from "$lib/server/regions.js";
 import { loadAllFeatures } from "$lib/server/roads-data.js";
 import { STORIES, segmentsForStory } from "$lib/stories.js";
 import type { PageServerLoad } from "./$types.js";
@@ -48,8 +49,15 @@ export const load: PageServerLoad = async () => {
 		};
 	});
 
+	const regions = (await loadRegions()).map((r) => ({
+		slug: r.slug,
+		name: r.name,
+		segmentCount: r.segmentCount,
+	}));
+
 	return {
 		roads,
+		regions,
 		mappedRoadCount: roads.filter((r) => r.segmentCount > 0).length,
 		// Summed from raw metres, not from the already-rounded per-road figures.
 		mappedKm: Math.round(mappedMeters / 1000 / 100) * 100,

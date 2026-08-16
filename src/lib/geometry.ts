@@ -64,6 +64,100 @@ export function totalLengthKm(roads: RoadFeature[]): number | null {
 }
 
 /**
+ * Perpendicular distance from `p` to the segment `a`-`b`, in degrees, with
+ * longitude scaled by cos(latitude) so the measure is roughly isotropic. Only
+ * used to rank vertices for removal, so an approximation is fine.
+ */
+function perpendicularDistance(p: Position, a: Position, b: Position): number {
+	const k = Math.cos((p[1] * Math.PI) / 180) || 1e-6;
+	const px = p[0] * k;
+	const ax = a[0] * k;
+	const bx = b[0] * k;
+	const dx = bx - ax;
+	const dy = b[1] - a[1];
+	const lenSq = dx * dx + dy * dy;
+	if (lenSq === 0) return Math.hypot(px - ax, p[1] - a[1]);
+	const t = Math.max(0, Math.min(1, ((px - ax) * dx + (p[1] - a[1]) * dy) / lenSq));
+	return Math.hypot(px - (ax + t * dx), p[1] - (a[1] + t * dy));
+}
+
+/** Douglas-Peucker, tolerance in degrees. */
+function simplifyLine(line: Position[], tolerance: number): Position[] {
+	if (line.length <= 2) return line;
+	let maxDist = 0;
+	let index = 0;
+	for (let i = 1; i < line.length - 1; i++) {
+		const d = perpendicularDistance(line[i], line[0], line[line.length - 1]);
+		if (d > maxDist) {
+			maxDist = d;
+			index = i;
+		}
+	}
+	if (maxDist <= tolerance) return [line[0], line[line.length - 1]];
+	return [
+		...simplifyLine(line.slice(0, index + 1), tolerance).slice(0, -1),
+		...simplifyLine(line.slice(index), tolerance),
+	];
+}
+
+/** Geometry-only feature: what Map.svelte actually draws. */
+export type OverviewFeature = {
+	type: "Feature";
+	properties: Record<string, never>;
+	geometry: { type: "MultiLineString"; coordinates: Position[][] };
+};
+
+/**
+ * Strips a set of features down to what a country-scale overview map needs:
+ * geometry only, simplified and coordinate-rounded.
+ *
+ * Prerendering the raw features inlines every vertex and every description,
+ * citation and bibliography string into the HTML. For Turkey's 2,028 segments
+ * that produced a 4.4 MB page — worse for both users and Core Web Vitals than
+ * having no map at all. Map.svelte reads nothing but geometry, so the
+ * properties go, and at a whole-country zoom a ~500 m tolerance and 3-decimal
+ * coordinates (~110 m) are both well below one screen pixel.
+ */
+export function toOverviewFeatures(roads: RoadFeature[], toleranceMeters = 500): OverviewFeature[] {
+	const tolerance = toleranceMeters / METRES_PER_DEGREE;
+	const out: OverviewFeature[] = [];
+	for (const road of roads) {
+		const coordinates: Position[][] = [];
+		for (const line of linesOf(road)) {
+			if (line.length < 2) continue;
+			const simplified = simplifyLine(line, tolerance).map(
+				([lng, lat]) => [round3(lng), round3(lat)] as Position,
+			);
+			// Count DISTINCT points, not array entries. A line shorter than the
+			// rounding grid simplifies to [first, last] and then rounds both to
+			// the same coordinate, which would emit a zero-length line MapLibre
+			// draws as nothing. 337 of these appeared before this check.
+			if (distinctPointCount(simplified) >= 2) coordinates.push(simplified);
+		}
+		if (coordinates.length > 0) {
+			out.push({
+				type: "Feature",
+				properties: {},
+				geometry: { type: "MultiLineString", coordinates },
+			});
+		}
+	}
+	return out;
+}
+
+const METRES_PER_DEGREE = 111_320;
+
+function distinctPointCount(line: Position[]): number {
+	const seen = new Set<string>();
+	for (const [lng, lat] of line) seen.add(`${lng},${lat}`);
+	return seen.size;
+}
+
+function round3(n: number): number {
+	return Math.round(n * 1000) / 1000;
+}
+
+/**
  * The dataset's own date range across a set of segments, as whole years.
  * Itiner-e uses negative years for BC. Returns null when no segment carries
  * a usable date.

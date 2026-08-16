@@ -43,6 +43,11 @@ export default defineConfig({
 				// `grep -oP '[^\x00-\x7F]' static/roads/cells/*.json | sort -u` —
 				// so those subsets stay excluded to save precache storage.
 				globIgnores: [
+					// Country landing pages (prerendered/pages/roads/<country>.html).
+					// They inline a whole country's simplified road geometry — Turkey
+					// alone is 364 KB — and exist to be crawled, not to be used
+					// offline. Note this does NOT match pages/roads.html, the hub.
+					"prerendered/pages/roads/*.html",
 					"**/cormorant-garamond-cyrillic-*.woff2",
 					"**/cormorant-garamond-vietnamese-*.woff2",
 					"**/inter-cyrillic*.woff2",

@@ -4,7 +4,7 @@ A single-page PWA that answers a child's question from the back seat: **is this 
 
 Tap *Use my location* (or search any town / postcode) and the site checks your point against the full empire-wide Itiner-e Roman roads dataset. The answer comes in five tiers — walking the line, standing on it, nearly there, probably not, or out of reach — and the bands honour the dataset's own reconstructive uncertainty. You get the road's Roman name, type, certainty, and historical context. Hand-written stories cover the famous roads of Britain; everywhere else falls back gracefully to the dataset's own record.
 
-Alongside the app there is a small set of static, crawlable pages: `/roads` lists every named Roman road in Britain, and `/road/<slug>` gives each one its route, the modern roads that follow it, where to see it on the ground, and a short FAQ.
+Alongside the app there is a set of static, crawlable pages: `/roads` lists every named Roman road in Britain, `/road/<slug>` gives each one its route, the modern roads that follow it, where to see it on the ground, and a short FAQ, and `/roads/<country>` covers the network in each of the 31 other modern countries the survey reaches.
 
 ## Stack
 
@@ -46,6 +46,7 @@ Then open http://localhost:5173.
 | `pnpm fix` | Biome auto-fix |
 | `pnpm data:build` | Re-download Itiner-e and rebuild the `static/roads/` cell grid |
 | `pnpm data:smoke` | Probe the partitioned index against known locations (via `tsx`) |
+| `pnpm data:regions` | Assign every road segment to a modern country (writes `data/regions.json`) |
 | `pnpm icons:build` | Re-render PWA icons + Open Graph card |
 
 ## Project layout
@@ -68,16 +69,21 @@ src/
     stories.ts             # 22 road stories (also client-side: keep it small)
     road-detail.ts         # long-form road-page copy (server-only, never bundled)
     breadcrumbs.ts         # Crumb type + BreadcrumbList JSON-LD from one source
+    region-notes.ts        # authored note per country (server-only)
+    road-names.ts          # tells a road name from an ancient source in `itinerary`
     server/roads-data.ts   # build-time: reassemble all features from cells (road pages)
+    server/regions.ts      # build-time: per-country figures and named roads
     components/Map.svelte  # MapLibre lifecycle + overlay layers
 scripts/
   build-roads.ts           # Itiner-e download → reproject → partition into cells
+  build-regions.ts         # tag each segment with a modern country (data/regions.json)
   generate-icons.ts        # SVG → PNG icon set + OG card
   smoke-test.ts            # probe the partitioned index against known locations
 static/
   roads/                   # built artefacts: cells/<ix>_<iy>.json + manifest + road-cells
   icons/, og.png, ...      # built artefacts
-data/raw/                  # cached Itiner-e download (gitignored)
+data/regions.json          # segment → country assignment (committed, built artefact)
+data/raw/                  # cached Itiner-e + Natural Earth downloads (gitignored)
 ```
 
 ## Data
@@ -90,12 +96,21 @@ The prerendered `/road/[slug]` pages run at build time and need every feature, s
 
 Distance is graded into five tiers by `answerTierFor` in `src/lib/format.ts`. The bands respect the road's own certainty rating: ≤10 m is "walking", ≤80 m on a Certain segment (≤150 m on a Conjectured or Hypothetical one) is "standing on the line", ≤500 m is "nearly", ≤50 km is "probably not", beyond that is "out of reach". The wider bands on uncertain segments reflect what the dataset actually claims to know: an Itiner-e line on a Hypothetical reconstruction can sit 50–200 m from the road's true position on the ground.
 
+### Country pages
+
+The Itiner-e properties carry no country field, so `scripts/build-regions.ts` derives one: it samples five points along each road and assigns the segment to whichever Natural Earth 1:110m country polygon holds the majority. 14,446 of the 14,769 segments resolve; the rest are offshore or in territorial water. A country earns a page if the survey names at least one road in it, or if it has at least 100 segments: twelve countries (Spain among them, despite 1,466 segments) carry no `itinerary` token at all, so a named-roads-only rule would drop some of the largest networks in the empire. Countries clearing neither bar get no page — a map, three numbers and eighty words is the thin-content shape that gets a whole site demoted, not just one page.
+
+The United Kingdom is deliberately excluded from `/roads/<country>` because `/roads` already covers Britain in more depth, and two pages competing for the same query with overlapping content helps neither.
+
+Country maps prerender **simplified** geometry: properties stripped, Douglas-Peucker at a 500 m tolerance, coordinates rounded to three decimals. Without that, Turkey's 2,028 segments inlined a 4.4 MB HTML page; with it the same page is 364 KB raw and 59 KB gzipped, and at country zoom the simplification is well under one screen pixel.
+
 ## Attribution requirements
 
 If you fork or self-host:
 
 - Itiner-e (CC BY 4.0) — cite de Soto et al. 2025 and link to https://itiner-e.org. Currently in the in-app map attribution and the footer.
 - OpenStreetMap + CARTO — required by the basemap tile provider.
+- Natural Earth (public domain) — no attribution required, but credit is customary; used only at build time for the country assignment.
 - Nominatim — required to identify your app via a custom User-Agent if you serve to a real audience (replace the default fetch headers in `src/lib/geocode.ts`).
 
 ## License

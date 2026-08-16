@@ -10,9 +10,17 @@ type Props = {
 	roadSegments: Array<Feature<LineString | MultiLineString>>;
 	matchedRoadKey: string | null;
 	pointOnRoad: [number, number] | null;
+	/**
+	 * Cap on interactive zoom. The country and county overview pages pass a
+	 * value because they render geometry simplified to a 500 m tolerance: at
+	 * street zoom the user would be looking at a line that is deliberately
+	 * wrong. Undefined leaves MapLibre's default, which is what the app and the
+	 * road pages want, since those draw full-resolution geometry.
+	 */
+	maxZoom?: number;
 };
 
-const { userPoint, roadSegments, matchedRoadKey, pointOnRoad }: Props = $props();
+const { userPoint, roadSegments, matchedRoadKey, pointOnRoad, maxZoom }: Props = $props();
 
 let container: HTMLDivElement;
 let map: MaplibreMap | null = null;
@@ -42,6 +50,7 @@ onMount(() => {
 			zoom: 3,
 			attributionControl: { compact: true },
 			maxPitch: 0,
+			...(maxZoom === undefined ? {} : { maxZoom }),
 		});
 		map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
 

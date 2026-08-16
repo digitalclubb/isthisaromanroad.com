@@ -14,7 +14,8 @@
 		"fix": "biome check --write .",
 		"data:build": "node --experimental-strip-types scripts/build-roads.ts",
 		"data:smoke": "tsx scripts/smoke-test.ts",
-		"data:regions": "node --experimental-strip-types scripts/build-regions.ts",
+		"data:regions": "tsx scripts/build-regions.ts",
+		"data:counties": "tsx scripts/build-counties.ts",
 		"icons:build": "tsx scripts/generate-icons.ts"
 	},
 	"devDependencies": {

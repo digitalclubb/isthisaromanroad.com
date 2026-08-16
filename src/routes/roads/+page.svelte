@@ -8,7 +8,7 @@ import type { PageData } from "./$types.js";
 type Props = { data: PageData };
 let { data }: Props = $props();
 
-const { roads, regions, mappedRoadCount, mappedKm } = $derived(data);
+const { roads, regions, counties, mappedRoadCount, mappedKm } = $derived(data);
 
 const TITLE = "Roman Roads of Britain: Map and Guide";
 const DESCRIPTION =
@@ -95,6 +95,22 @@ const crumbs: Crumb[] = [{ name: "Is this a Roman road?", href: "/" }, { name: "
 		</ol>
 
 		<a class="cta" href="/">Am I on one right now?</a>
+
+		<section aria-labelledby="counties-title">
+			<h2 class="section" id="counties-title">By county</h2>
+			<p class="prose">
+				Where the roads run, county by county, with the named routes that cross each one, what
+				survives on the ground and where to go and look. There is also a guide to
+				<a href="/modern-roads">which modern roads follow Roman lines</a>, from the A5 to the
+				B2068.
+			</p>
+			<ul class="countries" role="list">
+				{#each counties as c (c.slug)}
+					<li><a href="/roads/britain/{c.slug}">{c.name}</a></li>
+				{/each}
+			</ul>
+			<p class="all"><a href="/roads/britain">Every county, with figures →</a></p>
+		</section>
 
 		<section class="empire" aria-labelledby="empire-title">
 			<h2 class="section" id="empire-title">Elsewhere in the empire</h2>
@@ -277,6 +293,22 @@ const crumbs: Crumb[] = [{ name: "Is this a Roman road?", href: "/" }, { name: "
 	.countries a:hover {
 		border-color: var(--gold);
 		color: var(--brand);
+	}
+	.prose a,
+	.all a {
+		color: var(--brand);
+		text-decoration: none;
+		border-bottom: 1px solid var(--gold);
+		padding-bottom: 1px;
+	}
+	.prose a:hover,
+	.all a:hover {
+		color: var(--brand-deep);
+	}
+	.all {
+		margin: 1.1rem 0 0;
+		font-family: var(--font-display);
+		font-size: 1.05rem;
 	}
 
 	.cta {

@@ -1,6 +1,7 @@
 import { dateRangeOf, dominantCertainty, totalLengthKm } from "$lib/geometry.js";
 import { ROAD_DETAIL } from "$lib/road-detail.js";
 import type { RoadFeature } from "$lib/roads.js";
+import { countiesForRoad } from "$lib/server/counties.js";
 import { loadAllFeatures } from "$lib/server/roads-data.js";
 import { STORIES, segmentsForStory } from "$lib/stories.js";
 import { error } from "@sveltejs/kit";
@@ -44,6 +45,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		// are inlined into these 22 prerendered pages rather than shipped in
 		// the client bundle the way stories.ts is.
 		detail: ROAD_DETAIL[story.key] ?? null,
+		counties: await countiesForRoad(story.key),
 		lengthKm: totalLengthKm(segments),
 		segmentCount: segments.length,
 		certainty: dominantCertainty(segments),

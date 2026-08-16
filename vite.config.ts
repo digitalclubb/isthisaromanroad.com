@@ -48,11 +48,12 @@ export default defineConfig({
 					// over 4 MB to every visitor's precache for no benefit.
 					"**/og/*.png",
 
-					// Country landing pages (prerendered/pages/roads/<country>.html).
-					// They inline a whole country's simplified road geometry — Turkey
-					// alone is 364 KB — and exist to be crawled, not to be used
-					// offline. Note this does NOT match pages/roads.html, the hub.
+					// Country and county landing pages. They inline a whole area's
+					// simplified road geometry — Turkey alone is 364 KB — and exist to
+					// be crawled, not used offline. Neither pattern matches
+					// pages/roads.html, the hub, which stays precached.
 					"prerendered/pages/roads/*.html",
+					"prerendered/pages/roads/britain/*.html",
 					"**/cormorant-garamond-cyrillic-*.woff2",
 					"**/cormorant-garamond-vietnamese-*.woff2",
 					"**/inter-cyrillic*.woff2",

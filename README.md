@@ -4,7 +4,7 @@ A single-page PWA that answers a child's question from the back seat: **is this 
 
 Tap *Use my location* (or search any town / postcode) and the site checks your point against the full empire-wide Itiner-e Roman roads dataset. The answer comes in five tiers — walking the line, standing on it, nearly there, probably not, or out of reach — and the bands honour the dataset's own reconstructive uncertainty. You get the road's Roman name, type, certainty, and historical context. Hand-written stories cover the famous roads of Britain; everywhere else falls back gracefully to the dataset's own record.
 
-Alongside the app there is a set of static, crawlable pages: `/roads` lists every named Roman road in Britain, `/road/<slug>` gives each one its route, the modern roads that follow it, where to see it on the ground, and a short FAQ, and `/roads/<country>` covers the network in each of the 31 other modern countries the survey reaches.
+Alongside the app there is a set of static, crawlable pages: `/roads` lists every named Roman road in Britain, `/road/<slug>` gives each one its route, the modern roads that follow it, where to see it on the ground, and a short FAQ, `/roads/<country>` covers the network in each of the 26 other modern countries the survey reaches, `/roads/britain/<county>` does the same for 26 British counties, and `/modern-roads` answers the "is the A5 a Roman road?" family of questions in one place rather than a page per road number.
 
 ## Stack
 
@@ -47,6 +47,7 @@ Then open http://localhost:5173.
 | `pnpm data:build` | Re-download Itiner-e and rebuild the `static/roads/` cell grid |
 | `pnpm data:smoke` | Probe the partitioned index against known locations (via `tsx`) |
 | `pnpm data:regions` | Assign every road segment to a modern country (writes `data/regions.json`) |
+| `pnpm data:counties` | Assign British segments to historic counties (writes `data/counties.json`) |
 | `pnpm icons:build` | Re-render PWA icons + the site and per-page Open Graph cards |
 
 ## Project layout
@@ -69,20 +70,27 @@ src/
     stories.ts             # 22 road stories (also client-side: keep it small)
     road-detail.ts         # long-form road-page copy (server-only, never bundled)
     breadcrumbs.ts         # Crumb type + BreadcrumbList JSON-LD from one source
-    region-notes.ts        # authored note per country (server-only)
+    region-notes.ts        # authored notes per country (server-only)
+    county-notes.ts        # authored notes + named roads per county (server-only)
+    modern-roads.ts        # which modern roads follow Roman lines (server-only)
     road-names.ts          # tells a road name from an ancient source in `itinerary`
     server/roads-data.ts   # build-time: reassemble all features from cells (road pages)
     server/regions.ts      # build-time: per-country figures and named roads
+    server/counties.ts     # build-time: per-county figures and named roads
     components/Map.svelte  # MapLibre lifecycle + overlay layers
 scripts/
   build-roads.ts           # Itiner-e download → reproject → partition into cells
   build-regions.ts         # tag each segment with a modern country (data/regions.json)
+  build-counties.ts        # tag British segments with a historic county (data/counties.json)
+  geo-assign.ts            # shared point-in-polygon + arc-length sampling
+  uk-counties.ts           # local-government area → historic county merge table
   generate-icons.ts        # SVG → PNG icon set + site and per-page OG cards
   smoke-test.ts            # probe the partitioned index against known locations
 static/
   roads/                   # built artefacts: cells/<ix>_<iy>.json + manifest + road-cells
   icons/, og.png, ...      # built artefacts
 data/regions.json          # segment → country assignment (committed, built artefact)
+data/counties.json         # British segment → county assignment (committed, built artefact)
 data/raw/                  # cached Itiner-e + Natural Earth downloads (gitignored)
 ```
 
@@ -98,7 +106,7 @@ Distance is graded into five tiers by `answerTierFor` in `src/lib/format.ts`. Th
 
 ### Open Graph cards
 
-`pnpm icons:build` renders `static/og.png` for the site plus a card per road and per country under `static/og/` — 53 files, ~3.4 MB. Every road page used to share the one generic card, so every share of every page looked identical in a feed. resvg has no text layout engine, so headline size steps down with string length rather than wrapping.
+`pnpm icons:build` renders `static/og.png` for the site plus a card per road, country and county under `static/og/` — 74 files, ~5 MB. Every road page used to share the one generic card, so every share of every page looked identical in a feed. resvg has no text layout engine, so headline size steps down with string length rather than wrapping.
 
 These are excluded from the PWA precache in `vite.config.ts`: they are fetched only by crawlers and social scrapers, and precaching them would cost every visitor over 4 MB for nothing.
 
@@ -109,6 +117,16 @@ The Itiner-e properties carry no country field, so `scripts/build-regions.ts` de
 The United Kingdom is deliberately excluded from `/roads/<country>` because `/roads` already covers Britain in more depth, and two pages competing for the same query with overlapping content helps neither.
 
 Country maps prerender **simplified** geometry: properties stripped, Douglas-Peucker at a 500 m tolerance, coordinates rounded to three decimals. Without that, Turkey's 2,028 segments inlined a 4.4 MB HTML page; with it the same page is 364 KB raw and 59 KB gzipped, and at country zoom the simplification is well under one screen pixel.
+
+### County pages
+
+`scripts/build-counties.ts` does for Britain what `build-regions.ts` does for the world, using Natural Earth 1:10m Admin 1 (the 110m set has no subdivisions). Its British units are current local-government areas — administrative counties, unitary authorities, metropolitan and London boroughs — so `uk-counties.ts` folds them into the historic counties people actually search for. Nobody looks up "Roman roads in Central Bedfordshire"; Yorkshire is one county rather than four ridings and a dozen boroughs.
+
+Note the framing: the base units are *modern* boundaries, so a "county" here is the traditional area reassembled from its present-day parts, not a pre-1974 boundary survey. Denbighshire, Flintshire, Monmouthshire and Anglesey are left as themselves rather than folded into Clwyd or Gwent, which are 1974 creations abolished in 1996.
+
+A county earns a page only if it has an authored entry in `county-notes.ts`, which by construction means a hand-written paragraph, a place to go and see, and at least one named road with a page on this site. Itiner-e names just six British roads, so a county without that would be a map and two numbers — 26 counties qualify. The 15-segment floor in the build script only bounds the size of the committed artefact; it is not the publish rule and should not be tuned to make a particular county qualify.
+
+County maps simplify at 100 m rather than the country pages' 500 m, because they are zoomable to level 11 where a tile pixel is about 47 m.
 
 ## Attribution requirements
 

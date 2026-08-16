@@ -21,12 +21,13 @@ let { roads, faq }: Props = $props();
 	<h2 class="title">What counts as a Roman road?</h2>
 	<div class="prose">
 		<p>
-			A Roman road is one surveyed and built by the Roman state. The oldest, the <em>Via Appia</em>
-			out of Rome, was begun in 312 BC; in Britain they belong to the years after the invasion of
-			AD 43. Margary's standard catalogue of Roman Britain runs to some ten thousand miles of road
-			of every class, of which perhaps three thousand kilometres were paved trunk route. Most of
-			it was laid by the army, to move soldiers and supplies rather than to serve towns that
-			already existed.
+			A Roman road is one surveyed and built by the Roman state. The first of the great
+			consular roads, the <em>Via Appia</em> out of Rome, was begun in 312 BC; in Britain they
+			belong to the years after the invasion of AD 43. Estimates of the British network run to
+			something like ten thousand miles of road of all classes, of which around two thousand
+			miles were paved trunk route, though only a fraction of the whole is mapped with any
+			confidence. Most of it was laid by the army, to move soldiers and supplies rather than to
+			serve towns that already existed.
 		</p>
 		<p>
 			The popular test is straightness, and it is a decent one. Roman surveyors worked between
@@ -78,6 +79,7 @@ let { roads, faq }: Props = $props();
 		{/each}
 	</ul>
 	<p class="more-link"><a href="/roads">All the roads, with maps and figures →</a></p>
+	<p class="more-link"><a href="/modern-roads">Which modern roads are Roman roads? →</a></p>
 
 	<h2 class="title">Common questions</h2>
 	<FaqList items={faq} />

@@ -12,6 +12,7 @@ import { Resvg } from "@resvg/resvg-js";
 // The published region set, not data/regions.json: the publish rule (a named
 // road, or 100+ segments) lives in the server module, so reading it here is
 // what keeps the card set and the page set from drifting apart.
+import { loadCounties } from "../src/lib/server/counties.ts";
 import { loadRegions } from "../src/lib/server/regions.ts";
 import { STORIES } from "../src/lib/stories.ts";
 import { PALETTE } from "../src/lib/theme.ts";
@@ -193,4 +194,15 @@ for (const region of regions) {
 	);
 }
 console.log(`  ${regions.length} country cards, ${(bytes / 1e6).toFixed(2)} MB`);
+
+const counties = await loadCounties();
+console.log("Rendering per-county Open Graph cards…");
+bytes = 0;
+for (const county of counties) {
+	bytes += renderQuiet(
+		pageOgSvg(county.name, null, "ROMAN ROADS IN"),
+		`static/og/county-${county.slug}.png`,
+	);
+}
+console.log(`  ${counties.length} county cards, ${(bytes / 1e6).toFixed(2)} MB`);
 console.log("Done.");

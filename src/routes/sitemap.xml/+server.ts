@@ -1,3 +1,4 @@
+import { loadCounties } from "$lib/server/counties.js";
 import { loadRegions } from "$lib/server/regions.js";
 import { STORIES } from "$lib/stories.js";
 import type { RequestHandler } from "./$types.js";
@@ -19,13 +20,21 @@ type Entry = { loc: string; changefreq: string; priority: string };
 
 export const GET: RequestHandler = async () => {
 	const regions = await loadRegions();
+	const counties = await loadCounties();
 	const urls: Entry[] = [
 		{ loc: `${SITE}/`, changefreq: "monthly", priority: "1.0" },
 		{ loc: `${SITE}/roads`, changefreq: "monthly", priority: "0.9" },
+		{ loc: `${SITE}/roads/britain`, changefreq: "monthly", priority: "0.8" },
+		{ loc: `${SITE}/modern-roads`, changefreq: "monthly", priority: "0.8" },
 		...STORIES.map((s) => ({
 			loc: `${SITE}/road/${s.key}`,
 			changefreq: "yearly",
 			priority: "0.8",
+		})),
+		...counties.map((c) => ({
+			loc: `${SITE}/roads/britain/${c.slug}`,
+			changefreq: "yearly",
+			priority: "0.7",
 		})),
 		...regions.map((r) => ({
 			loc: `${SITE}/roads/${r.slug}`,

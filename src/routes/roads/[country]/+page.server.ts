@@ -13,13 +13,16 @@ export const load: PageServerLoad = async ({ params }) => {
 	const region = await findRegion(params.country);
 	if (!region) error(404, "Unknown country");
 
-	// The eight largest other networks, not all 30. Repeating the full list on
-	// every page put ~960 identical links across the set and made the shared
-	// navigation a third of the visible text on the smallest pages.
+	// Eight siblings, chosen as a rotating window rather than "the eight
+	// largest". Listing all 25 on every page was ~960 identical links and a
+	// third of the visible text on the smallest page; always listing the same
+	// eight would instead leave the other seventeen with one inbound link each,
+	// from the hub. A window gives every page exactly eight inbound links and
+	// keeps the set fully connected.
 	const all = await loadRegions();
-	const others = all
-		.filter((r) => r.slug !== region.slug)
-		.slice(0, 8)
+	const index = all.findIndex((r) => r.slug === region.slug);
+	const others = Array.from({ length: 8 }, (_, i) => all[(index + 1 + i) % all.length])
+		.filter((r) => r && r.slug !== region.slug)
 		.map((r) => ({ slug: r.slug, name: r.name }));
 
 	return {

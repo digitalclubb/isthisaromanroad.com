@@ -13,7 +13,7 @@ import type { PageData } from "./$types.js";
 type Props = { data: PageData };
 let { data }: Props = $props();
 
-const { story, segments, siblings, detail, lengthKm, segmentCount, certainty, dates } =
+const { story, segments, siblings, detail, counties, lengthKm, segmentCount, certainty, dates } =
 	$derived(data);
 const matchedRoadKey = $derived(segments.length > 0 ? roadKey(segments[0]) || null : null);
 
@@ -164,6 +164,10 @@ const crumbs: Crumb[] = $derived([
 			<h2 class="section">The road today</h2>
 			<!-- biome-ignore lint/security/noDangerouslySetInnerHtml: trusted, authored -->
 			<div class="body">{@html detail.modern}</div>
+			<p class="aside">
+				See also: <a href="/modern-roads">which modern roads follow Roman lines</a>, and how
+				closely.
+			</p>
 
 			<h2 class="section">Where to see it</h2>
 			<!-- biome-ignore lint/security/noDangerouslySetInnerHtml: trusted, authored -->
@@ -173,6 +177,15 @@ const crumbs: Crumb[] = $derived([
 				<h2 class="section">Common questions</h2>
 				<FaqList items={detail.faq} />
 			{/if}
+		{/if}
+
+		{#if counties.length > 0}
+			<h2 class="section">Counties it crosses</h2>
+			<ul class="counties" role="list">
+				{#each counties as c (c.slug)}
+					<li><a href="/roads/britain/{c.slug}">{c.name}</a></li>
+				{/each}
+			</ul>
 		{/if}
 
 		<a class="cta" href="/">Am I on it?</a>
@@ -289,6 +302,24 @@ const crumbs: Crumb[] = $derived([
 		font-feature-settings: "onum";
 	}
 
+	.aside {
+		font-family: var(--font-display);
+		font-weight: 500;
+		font-size: 1.05rem;
+		color: var(--ink-soft);
+		margin: 0.9rem 0 0;
+		max-width: 62ch;
+	}
+	.aside a {
+		color: var(--brand);
+		text-decoration: none;
+		border-bottom: 1px solid var(--gold);
+		padding-bottom: 1px;
+	}
+	.aside a:hover {
+		color: var(--brand-deep);
+	}
+
 	.facts-note.standalone {
 		font-family: var(--font-display);
 		font-size: clamp(1rem, 2.6vw, 1.1rem);
@@ -309,6 +340,34 @@ const crumbs: Crumb[] = $derived([
 		color: var(--ink-soft);
 		margin: 0.8rem 0 0;
 		max-width: 62ch;
+	}
+
+	.counties {
+		list-style: none;
+		margin: 1rem 0 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem 0.5rem;
+	}
+	.counties li a {
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+		padding: 0.5rem 0.9rem;
+		border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--gold) 6%, transparent);
+		color: var(--ink);
+		font-family: var(--font-display);
+		font-weight: 500;
+		font-size: 1rem;
+		text-decoration: none;
+		transition: border-color 200ms var(--ease), color 200ms var(--ease);
+	}
+	.counties li a:hover {
+		border-color: var(--gold);
+		color: var(--brand);
 	}
 
 	.siblings ul {

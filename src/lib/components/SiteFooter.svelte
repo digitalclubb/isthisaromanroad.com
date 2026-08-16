@@ -10,12 +10,14 @@ let { current = "road" }: Props = $props();
 const KOFI = "https://ko-fi.com/digitalclubb";
 
 // A plain link rather than Ko-fi's embedded widget, which sets third-party
-// cookies the privacy copy promises aren't here. The click is counted
-// first-party so the ask can be judged on its numbers. `track` is
-// dynamic-imported to keep @vercel/analytics out of the initial bundle,
-// matching how +layout.svelte loads it — by click time the chunk is cached.
+// cookies. The click is counted first-party so the ask can be judged on its
+// numbers. Imported from the /sveltekit entry, not ".", deliberately: that
+// entry is self-contained and re-exports `track`, so this resolves to the
+// same chunk +layout.svelte already dynamic-imports on mount. Importing "."
+// instead builds a second 1 KB copy of `track` and costs a round-trip here.
+// target="_blank" keeps the page alive, so the queue flush completes.
 async function countSupportClick() {
-	const { track } = await import("@vercel/analytics");
+	const { track } = await import("@vercel/analytics/sveltekit");
 	track("support_click", { placement: "footer" });
 }
 </script>
@@ -31,7 +33,9 @@ async function countSupportClick() {
 			href={KOFI}
 			target="_blank"
 			rel="external noopener"
-			onclick={countSupportClick}
+			onclick={() => {
+				countSupportClick().catch(() => {});
+			}}
 			>Buy me a coffee<span class="sr-only">&nbsp;(opens in a new tab)</span></a
 		> if it helped.
 	</p>
@@ -58,9 +62,13 @@ async function countSupportClick() {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		/* Must exceed the 12px vertical spread of .ask::after below, so the
-		   enlarged coffee-link hit area can't reach into the meta row's links. */
-		gap: 1.1rem;
+		/* Both rows enlarge their hit areas with a pseudo-element, and the two
+		   grow towards each other: .ask::after reaches ~11px below the support
+		   paragraph, a.link::after a full 15px above .meta (whose line-height is
+		   `normal`, so there's no half-leading to absorb it). Anything under
+		   ~27px lets the meta links, later in the DOM, steal the bottom of the
+		   coffee link's target. */
+		gap: 1.9rem;
 		/* Horizontal padding matters when the footer is a body-level child rather
 		   than nested inside a padded <main>, as it is on the homepage. */
 		padding: clamp(1.2rem, 5vh, 2rem) clamp(1rem, 3vw, 1.75rem)
@@ -77,25 +85,28 @@ async function countSupportClick() {
 		max-width: 30rem;
 		text-align: center;
 		font-size: 0.82rem;
-		/* 1.75 gives a ~22px line box; with ::after's ±12px the coffee link
-		   clears the project's 44px floor without padding the paragraph. */
 		line-height: 1.75;
 	}
+	/* Colour only — the global `a` rule already supplies the gold hairline
+	   underline and the --brand-deep hover, and this link has no reason to
+	   diverge from every other link on the site. */
 	.ask {
 		color: var(--brand);
-		text-decoration: underline;
-		text-decoration-thickness: 1px;
-		text-underline-offset: 0.18em;
 		position: relative;
-		transition: color 200ms var(--ease);
+		/* An inline element that wraps gives its absolute children a containing
+		   block spanning the union of first and last line — a full-width
+		   two-line rectangle sitting over the rest of the sentence. Keeping the
+		   phrase on one line keeps ::after a tidy box around the words. */
+		white-space: nowrap;
 	}
+	/* The containing block here is the inline content area (~1.21em of Inter,
+	   so ~16px at 0.82rem), NOT the line box — line-height buys nothing.
+	   16 + 30 = 46px, clearing the project's 44px floor the same way a.link
+	   below does at its own size. */
 	.ask::after {
 		content: "";
 		position: absolute;
-		inset: -12px -6px;
-	}
-	.ask:hover {
-		color: var(--brand-deep);
+		inset: -15px -6px;
 	}
 	.sr-only {
 		position: absolute;

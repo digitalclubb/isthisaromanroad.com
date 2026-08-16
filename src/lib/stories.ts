@@ -44,7 +44,7 @@ export const STORIES: Story[] = [
 		match: ["Ermine Street"],
 		from: "Londinium",
 		to: "Eboracum",
-		body: "Ermine Street ran north from <em>Londinium</em> to <em>Eboracum</em> at York, the spine of Roman Britain. From Bishopsgate it cut up through Hertfordshire, crossed the great fen at <em>Durolipons</em> at modern Godmanchester then drove straight on into <em>Lindum</em> at Lincoln. North of the Humber it picked up the road to York, the legionary fortress that became the capital of Britannia Inferior after the province was divided in the third century. The Old North Road of the Saxon period followed almost the same line, as does much of today's A1. Crossing the Humber required a ferry; the bridge would not come for another nineteen centuries.",
+		body: "Ermine Street ran north from <em>Londinium</em> to <em>Eboracum</em> at York, the spine of Roman Britain. From Bishopsgate it cut up through Hertfordshire, crossed the Great Ouse at <em>Durovigutum</em> at modern Godmanchester then drove straight on into <em>Lindum</em> at Lincoln. North of the Humber it picked up the road to York, the legionary fortress that became the capital of Britannia Inferior after the province was divided in the third century. The Old North Road of the Saxon period followed almost the same line, as does much of today's A1. Crossing the Humber required a ferry; the bridge would not come for another nineteen centuries.",
 	},
 	{
 		key: "fosse-way",
@@ -76,7 +76,7 @@ export const STORIES: Story[] = [
 		match: ["Dere Street"],
 		from: "Eboracum",
 		to: "Inveresk",
-		body: "Dere Street ran north from <em>Eboracum</em> at York to the Antonine Wall, the supply line for the Roman frontier in northern Britain. It crossed the Tees, the Tyne and the Tweed; it served Corbridge (the Roman supply base south of Hadrian's Wall) and it pushed on into what is now Scotland as far as Inveresk near Edinburgh. The Antonine Wall held for barely twenty years; after that Dere Street became the road to Hadrian's Wall and stayed in heavy use for another two centuries. The A1 in Northumberland and the A68 across the Cheviots both run on parts of it.",
+		body: "Dere Street ran north from <em>Eboracum</em> at York to the Antonine Wall, the supply line for the Roman frontier in northern Britain. It crossed the Tees, the Tyne and the Tweed; it served Corbridge (the Roman supply base south of Hadrian's Wall) and it pushed on into what is now Scotland as far as Inveresk near Edinburgh. The Antonine Wall held for barely twenty years; after that Dere Street became the road to Hadrian's Wall and stayed in heavy use for another two centuries. The A1(M) south of the Tees and the A68 north of Corbridge both run on parts of it.",
 	},
 	{
 		key: "peddars-way",
@@ -84,7 +84,7 @@ export const STORIES: Story[] = [
 		match: ["Peddars Way"],
 		from: "South-west Norfolk",
 		to: "Holme-next-the-Sea",
-		body: "Peddars Way ran from a junction with the Icknield Way in south-west Norfolk to the Norfolk coast at Holme-next-the-Sea. It was built in the years after Boudica's revolt, probably as a military road to keep watch on the Iceni who had risen against Rome and lost. The name first appears in medieval records as the pedlars' way, a long-distance footpath of north Norfolk, sandy underfoot and almost flat for the full forty miles. Today it is one of the best preserved Roman roads in Britain to walk, mostly because almost no modern road has ever wanted to follow it.",
+		body: "Peddars Way ran from a junction with the Icknield Way in south-west Norfolk to the Norfolk coast at Holme-next-the-Sea. It was built in the years after Boudica's revolt, probably as a military road to keep watch on the Iceni who had risen against Rome and lost. The name first appears on a map of 1587 as the pedlars' way. It is a long-distance footpath of north Norfolk, sandy underfoot and almost flat for the full forty miles. Today it is one of the best preserved Roman roads in Britain to walk, mostly because almost no modern road has ever wanted to follow it.",
 	},
 	{
 		key: "via-devana",
@@ -100,7 +100,7 @@ export const STORIES: Story[] = [
 		match: ["Sarn Helen"],
 		from: "Segontium",
 		to: "Maridunum",
-		body: "Sarn Helen is the Welsh name for the chain of Roman roads that ran north to south through Wales, from <em>Segontium</em> near Caernarfon to <em>Maridunum</em> at Carmarthen. The name comes from Elen Luyddog, Helen of the Hosts, the British wife of the Roman usurper Magnus Maximus whose marching armies she was said to have provisioned in the late fourth century. Stretches of Sarn Helen are still walkable across the heart of Snowdonia, particularly across the moors above Ffestiniog where the road is plain in the turf. Much of the rest is buried beneath modern lanes or lost to forestry.",
+		body: "Sarn Helen is the Welsh name for the chain of Roman roads that ran north to south through Wales, from <em>Segontium</em> near Caernarfon to <em>Maridunum</em> at Carmarthen. The name comes from Elen Luyddog, Helen of the Hosts, the British wife of the Roman usurper Magnus Maximus, who was said to have ordered the roads built to move his armies in the late fourth century. Stretches of Sarn Helen are still walkable across the heart of Snowdonia, particularly across the moors above Ffestiniog where the road is plain in the turf. Much of the rest is buried beneath modern lanes or lost to forestry.",
 	},
 	{
 		key: "stanegate",
@@ -115,8 +115,8 @@ export const STORIES: Story[] = [
 		name: "King Street",
 		match: ["King Street"],
 		from: "Durobrivae",
-		to: "Lindum",
-		body: "King Street ran north from <em>Durobrivae</em> near Water Newton to <em>Lindum</em> at Lincoln, a parallel route to Ermine Street through the Lincolnshire fens. It crossed the wetlands on a built causeway raised above the floods that drowned other Roman tracks. Where Ermine Street took the higher ground to the east, King Street kept lower and straighter through the levels. Today it survives in long sections as the B1180 and as parish lanes between Bourne and Sleaford. Antiquarian tradition gave it the royal name; Romans called it nothing in particular that has come down to us.",
+		to: "Ancaster",
+		body: "King Street ran north from <em>Durobrivae</em> near Water Newton to rejoin Ermine Street a little south of Ancaster, a parallel route through the western edge of the Lincolnshire fens. It crossed the wetlands on a built causeway raised above the floods that drowned other Roman tracks. Where Ermine Street took the higher ground to the east, King Street kept lower and straighter through the levels. South of Bourne it survives as lanes and field boundaries; north of there little of it is still in use as a road. Antiquarian tradition gave it the royal name; Romans called it nothing in particular that has come down to us.",
 	},
 	{
 		key: "pye-road",
@@ -140,7 +140,7 @@ export const STORIES: Story[] = [
 		match: ["Ackling Dyke"],
 		from: "Sorviodunum",
 		to: "Durnovaria",
-		body: "Ackling Dyke ran south-west from <em>Sorviodunum</em> at Old Sarum to <em>Durnovaria</em> at Dorchester, climbing the chalk downs of Cranborne Chase. Long sections survive as a high, broad <em>agger</em> raised three metres above the surrounding fields, one of the most impressive Roman earthworks left in Britain. The road brushed past the Iron Age hillfort at Badbury Rings, where you can still walk it for several miles between barrows and beech clumps. The name is Anglo-Saxon, possibly from <em>æcca</em> meaning oak or from a personal name; nobody is certain. It is now a long-distance footpath through some of the quietest country in southern England.",
+		body: "Ackling Dyke ran south-west from <em>Sorviodunum</em> at Old Sarum to <em>Durnovaria</em> at Dorchester, climbing the chalk downs of Cranborne Chase. Long sections survive as a high, broad <em>agger</em>, up to fifteen metres wide and standing nearly two metres above the surrounding fields, among the most impressive Roman earthworks left in Britain. The road brushed past the Iron Age hillfort at Badbury Rings, where you can still walk it for several miles between barrows and beech clumps. The name is Anglo-Saxon and its origin is uncertain. It is now a long-distance footpath through some of the quietest country in southern England.",
 	},
 	{
 		key: "stone-street",
@@ -156,7 +156,7 @@ export const STORIES: Story[] = [
 		match: ["Ryknild Street", "Ricknild Street", "Riknild Street"],
 		from: "Bourton-on-the-Water",
 		to: "Templeborough",
-		body: "Ryknild Street ran north from the Fosse Way at Bourton-on-the-Water through the West Midlands to <em>Templeborough</em> south of Sheffield. It crossed Watling Street at <em>Letocetum</em>, the small Roman town that became Wall in Staffordshire, where the two great roads met at right angles. The medieval name echoes the prehistoric Icknield Way to the south, though whether the two names share an origin is disputed. Long sections survive as the modern A38 through Derbyshire and Yorkshire. North of Burton-on-Trent the road runs almost dead straight for fifty kilometres, the surveying made easy by the broad and level Trent valley.",
+		body: "Ryknild Street ran north from the Fosse Way at Bourton-on-the-Water through the West Midlands to <em>Templeborough</em> south of Sheffield. It crossed Watling Street at <em>Letocetum</em>, the small Roman town that became Wall in Staffordshire, where the two great roads met at right angles. The medieval name echoes the prehistoric Icknield Way to the south, though whether the two names share an origin is disputed. Long sections survive as the modern A38 through Staffordshire and Derbyshire. North of Burton-on-Trent the road runs almost dead straight toward Derby, the surveying made easy by the broad and level Trent valley.",
 	},
 	{
 		key: "maiden-way",
@@ -170,9 +170,9 @@ export const STORIES: Story[] = [
 		key: "devils-causeway",
 		name: "The Devil's Causeway",
 		match: ["Devil's Causeway", "Devils Causeway"],
-		from: "Beukley",
+		from: "The Portgate",
 		to: "Berwick",
-		body: "The Devil's Causeway branched off Dere Street at Beukley north of Corbridge and ran north-east to the mouth of the Tweed at Berwick. It was one of the Roman roads built deep into northern Britain after the conquest of the lowlands, probably serving the network of forts that watched the north-east coast. Long stretches survive as 'Roman Road' on Ordnance Survey maps, a straight line of footpath and farm track across the open Northumberland uplands. The name is medieval and predictable: a road too straight to be the work of men. The B6342 follows part of its line; for the rest you walk.",
+		body: "The Devil's Causeway branched off Dere Street at the Portgate north of Corbridge and ran north-east to the mouth of the Tweed at Berwick. It was one of the Roman roads built deep into northern Britain after the conquest of the lowlands, probably serving the network of forts that watched the north-east coast. Long stretches survive as 'Roman Road' on Ordnance Survey maps, a straight line of footpath and farm track across the open Northumberland uplands. The name is medieval and predictable: a road too straight to be the work of men. The A697 touches and briefly follows its line; for the rest you walk.",
 	},
 	{
 		// "High Street" is a generic enough name that the match has to be
@@ -185,13 +185,13 @@ export const STORIES: Story[] = [
 		match: ["High Street Roman", "Galava-Brocavum", "Brocavum-Galava"],
 		from: "Galava",
 		to: "Brocavum",
-		body: "High Street is the name of the Roman road that crossed the high fells of the Lake District between the forts at <em>Galava</em> at Ambleside and <em>Brocavum</em> at Brougham. It climbed straight up onto the long ridge that gives the road and the mountain their shared name, holding to ground above seven hundred metres for most of its length before descending into the Eden valley. It was the highest Roman road in Britain and may have been the most exposed. Today the line is a popular high-level walking route, with cairns and the broken-up <em>agger</em> still visible across the bare summits. Walkers come for the views; the Romans came because no easier line existed.",
+		body: "High Street is the name of the Roman road that crossed the high fells of the Lake District between the forts at <em>Galava</em> at Ambleside and <em>Brocavum</em> at Brougham. It climbed straight up onto the long ridge that gives the road and the mountain their shared name, holding above seven hundred metres along the tops before descending into the Eden valley. That takes it higher than any other Roman road in England, and probably makes it the most exposed. Today the line is a popular high-level walking route, with cairns and the broken-up <em>agger</em> still visible across the bare summits. Walkers come for the views; the Romans came because no easier line existed.",
 	},
 	{
 		key: "icknield-way",
 		name: "Icknield Way",
 		match: ["Icknield Way"],
-		body: "The Icknield Way is older than the Romans. A prehistoric trackway running along the chalk from East Anglia to the Wessex downs, it was the principal route between Norfolk and the south coast for many centuries before the conquest. The Romans paved sections of it where the line suited their road network, particularly between Ivinghoe and Tring, but they never built it whole. The medieval name is from the Iceni tribe of Norfolk and Suffolk, whose territory the eastern end crossed. Today it is one of the oldest continuously used paths in Europe, a designated National Trail from Norfolk to Ivinghoe Beacon in the Chilterns.",
+		body: "The Icknield Way is older than the Romans. A prehistoric trackway running along the chalk from East Anglia to the Wessex downs, it was the principal route between Norfolk and the south coast for many centuries before the conquest. The Romans paved sections of it where the line suited their road network, particularly between Ivinghoe and Tring, but they never built it whole. The name may derive from the Iceni tribe of Norfolk and Suffolk, whose territory the eastern end crossed, though place-name scholars have not settled it. Today it is one of the oldest continuously used paths in Europe, followed by the Icknield Way Path, a designated regional route running from Norfolk to Ivinghoe Beacon in the Chilterns.",
 	},
 	{
 		key: "military-way",
@@ -204,8 +204,8 @@ export const STORIES: Story[] = [
 		name: "Stainmore Pass road",
 		match: ["Stainmore"],
 		from: "Cataractonium",
-		to: "Glannoventa",
-		body: "The Stainmore Pass road carried Roman supplies west across the Pennines from <em>Cataractonium</em> at Catterick to <em>Glannoventa</em> at Ravenglass on the Cumbrian coast. It climbed to four hundred and fifty metres at the top of Stainmore, where the fort at <em>Lavatris</em> at Bowes guarded the bleak summit. It was the connecting line between Dere Street and the Cumbrian forts: without it Roman Cumbria would have been cut off from the eastern half of the empire by the Pennine hills. The modern A66 follows the same pass. In bad weather it closes for the same reasons the Romans must have closed it.",
+		to: "Brocavum",
+		body: "The Stainmore Pass road carried Roman supplies west across the Pennines from <em>Cataractonium</em> at Catterick to <em>Brocavum</em> at Brougham in the Eden valley, and on to Carlisle. It climbed to four hundred and fifty metres at the top of Stainmore, where the fort at <em>Lavatris</em> at Bowes guarded the bleak summit. It was the connecting line between Dere Street and the Cumbrian forts: without it Roman Cumbria would have been cut off from the eastern half of the province by the Pennine hills. The modern A66 follows the same pass. In bad weather it closes for the same reasons the Romans must have closed it.",
 	},
 ];
 

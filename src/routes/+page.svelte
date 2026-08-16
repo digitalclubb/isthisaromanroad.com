@@ -45,7 +45,7 @@ const FAQ = [
 	},
 	{
 		q: "Which modern roads follow Roman roads?",
-		a: "Many do. The A5 follows Watling Street from London to Shrewsbury, the A2 follows it from Dover to London, the A46 runs along the Fosse Way between Leicester and Lincoln, the A68 follows Dere Street across Northumberland and the B2068 in Kent follows Stone Street almost exactly.",
+		a: "Many do. The A5 follows Watling Street from London to Shrewsbury, the A2 follows it from Dover to London, the A46 runs along the Fosse Way between Leicester and Lincoln, the A68 follows Dere Street north of Corbridge, and the B2068 in Kent follows Stone Street almost exactly.",
 	},
 	{
 		q: "Does this work outside Britain?",

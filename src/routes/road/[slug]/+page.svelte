@@ -22,6 +22,9 @@ const matchedRoadKey = $derived(segments.length > 0 ? roadKey(segments[0]) || nu
 const description = $derived(firstSentence(story.body, story.name, 155));
 
 const canonical = $derived(`${SITE}/road/${story.key}`);
+// Per-road share card rendered by `pnpm icons:build`. Every road page used to
+// share the one generic og.png, so every share looked identical in the feed.
+const ogImage = $derived(`${SITE}/og/road-${story.key}.png`);
 const title = $derived(`${story.name}: Route, Map and History`);
 const crumbs: Crumb[] = $derived([
 	{ name: "Is this a Roman road?", href: "/" },
@@ -38,11 +41,11 @@ const crumbs: Crumb[] = $derived([
 	<meta property="og:title" content={title} />
 	<meta property="og:description" content={description} />
 	<meta property="og:url" content={canonical} />
-	<meta property="og:image" content="{SITE}/og.png" />
+	<meta property="og:image" content={ogImage} />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={title} />
 	<meta name="twitter:description" content={description} />
-	<meta name="twitter:image" content="{SITE}/og.png" />
+	<meta name="twitter:image" content={ogImage} />
 	{@html `<script type="application/ld+json">${jsonLd([
 		breadcrumbSchema(crumbs),
 		{

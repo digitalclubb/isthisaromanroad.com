@@ -43,6 +43,11 @@ export default defineConfig({
 				// `grep -oP '[^\x00-\x7F]' static/roads/cells/*.json | sort -u` —
 				// so those subsets stay excluded to save precache storage.
 				globIgnores: [
+					// Per-page Open Graph cards: fetched only by crawlers and social
+					// scrapers, never by the app. ~53 files at ~80 KB each would add
+					// over 4 MB to every visitor's precache for no benefit.
+					"**/og/*.png",
+
 					// Country landing pages (prerendered/pages/roads/<country>.html).
 					// They inline a whole country's simplified road geometry — Turkey
 					// alone is 364 KB — and exist to be crawled, not to be used

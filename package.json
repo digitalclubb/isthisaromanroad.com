@@ -15,7 +15,7 @@
 		"data:build": "node --experimental-strip-types scripts/build-roads.ts",
 		"data:smoke": "tsx scripts/smoke-test.ts",
 		"data:regions": "node --experimental-strip-types scripts/build-regions.ts",
-		"icons:build": "node --experimental-strip-types scripts/generate-icons.ts"
+		"icons:build": "tsx scripts/generate-icons.ts"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",

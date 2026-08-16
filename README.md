@@ -47,7 +47,7 @@ Then open http://localhost:5173.
 | `pnpm data:build` | Re-download Itiner-e and rebuild the `static/roads/` cell grid |
 | `pnpm data:smoke` | Probe the partitioned index against known locations (via `tsx`) |
 | `pnpm data:regions` | Assign every road segment to a modern country (writes `data/regions.json`) |
-| `pnpm icons:build` | Re-render PWA icons + Open Graph card |
+| `pnpm icons:build` | Re-render PWA icons + the site and per-page Open Graph cards |
 
 ## Project layout
 
@@ -77,7 +77,7 @@ src/
 scripts/
   build-roads.ts           # Itiner-e download → reproject → partition into cells
   build-regions.ts         # tag each segment with a modern country (data/regions.json)
-  generate-icons.ts        # SVG → PNG icon set + OG card
+  generate-icons.ts        # SVG → PNG icon set + site and per-page OG cards
   smoke-test.ts            # probe the partitioned index against known locations
 static/
   roads/                   # built artefacts: cells/<ix>_<iy>.json + manifest + road-cells
@@ -95,6 +95,12 @@ The prerendered `/road/[slug]` pages run at build time and need every feature, s
 **A caveat the road pages surface honestly.** Itiner-e's `itinerary` field names only six British roads (Watling Street, Ermine Street, the Fosse Way, Stane Street, Akeman Street and Dere Street), plus one segment matching High Street. The other fifteen stories are well attested by archaeology but have no line attributable to them by name in the dataset, so those pages say so rather than reporting a measured length. `totalLengthKm` returns `null`, never `0`, for an empty segment set precisely so this can't be rendered as "0 km surveyed".
 
 Distance is graded into five tiers by `answerTierFor` in `src/lib/format.ts`. The bands respect the road's own certainty rating: ≤10 m is "walking", ≤80 m on a Certain segment (≤150 m on a Conjectured or Hypothetical one) is "standing on the line", ≤500 m is "nearly", ≤50 km is "probably not", beyond that is "out of reach". The wider bands on uncertain segments reflect what the dataset actually claims to know: an Itiner-e line on a Hypothetical reconstruction can sit 50–200 m from the road's true position on the ground.
+
+### Open Graph cards
+
+`pnpm icons:build` renders `static/og.png` for the site plus a card per road and per country under `static/og/` — 53 files, ~3.4 MB. Every road page used to share the one generic card, so every share of every page looked identical in a feed. resvg has no text layout engine, so headline size steps down with string length rather than wrapping.
+
+These are excluded from the PWA precache in `vite.config.ts`: they are fetched only by crawlers and social scrapers, and precaching them would cost every visitor over 4 MB for nothing.
 
 ### Country pages
 

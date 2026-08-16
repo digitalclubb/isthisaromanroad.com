@@ -1,5 +1,6 @@
 <script lang="ts">
 import { type Crumb, SITE, breadcrumbSchema, jsonLd } from "$lib/breadcrumbs.js";
+import FaqList from "$lib/components/FaqList.svelte";
 import RoadMap from "$lib/components/Map.svelte";
 import RuleGold from "$lib/components/RuleGold.svelte";
 import SiteFooter from "$lib/components/SiteFooter.svelte";
@@ -167,14 +168,7 @@ const crumbs: Crumb[] = $derived([
 
 			{#if detail.faq.length > 0}
 				<h2 class="section">Common questions</h2>
-				<div class="faq">
-					{#each detail.faq as item (item.q)}
-						<details>
-							<summary>{item.q}</summary>
-							<p>{item.a}</p>
-						</details>
-					{/each}
-				</div>
+				<FaqList items={detail.faq} />
 			{/if}
 		{/if}
 
@@ -304,55 +298,6 @@ const crumbs: Crumb[] = $derived([
 		font-style: italic;
 	}
 
-	.faq {
-		margin-top: 1.1rem;
-		max-width: 62ch;
-		border-top: 1px solid color-mix(in srgb, var(--gold) 38%, transparent);
-	}
-	.faq details {
-		border-bottom: 1px solid color-mix(in srgb, var(--gold) 38%, transparent);
-	}
-	.faq summary {
-		font-family: var(--font-display);
-		font-weight: 700;
-		font-size: 1.15rem;
-		color: var(--ink);
-		cursor: pointer;
-		list-style: none;
-		padding: 1rem 2rem 1rem 0;
-		min-height: 44px;
-		display: flex;
-		align-items: center;
-		position: relative;
-		transition: color 200ms var(--ease);
-	}
-	.faq summary::-webkit-details-marker {
-		display: none;
-	}
-	.faq summary::after {
-		content: "+";
-		position: absolute;
-		right: 0.25rem;
-		font-size: 1.3rem;
-		line-height: 1;
-		color: var(--gold);
-		transition: transform 240ms var(--ease);
-	}
-	.faq details[open] summary::after {
-		transform: rotate(45deg);
-	}
-	.faq summary:hover {
-		color: var(--brand);
-	}
-	.faq details p {
-		margin: 0;
-		padding: 0 0 1.1rem;
-		font-family: var(--font-display);
-		font-weight: 500;
-		font-size: 1.05rem;
-		line-height: 1.6;
-		color: var(--ink);
-	}
 
 	.facts-note {
 		font-family: var(--font-body);

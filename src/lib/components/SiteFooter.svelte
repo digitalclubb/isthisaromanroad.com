@@ -31,7 +31,10 @@ let { current = "road" }: Props = $props();
 		justify-content: center;
 		flex-wrap: wrap;
 		gap: 0.7rem;
-		padding: clamp(1.2rem, 5vh, 2rem) 0 max(env(safe-area-inset-bottom), 1rem);
+		/* Horizontal padding matters when the footer is a body-level child rather
+		   than nested inside a padded <main>, as it is on the homepage. */
+		padding: clamp(1.2rem, 5vh, 2rem) clamp(1rem, 3vw, 1.75rem)
+			max(env(safe-area-inset-bottom), 1rem);
 		font-family: var(--font-body);
 		font-size: 0.72rem;
 		text-transform: uppercase;

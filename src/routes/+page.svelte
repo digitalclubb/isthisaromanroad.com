@@ -1,4 +1,6 @@
 <script lang="ts">
+import { SITE, jsonLd } from "$lib/breadcrumbs.js";
+import AboutRoads from "$lib/components/AboutRoads.svelte";
 import Answer from "$lib/components/Answer.svelte";
 import AskAgain from "$lib/components/AskAgain.svelte";
 import Listening from "$lib/components/Listening.svelte";
@@ -12,11 +14,44 @@ import { answerTierFor, roadNarrative, roadSubtitle } from "$lib/format.js";
 import { geocode } from "$lib/geocode.js";
 import { type LookupResult, type RoadFeature, type RoadIndex, roadKey } from "$lib/roads.js";
 import { rasterise, shareOrDownload } from "$lib/share.js";
-import { findStoryFor } from "$lib/stories.js";
+import { STORIES, findStoryFor } from "$lib/stories.js";
 
-const TITLE = "Is this a Roman road?";
+// The bare wordmark is a brand name nobody searches for. Keep it at the front
+// so the identity survives, then say what the page does in the words people
+// actually type ("roman roads map", "roman roads near me").
+const TITLE = "Is This a Roman Road? Roman Roads Map and Finder";
+// The share card and the schema entity keep the bare wordmark. A social card
+// headlined "Roman Roads Map and Finder" reads as SEO furniture; the keyword
+// tail belongs in <title> and nowhere else.
+const NAME = "Is this a Roman road?";
 const DESCRIPTION =
-	"A small oracle for the road ahead. Tap once on your phone and find out if you stand on (or near) a Roman road.";
+	"Tap once and find out whether you are standing on a Roman road. Live map of the empire's road network, from Britain to Syria, with the history of every named British road.";
+
+const ROAD_LINKS = STORIES.map((s) => ({ key: s.key, name: s.name }));
+
+/**
+ * Answers to the questions people actually search. Rendered visibly by
+ * AboutRoads and emitted as FAQPage JSON-LD from the same array, so the two
+ * cannot disagree.
+ */
+const FAQ = [
+	{
+		q: "How do I know if I am on a Roman road?",
+		a: "Compare your position against a surveyed map of the network. This site does that: it checks your coordinates against the Itiner-e academic survey and tells you whether you are on the line, near it, or a long way from the nearest one.",
+	},
+	{
+		q: "Are Roman roads always straight?",
+		a: "Usually but not always. Roman surveyors worked between fixed sighting points and held a straight alignment across obstacles, which is why Roman roads take hills head on. But they bend where the ground demands it, and plenty of straight British roads are enclosure roads or turnpikes rather than Roman work.",
+	},
+	{
+		q: "Which modern roads follow Roman roads?",
+		a: "Many do. The A5 follows Watling Street from London to Shrewsbury, the A2 follows it from Dover to London, the A46 runs along the Fosse Way between Leicester and Lincoln, the A68 follows Dere Street across Northumberland and the B2068 in Kent follows Stone Street almost exactly.",
+	},
+	{
+		q: "Does this work outside Britain?",
+		a: "Yes. The underlying survey covers the whole empire, so the site will answer anywhere from Scotland to Syria. The hand-written histories are Britain-only for now; elsewhere you get the survey's own record of the road.",
+	},
+];
 
 type Phase = "idle" | "listening" | "answered" | "error";
 
@@ -178,108 +213,128 @@ const matchedRoadKey = $derived(result ? roadKey(result.road) || null : null);
 <svelte:head>
 	<title>{TITLE}</title>
 	<meta name="description" content={DESCRIPTION} />
-	<link rel="canonical" href="https://isthisaromanroad.com/" />
+	<link rel="canonical" href="{SITE}/" />
 	<meta property="og:type" content="website" />
-	<meta property="og:title" content={TITLE} />
+	<meta property="og:title" content={NAME} />
 	<meta property="og:description" content={DESCRIPTION} />
-	<meta property="og:url" content="https://isthisaromanroad.com/" />
-	<meta property="og:image" content="https://isthisaromanroad.com/og.png" />
+	<meta property="og:url" content="{SITE}/" />
+	<meta property="og:image" content="{SITE}/og.png" />
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content={TITLE} />
+	<meta name="twitter:title" content={NAME} />
 	<meta name="twitter:description" content={DESCRIPTION} />
-	<meta name="twitter:image" content="https://isthisaromanroad.com/og.png" />
-	{@html `<script type="application/ld+json">${JSON.stringify({
-		"@context": "https://schema.org",
-		"@type": "WebApplication",
-		name: TITLE,
-		description: DESCRIPTION,
-		url: "https://isthisaromanroad.com/",
-		applicationCategory: "TravelApplication",
-		operatingSystem: "Any",
-		offers: { "@type": "Offer", price: "0", priceCurrency: "GBP" },
-		about: { "@type": "Thing", name: "Roman roads" },
-	}).replace(/</g, "\\u003c")}</` + `script>`}
+	<meta name="twitter:image" content="{SITE}/og.png" />
+	{@html `<script type="application/ld+json">${jsonLd([
+		{
+			"@context": "https://schema.org",
+			"@type": "WebApplication",
+			name: NAME,
+			description: DESCRIPTION,
+			url: `${SITE}/`,
+			applicationCategory: "TravelApplication",
+			operatingSystem: "Any",
+			offers: { "@type": "Offer", price: "0", priceCurrency: "GBP" },
+			about: { "@type": "Thing", name: "Roman roads" },
+		},
+		{
+			"@context": "https://schema.org",
+			"@type": "FAQPage",
+			mainEntity: FAQ.map((f) => ({
+				"@type": "Question",
+				name: f.q,
+				acceptedAnswer: { "@type": "Answer", text: f.a },
+			})),
+		},
+	])}</` + `script>`}
 </svelte:head>
 
 <main class:answered={phase === "answered" || phase === "error"}>
-	<header class="masthead" class:minimised>
-		{#if phase !== "idle"}
-			<button class="home" type="button" onclick={reset} aria-label="Ask another question">
-				<Wordmark minimised />
-			</button>
-		{/if}
-	</header>
-
-	<section class="stage">
-		{#if phase === "idle"}
-			<Question onAsk={askHere} onSearch={askForPlace} />
-		{:else if phase === "listening"}
-			<Listening />
-		{:else if phase === "answered" && result}
-			{#if tier}<Answer {result} {tier} />{/if}
-
-			<div class="map-frame">
-				<RoadMap
-					{userPoint}
-					{roadSegments}
-					{matchedRoadKey}
-					pointOnRoad={result.pointOnRoad}
-				/>
-			</div>
-
-			{#if story}
-				<RoadStory {story} />
+	<!-- The cold load is exactly one viewport: wordmark, rule, one CTA.
+	     AboutRoads sits below it, inside <main> so the main landmark still
+	     contains the page's prose. -->
+	<div class="screen">
+		<header class="masthead" class:minimised>
+			{#if phase !== "idle"}
+				<button class="home" type="button" onclick={reset} aria-label="Ask another question">
+					<Wordmark minimised />
+				</button>
 			{/if}
+		</header>
 
-			{#if !story || result.road.properties.citation || result.road.properties.bibliography}
-				<details class="more">
-					<summary>{story ? "Source" : "More about this road"}</summary>
-					<div class="more-body">
-						{#if !story}
-							{#if roadSubtitle(result.road)}
-								<p class="more-sub">{roadSubtitle(result.road)}</p>
+		<section class="stage">
+			{#if phase === "idle"}
+				<Question onAsk={askHere} onSearch={askForPlace} />
+			{:else if phase === "listening"}
+				<Listening />
+			{:else if phase === "answered" && result}
+				{#if tier}<Answer {result} {tier} />{/if}
+
+				<div class="map-frame">
+					<RoadMap
+						{userPoint}
+						{roadSegments}
+						{matchedRoadKey}
+						pointOnRoad={result.pointOnRoad}
+					/>
+				</div>
+
+				{#if story}
+					<RoadStory {story} />
+				{/if}
+
+				{#if !story || result.road.properties.citation || result.road.properties.bibliography}
+					<details class="more">
+						<summary>{story ? "Source" : "More about this road"}</summary>
+						<div class="more-body">
+							{#if !story}
+								{#if roadSubtitle(result.road)}
+									<p class="more-sub">{roadSubtitle(result.road)}</p>
+								{/if}
+								<p>{roadNarrative(result.road)}</p>
 							{/if}
-							<p>{roadNarrative(result.road)}</p>
-						{/if}
-						{#if result.road.properties.citation || result.road.properties.bibliography}
-							<p class="cite">
-								<small>
-									Source: {result.road.properties.citation ?? ""}
-									{#if result.road.properties.bibliography}
-										· {result.road.properties.bibliography}
-									{/if}
-								</small>
-							</p>
-						{/if}
-					</div>
-				</details>
-			{/if}
+							{#if result.road.properties.citation || result.road.properties.bibliography}
+								<p class="cite">
+									<small>
+										Source: {result.road.properties.citation ?? ""}
+										{#if result.road.properties.bibliography}
+											· {result.road.properties.bibliography}
+										{/if}
+									</small>
+								</p>
+							{/if}
+						</div>
+					</details>
+				{/if}
 
-			<AskAgain
-				onAskAgain={reset}
-				onShare={share}
-				{sharing}
-			/>
-			{#if shareError}
-				<p class="share-error" role="alert">{shareError}</p>
+				<AskAgain
+					onAskAgain={reset}
+					onShare={share}
+					{sharing}
+				/>
+				{#if shareError}
+					<p class="share-error" role="alert">{shareError}</p>
+				{/if}
+			{:else if phase === "answered" && !result}
+				<div class="error" aria-live="polite">
+					<h2 class="word">Beyond the roads.</h2>
+					<p class="sub">No Roman road for hundreds of miles. You're well outside the empire's reach.</p>
+				</div>
+				<AskAgain onAskAgain={reset} />
+			{:else if phase === "error"}
+				<div class="error" aria-live="polite">
+					<h2 class="word">Hmm.</h2>
+					<p class="sub">{error}</p>
+				</div>
+				<AskAgain onAskAgain={reset} />
 			{/if}
-		{:else if phase === "answered" && !result}
-			<div class="error" aria-live="polite">
-				<h2 class="word">Beyond the roads.</h2>
-				<p class="sub">No Roman road for hundreds of miles. You're well outside the empire's reach.</p>
-			</div>
-			<AskAgain onAskAgain={reset} />
-		{:else if phase === "error"}
-			<div class="error" aria-live="polite">
-				<h2 class="word">Hmm.</h2>
-				<p class="sub">{error}</p>
-			</div>
-			<AskAgain onAskAgain={reset} />
-		{/if}
-	</section>
+		</section>
+	</div>
 
-	<SiteFooter current="home" />
+	{#if phase === "idle"}
+		<AboutRoads roads={ROAD_LINKS} faq={FAQ} />
+	{/if}
 </main>
+
+<SiteFooter current="home" />
 
 <!-- Off-screen render target for the share card. html-to-image rasterises
      this node into PNG. Kept in the DOM (not display:none) so fonts apply;
@@ -293,10 +348,13 @@ const matchedRoadKey = $derived(result ? roadKey(result.road) || null : null);
 {/if}
 
 <style>
-	main {
+	/* .screen holds the cold-load composition and occupies exactly one
+	   viewport. main is now just the landmark wrapper, so AboutRoads can sit
+	   inside it without competing with the hero for height. */
+	.screen {
 		min-height: 100dvh;
 		display: grid;
-		grid-template-rows: auto 1fr auto;
+		grid-template-rows: auto 1fr;
 		gap: 0;
 		padding: clamp(1rem, 3vw, 1.75rem);
 		max-width: 720px;
@@ -327,10 +385,11 @@ const matchedRoadKey = $derived(result ? roadKey(result.road) || null : null);
 
 	/* Vertical-centre the question on the cold load so the page feels like a
 	   single thought rather than a UI. Once answered, content stacks naturally
-	   from the top. */
+	   from the top. The 1fr row already fills .screen, so no min-height is
+	   needed — the old calc() was tuned for a footer that no longer sits in
+	   this grid and had silently stopped binding. */
 	main:not(.answered) .stage {
 		justify-content: center;
-		min-height: calc(100dvh - 8rem);
 	}
 
 	.map-frame {

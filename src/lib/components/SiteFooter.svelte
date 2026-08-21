@@ -55,6 +55,15 @@ async function countSupportClick() {
 			<a class="link" href="/">isthisaromanroad.com</a>
 		{/if}
 	</div>
+
+	<!-- CC BY 4.0 §3(a)(1) wants the creators named, the source and licence
+	     linked, and — since build-roads.ts reprojects, slims and repartitions
+	     the features — the fact that the data is adapted stated. -->
+	<p class="credit">
+		Road data adapted from <a href="https://itiner-e.org" rel="external"><em>Itiner-e</em></a>
+		(de Soto et al. 2025), licensed
+		<a href="https://creativecommons.org/licenses/by/4.0/" rel="external">CC BY 4.0</a>.
+	</p>
 </footer>
 
 <style>
@@ -153,5 +162,23 @@ async function countSupportClick() {
 	}
 	a.link:hover {
 		color: var(--ink);
+	}
+
+	/* Same 0.72rem as the meta row, but sentence case: this is a legal credit,
+	   not a signature. No ::after hit-area expansion here, unlike every other
+	   link in this footer: two links in one centred sentence would overlap each
+	   other's 44px box the moment the line wraps (~18px between lines), and the
+	   later one in the DOM would swallow taps on the earlier word. WCAG 2.5.8
+	   exempts targets positioned by the flow of a sentence, which these are. */
+	.credit {
+		margin: 0;
+		max-width: 30rem;
+		text-align: center;
+		font-size: 0.72rem;
+		line-height: 1.6;
+	}
+	/* Keeps "CC BY 4.0" and the source name from breaking across lines. */
+	.credit a {
+		white-space: nowrap;
 	}
 </style>

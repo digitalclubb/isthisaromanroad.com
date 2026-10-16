@@ -249,14 +249,15 @@ const certaintySummary = $derived(
 		letter-spacing: 0.04em;
 		color: var(--ink);
 	}
-	/* Roads with a history page. A terracotta underline, like the site's other
-	   text links, because the gold one is the Roman-name convention and on its
-	   own would not read as a link. The negative margin keeps a 44px target
-	   without changing the row height. */
+	/* Roads with a history page. A deliberate exception to the gold link
+	   underline in app.css: these are Roman names, which already carry gold,
+	   so terracotta is what marks them as links. The negative margin keeps a
+	   44px target without changing the row height. */
 	a.named-name {
 		display: inline-block;
 		text-decoration: underline 1px var(--brand);
 		text-underline-offset: 0.2em;
+		min-block-size: 44px;
 		padding-block: 0.7rem;
 		margin-block: -0.7rem;
 		transition: color 200ms var(--ease);

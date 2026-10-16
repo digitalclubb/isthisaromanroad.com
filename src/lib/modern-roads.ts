@@ -56,7 +56,7 @@ export const MODERN_ROADS: ModernRoad[] = [
 		road: "ermine-street",
 		between: "Lincoln and the Humber",
 		fidelity: "close",
-		note: "One of the straightest stretches of road in the country. A 1950s dogleg takes it round RAF Scampton a few miles north of Lincoln, but beyond that it runs across flat farmland toward the Humber with barely a bend. If you want to feel what Roman surveying was like, drive this.",
+		note: "One of the straightest stretches of road in the country. A 1950s dogleg takes it round RAF Scampton a few miles north of Lincoln, but beyond that it runs across flat farmland towards the Humber with barely a bend. If you want to feel what Roman surveying was like, drive this.",
 	},
 	{
 		number: "A1198",
@@ -144,7 +144,7 @@ export const MODERN_ROADS: ModernRoad[] = [
 		road: "akeman-street",
 		between: "Tring and Bicester",
 		fidelity: "partial",
-		note: "The A41 picks up Akeman Street near Tring and follows it loosely toward Bicester. West of there the Roman road survives as green lanes rather than tarmac.",
+		note: "The A41 picks up Akeman Street near Tring and follows it loosely towards Bicester. West of there the Roman road survives as green lanes rather than tarmac.",
 	},
 	{
 		number: "A69",

@@ -24,19 +24,19 @@ export type CountyNote = {
 export const COUNTY_NOTES: Record<string, CountyNote> = {
 	yorkshire: {
 		roads: ["ermine-street", "dere-street", "stainmore-pass", "ryknild-street"],
-		note: "Yorkshire was the military heart of northern Britain. <em>Eboracum</em> at York began as a legionary fortress in AD 71, became the capital of Britannia Inferior when the province was divided, and was where both Septimius Severus and Constantius Chlorus died — Constantine was proclaimed emperor in the city on the second occasion. Ermine Street came north to it and Dere Street ran on from it toward the frontier, so almost every Roman road in the county is oriented on York. Westward, the Stainmore road carried traffic over the Pennines to Cumbria.",
+		note: "Yorkshire was the military heart of northern Britain. <em>Eboracum</em> at York began as a legionary fortress in AD 71, became the capital of Britannia Inferior when the province was divided, and was where both Septimius Severus and Constantius Chlorus died; Constantine was proclaimed emperor in the city on the second occasion. Ermine Street came north to it and Dere Street ran on from it towards the frontier, so almost every Roman road in the county is oriented on York. Westward, the Stainmore road carried traffic over the Pennines to Cumbria.",
 		seeing:
 			"York keeps the multangular tower of the legionary fortress in the Museum Gardens and a Roman column standing opposite the Minster, whose undercroft shows the fortress <em>principia</em> beneath it. Aldborough has mosaics in situ, and the Roman road over Blackstone Edge above Littleborough, paved and grooved down its centre, is the most argued-over stretch of Roman paving in the country.",
 	},
 	hertfordshire: {
 		roads: ["watling-street", "ermine-street", "akeman-street", "icknield-way"],
-		note: "Hertfordshire has an unusual density of Roman road because three major routes leave London through it. <em>Verulamium</em> at St Albans was one of the largest towns in Roman Britain and the junction where Watling Street met Akeman Street; Boudica's army sacked it in AD 60 or 61, and the town rebuilt on a grander scale afterward. Ermine Street runs up the east of the county toward Braughing, and the prehistoric Icknield Way crosses the north along the chalk.",
+		note: "Hertfordshire has an unusual density of Roman road because three major routes leave London through it. <em>Verulamium</em> at St Albans was one of the largest towns in Roman Britain and the junction where Watling Street met Akeman Street; Boudica's army sacked it in AD 60 or 61, and the town rebuilt on a grander scale afterwards. Ermine Street runs up the east of the county towards Braughing, and the prehistoric Icknield Way crosses the north along the chalk.",
 		seeing:
 			"Verulamium Park at St Albans has the town walls, the London Gate, a hypocaust under cover and the only Roman theatre visible in Britain, across the road on private land but open to visitors. The Verulamium Museum holds the mosaics lifted from the town.",
 	},
 	cambridgeshire: {
 		roads: ["ermine-street", "via-devana", "king-street", "icknield-way"],
-		note: "Cambridgeshire's Roman roads are shaped by water. The fens were drained and farmed on a large scale under Rome, crossed by causeways and by the Car Dyke, a major artificial watercourse. Ermine Street ran north through <em>Durovigutum</em> at Godmanchester to <em>Durobrivae</em> at Water Newton, a pottery town whose kilns supplied much of the province. The road east from Cambridge toward Colchester is the best-attested part of what antiquaries later named the Via Devana.",
+		note: "Cambridgeshire's Roman roads are shaped by water. The fens were drained and farmed on a large scale under Rome, crossed by causeways and by the Car Dyke, a major artificial watercourse. Ermine Street ran north through <em>Durovigutum</em> at Godmanchester to <em>Durobrivae</em> at Water Newton, a pottery town whose kilns supplied much of the province. The road east from Cambridge towards Colchester is the best-attested part of what antiquaries later named the Via Devana.",
 		seeing:
 			"The Roman town at Godmanchester sits under the modern one, but the Car Dyke is traceable north of Cambridge, and the road over the Gog Magog hills survives as a chalk track with long views. The Water Newton treasure, the earliest known hoard of Christian liturgical silver from anywhere in the Roman empire, was found beside the road here and is now in the British Museum.",
 	},
@@ -74,11 +74,11 @@ export const COUNTY_NOTES: Record<string, CountyNote> = {
 		roads: ["watling-street", "ermine-street", "stane-street", "devils-highway"],
 		note: "<em>Londinium</em> was founded around AD 47 as a trading settlement at the lowest bridgeable point of the Thames, and the road network was built to converge on that bridge. Boudica burned the city in AD 60 or 61, leaving the layer of scorched red clay archaeologists still find across the City. Watling Street, Ermine Street, Stane Street and the road west to Silchester all radiate from the crossing, and the modern street plan still preserves their lines: Edgware Road, Bishopsgate and Kennington Park Road are all Roman alignments.",
 		seeing:
-			"The Temple of Mithras is the one to see: displayed beneath a modern office building close to its original site, reconstructed with the light and sound of the cult, and free. The city's Roman collection is between homes — the Museum of London closed in 2022 and its successor, the London Museum, opens at Smithfield in late 2026. Sections of the city wall stand at Tower Hill and near the Barbican, and the amphitheatre's outline is marked in the floor of the Guildhall Art Gallery.",
+			"The Temple of Mithras is the one to see: displayed beneath a modern office building close to its original site, reconstructed with the light and sound of the cult, and free. The city's Roman collection is between homes: the Museum of London closed in 2022 and its successor, the London Museum, opens at Smithfield in late 2026. Sections of the city wall stand at Tower Hill and near the Barbican, and the amphitheatre's outline is marked in the floor of the Guildhall Art Gallery.",
 	},
 	oxfordshire: {
 		roads: ["akeman-street", "icknield-way"],
-		note: "Akeman Street crosses Oxfordshire from east to west, running from Alchester near Bicester through the Windrush valley toward Cirencester. The county was villa country: North Leigh and Ditchley were substantial estates working the good ground either side of the road. Long stretches of Akeman Street survive as green lane and bridleway rather than tarmac, which is why they are still legible.",
+		note: "Akeman Street crosses Oxfordshire from east to west, running from Alchester near Bicester through the Windrush valley towards Cirencester. The county was villa country: North Leigh and Ditchley were substantial estates working the good ground either side of the road. Long stretches of Akeman Street survive as green lane and bridleway rather than tarmac, which is why they are still legible.",
 		seeing:
 			"North Leigh Roman Villa has a fine mosaic under cover and free access, and the green-lane stretches of Akeman Street between Kirtlington and Ramsden are quiet walking. The Ashmolean in Oxford holds material from across the county.",
 	},
@@ -96,13 +96,13 @@ export const COUNTY_NOTES: Record<string, CountyNote> = {
 	},
 	powys: {
 		roads: ["sarn-helen"],
-		note: "Roman Powys was crossed rather than settled. Sarn Helen, the chain of roads running the length of Wales, passes through the county, and the forts along it — Caersws, Castell Collen, Y Gaer near Brecon — were garrison posts holding a route rather than towns. The Roman interest in mid Wales was mineral and military: get through it, hold the passes, and reach the coast.",
+		note: "Roman Powys was crossed rather than settled. Sarn Helen, the chain of roads running the length of Wales, passes through the county, and the forts along it (Caersws, Castell Collen and Y Gaer near Brecon) were garrison posts holding a route rather than towns. The Roman interest in mid Wales was mineral and military: get through it, hold the passes and reach the coast.",
 		seeing:
 			"Y Gaer, the fort west of Brecon, has visible walls and gateways in a farmed landscape. Caersws in the upper Severn valley was a garrison town on the road through mid Wales, and the Roman marching camps on the moors above are visible from the air and traceable on the ground.",
 	},
 	essex: {
 		roads: ["pye-road", "via-devana"],
-		note: "<em>Camulodunum</em> at Colchester was the first Roman capital of Britain and the site of the temple of the deified Claudius, which the Iceni burned in AD 60 or 61 with its defenders inside. The colony was refounded and the road network rebuilt around it: north to Venta Icenorum by the Pye Road, west toward Cambridge, and south-west to London. Colchester still has the longest surviving stretch of Roman town wall in Britain.",
+		note: "<em>Camulodunum</em> at Colchester was the first Roman capital of Britain and the site of the temple of the deified Claudius, which the Iceni burned in AD 60 or 61 with its defenders inside. The colony was refounded and the road network rebuilt around it: north to Venta Icenorum by the Pye Road, west towards Cambridge and south-west to London. Colchester still has the longest surviving stretch of Roman town wall in Britain.",
 		seeing:
 			"The Balkerne Gate is the largest surviving Roman gateway in Britain and stands at the western end of the town wall. Colchester Castle is built directly on the vaults of the temple of Claudius, which you can go down into, and the Roman circus, the only one known in the country, is marked out south of the town centre with a visitor centre on the site.",
 	},
@@ -114,13 +114,13 @@ export const COUNTY_NOTES: Record<string, CountyNote> = {
 	},
 	somerset: {
 		roads: ["fosse-way"],
-		note: "The Fosse Way crosses Somerset from <em>Lindinis</em> at Ilchester toward <em>Aquae Sulis</em> at Bath, where the hot springs and the temple of Sulis Minerva made one of the most visited sites in Roman Britain. The Mendips were mined for lead on an industrial scale from within a few years of the invasion, and lead pigs stamped with imperial names travelled out along this road. The clearest surviving <em>agger</em> is in the fields near Radstock.",
+		note: "The Fosse Way crosses Somerset from <em>Lindinis</em> at Ilchester towards <em>Aquae Sulis</em> at Bath, where the hot springs and the temple of Sulis Minerva made one of the most visited sites in Roman Britain. The Mendips were mined for lead on an industrial scale from within a few years of the invasion, and lead pigs stamped with imperial names travelled out along this road. The clearest surviving <em>agger</em> is in the fields near Radstock.",
 		seeing:
 			"Bath is unmissable: the Roman Baths are the best-preserved Roman religious spa complex north of the Alps, with the spring, the great bath and the temple pediment of Sulis Minerva. Charterhouse on Mendip has the earthworks of the lead-mining settlement and a small amphitheatre.",
 	},
 	dorset: {
 		roads: ["ackling-dyke"],
-		note: "Ackling Dyke crosses Cranborne Chase toward <em>Durnovaria</em> at Dorchester, and preserves one of the finest Roman road earthworks in Britain: an <em>agger</em> up to fifteen metres wide, standing nearly two metres above the fields and walkable for several kilometres near Badbury Rings. Dorset was hard-won country — Vespasian, then a legionary legate, reduced its hillforts in the campaigns after AD 43, Maiden Castle among them.",
+		note: "Ackling Dyke crosses Cranborne Chase towards <em>Durnovaria</em> at Dorchester, and preserves one of the finest Roman road earthworks in Britain: an <em>agger</em> up to fifteen metres wide, standing nearly two metres above the fields and walkable for several kilometres near Badbury Rings. Dorset was hard-won country. Vespasian, then a legionary legate, reduced its hillforts in the campaigns after AD 43, Maiden Castle among them.",
 		seeing:
 			"Dorchester keeps the only fully exposed Roman town house in Britain, behind County Hall, with mosaics and a hypocaust under cover and free access. Maiden Castle, the largest hillfort in the country, is a short walk from the town, and the Roman aqueduct that fed <em>Durnovaria</em> can be traced as a terrace along the Frome valley.",
 	},
@@ -156,7 +156,7 @@ export const COUNTY_NOTES: Record<string, CountyNote> = {
 	},
 	leicestershire: {
 		roads: ["fosse-way", "watling-street"],
-		note: "<em>Venonis</em> at High Cross, on the county's southern edge, is where the Fosse Way crosses Watling Street — traditionally called the centre of Roman Britain, and marked by a battered eighteenth-century monument. <em>Ratae Corieltauvorum</em> at Leicester was the tribal capital and keeps the Jewry Wall, one of the tallest pieces of Roman masonry standing in the country.",
+		note: "<em>Venonis</em> at High Cross, on the county's southern edge, is where the Fosse Way crosses Watling Street. The crossing is traditionally called the centre of Roman Britain and is marked by a battered eighteenth-century monument. <em>Ratae Corieltauvorum</em> at Leicester was the tribal capital and keeps the Jewry Wall, one of the tallest pieces of Roman masonry standing in the country.",
 		seeing:
 			"The Jewry Wall Museum reopened in 2025 around the excavated baths, with the wall itself standing nine metres high beside them. At High Cross, on the Warwickshire border, a battered eighteenth-century monument marks the crossing of the Fosse Way and Watling Street in an otherwise unremarkable field.",
 	},
@@ -170,7 +170,7 @@ export const COUNTY_NOTES: Record<string, CountyNote> = {
 		roads: ["devils-highway"],
 		note: "<em>Calleva Atrebatum</em> at Silchester sits in the north of the county and is one of the most remarkable Roman sites in Britain: a walled town abandoned after the Roman period rather than built over, so the full circuit of its walls and its amphitheatre stand in open farmland with a footpath round them. The Devil's Highway ran west to it from London, and roads radiated from Calleva in every direction.",
 		seeing:
-			"Park at the church inside the walls, walk the full circuit through farmland, and find the amphitheatre outside the east gate. Reading Museum holds the finds, including the Silchester eagle. Elsewhere in the county, Portchester Castle near Portsmouth has the most complete Roman fort walls in northern Europe, standing to their full height with a Norman keep inside.",
+			"Park at the church inside the walls, walk the full circuit through farmland and find the amphitheatre outside the east gate. Reading Museum holds the finds, including the Silchester eagle. Elsewhere in the county, Portchester Castle near Portsmouth has the most complete Roman fort walls in northern Europe, standing to their full height with a Norman keep inside.",
 	},
 	cheshire: {
 		roads: ["via-devana"],

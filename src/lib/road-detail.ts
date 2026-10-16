@@ -29,7 +29,7 @@ export type RoadDetail = {
 export const ROAD_DETAIL: Record<string, RoadDetail> = {
 	"watling-street": {
 		route:
-			"<p>The road began at <em>Rutupiae</em>, the invasion beachhead at Richborough, where a great four-way triumphal arch once marked the formal entrance to the province. From there it ran west to <em>Durovernum Cantiacorum</em> at Canterbury, then north-west through <em>Durobrivae</em> at Rochester, crossing the Medway, and on over Shooter's Hill into <em>Londinium</em>.</p><p>North of the Thames it resumed as the great diagonal of the province. It passed <em>Verulamium</em> at St Albans, <em>Durocobrivis</em> at Dunstable, <em>Lactodorum</em> at Towcester and reached <em>Venonis</em> at High Cross in Leicestershire, where it crossed the Fosse Way at a near-perfect right angle. Beyond that it ran through <em>Letocetum</em> at Wall in Staffordshire and finished at <em>Viroconium Cornoviorum</em> at Wroxeter, for a time the fourth largest town in Roman Britain.</p>",
+			"<p>The road began at <em>Rutupiae</em>, the invasion beachhead at Richborough, where a great four-way triumphal arch once marked the formal entrance to the province. From there it ran west to <em>Durovernum Cantiacorum</em> at Canterbury, then north-west through <em>Durobrivae</em> at Rochester, crossing the Medway, then on over Shooter's Hill into <em>Londinium</em>.</p><p>North of the Thames it resumed as the great diagonal of the province. It passed <em>Verulamium</em> at St Albans, <em>Durocobrivis</em> at Dunstable, <em>Lactodorum</em> at Towcester and reached <em>Venonis</em> at High Cross in Leicestershire, where it crossed the Fosse Way at a near-perfect right angle. Beyond that it ran through <em>Letocetum</em> at Wall in Staffordshire and finished at <em>Viroconium Cornoviorum</em> at Wroxeter, for a time the fourth largest town in Roman Britain.</p>",
 		modern:
 			"<p>Watling Street is the most completely surviving of all Britain's Roman roads. The A2 carries its line from Dover through Canterbury to London. In the capital the road is still legible in the street plan: Edgware Road running north-west from Marble Arch is Watling Street, and the name persists on signposts in Bexleyheath and Radlett.</p><p>North-west of London the A5 follows the Roman surveying so closely that for long stretches the modern carriageway sits within a few metres of the original line. The M1 was built to relieve it, not to replace it. Where the A5 runs dead straight for miles across Northamptonshire and Warwickshire, that is Roman work.</p>",
 		seeing:
@@ -60,7 +60,7 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 		modern:
 			"<p>The A10 north out of London runs close to the southern end. The A1198 between Royston and Godmanchester still carries the name Ermine Street on its signs. North of Lincoln the A15 runs along the Roman line for more than twenty kilometres without a meaningful bend, one of the straightest stretches of road in Britain.</p><p>The A1 is often described as following Ermine Street, and along parts of its length it does, but the Great North Road and the Roman road diverge repeatedly. The A1 is the descendant of the medieval route, which itself borrowed Roman engineering where it suited.</p>",
 		seeing:
-			"<p>Lincoln is the obvious destination. The Newport Arch, at the north end of Bailgate in the upper city, is the only Roman gateway in Britain still standing over a road carrying traffic, and the traffic below it is on the line of Ermine Street.</p><p>For the road as a road, drive or cycle the A15 north from Lincoln toward the Humber. The horizon-to-horizon straightness across the flat Lincolnshire farmland gives a clearer sense of Roman surveying than any excavated site.</p>",
+			"<p>Lincoln is the obvious destination. The Newport Arch, at the north end of Bailgate in the upper city, is the only Roman gateway in Britain still standing over a road carrying traffic, and the traffic below it is on the line of Ermine Street.</p><p>For the road as a road, drive or cycle the A15 north from Lincoln towards the Humber. The horizon-to-horizon straightness across the flat Lincolnshire farmland gives a clearer sense of Roman surveying than any excavated site.</p>",
 		faq: [
 			{
 				q: "Is the A1 a Roman road?",
@@ -81,7 +81,7 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 		route:
 			"<p>The Fosse Way ran from <em>Isca Dumnoniorum</em> at Exeter north-east across the whole width of southern Britain. It passed <em>Lindinis</em> at Ilchester, skirted <em>Aquae Sulis</em> at Bath, and reached <em>Corinium Dobunnorum</em> at Cirencester, the second largest town in the province.</p><p>From Cirencester it ran on through the Cotswolds past Moreton-in-Marsh to <em>Venonis</em> at High Cross, where it crossed Watling Street. It continued through <em>Ratae Corieltauvorum</em> at Leicester and past Newark to finish at <em>Lindum</em> at Lincoln.</p><p>Its straightness is the thing most often remarked on. Between Lincoln and Ilchester, a stretch of some two hundred and ninety kilometres, the road never strays more than about ten kilometres from a straight line drawn between those two points. The full route to Exeter is nearer three hundred and seventy.</p>",
 		modern:
-			"<p>No single modern road carries the whole Fosse Way, which is part of its charm. The A37 and A367 follow it in Somerset, the A429 through the Cotswolds between Cirencester and Moreton-in-Marsh, and the A46 north of Leicester toward Newark and Lincoln.</p><p>Between those stretches the road survives as unclassified lanes, farm tracks and field boundaries. The A429 is the section most drivers notice: it runs straight and fast across the Cotswold plateau in a way that no medieval road ever does.</p>",
+			"<p>No single modern road carries the whole Fosse Way, which is part of its charm. The A37 and A367 follow it in Somerset, the A429 through the Cotswolds between Cirencester and Moreton-in-Marsh, and the A46 north of Leicester towards Newark and Lincoln.</p><p>Between those stretches the road survives as unclassified lanes, farm tracks and field boundaries. The A429 is the section most drivers notice: it runs straight and fast across the Cotswold plateau in a way that no medieval road ever does.</p>",
 		seeing:
 			"<p>The Cotswold stretch of the A429 is the easiest place to appreciate it from a car. For walking, the section across the fields near Radstock in Somerset preserves a clear <em>agger</em>, the raised embankment on which the road was built.</p><p><em>Corinium</em> at Cirencester has the Corinium Museum, whose mosaic collection is among the best in Britain, and the town's street grid still reflects the Roman one.</p>",
 		faq: [
@@ -102,7 +102,7 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 
 	"stane-street": {
 		route:
-			"<p>Stane Street ran south-west from <em>Londinium</em> to <em>Noviomagus Reginorum</em> at Chichester. It left London at the southern bridgehead in Southwark and headed for Ewell, then crossed the Mole near Dorking and climbed the chalk scarp of the North Downs close to Box Hill.</p><p>Beyond the Downs it ran through the heavy clay of the Sussex Weald, passed the posting station at Alfoldean, crossed the Arun, and climbed the South Downs at Bignor before dropping into the coastal plain and the civitas capital of the Regni.</p><p>The surveying is the boldest in Britain. The first stretch out of London is aligned almost exactly on the centre of Chichester, ninety kilometres away and entirely out of sight beyond two ranges of hills.</p>",
+			"<p>It left London at the southern bridgehead in Southwark and headed for Ewell, then crossed the Mole near Dorking and climbed the chalk scarp of the North Downs close to Box Hill.</p><p>Beyond the Downs it ran through the heavy clay of the Sussex Weald, passed the posting station at Alfoldean, crossed the Arun and climbed the South Downs at Bignor before dropping into the coastal plain and the civitas capital of the Regni.</p><p>The opening alignment out of London was fixed on Chichester, entirely out of sight beyond two ranges of hills, which is the real measure of the work.</p>",
 		modern:
 			"<p>The A29 through Sussex follows long sections, particularly between Billingshurst and Pulborough. In Surrey the A24 shadows the line near Dorking. Within London the road is largely built over, though Kennington Park Road and Clapham Road sit on it.</p><p>Much of the middle of the route was never adopted by a modern road at all, which is why so much of it survives as footpath and bridleway across the Weald and the Downs.</p>",
 		seeing:
@@ -127,13 +127,13 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 		route:
 			"<p>Akeman Street ran west from <em>Verulamium</em> at St Albans, where it left Watling Street, and headed for the Chilterns. It passed through Tring and Aylesbury, then ran across the Oxfordshire clay past Alchester near Bicester, a small walled town at an important junction.</p><p>West of Alchester it continued past the villa at North Leigh and through the Windrush valley to reach <em>Corinium Dobunnorum</em> at Cirencester, where it met the Fosse Way. Watling Street, Akeman Street and the Fosse Way together enclosed the wealthiest and most Romanised part of the province.</p>",
 		modern:
-			"<p>The A41 picks up the line near Tring and follows it, on and off, toward Bicester. West of there the modern road network largely abandons it, and the Roman route survives as minor lanes and green tracks through west Oxfordshire and the Cotswolds.</p>",
+			"<p>The A41 picks up the line near Tring and follows it, on and off, towards Bicester. West of there the modern road network largely abandons it, and the Roman route survives as minor lanes and green tracks through west Oxfordshire and the Cotswolds.</p>",
 		seeing:
 			"<p>North Leigh Roman Villa in Oxfordshire sits just off the road and has a fine mosaic under cover. The green lane sections between Kirtlington and Ramsden are walkable and unusually undisturbed.</p><p>At Cirencester the Corinium Museum sets the road in the context of the town it served.</p>",
 		faq: [
 			{
 				q: "Where does the name Akeman Street come from?",
-				a: "It is Old English. The Anglo-Saxons called Bath Acemannesceaster, the town of Aceman, and Akeman Street was understood as the road leading toward it from the east.",
+				a: "It is Old English. The Anglo-Saxons called Bath Acemannesceaster, the town of Aceman, and Akeman Street was understood as the road leading towards it from the east.",
 			},
 			{
 				q: "Is the A41 a Roman road?",
@@ -144,7 +144,7 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 
 	"dere-street": {
 		route:
-			"<p>Dere Street ran north from <em>Eboracum</em> at York, the legionary fortress and later capital of Britannia Inferior. It passed <em>Isurium Brigantum</em> at Aldborough and <em>Cataractonium</em> at Catterick, crossed the Tees, and reached <em>Vinovia</em> at Binchester.</p><p>It continued north to <em>Coria</em> at Corbridge, the great supply base on the Tyne just south of Hadrian's Wall, and crossed the wall itself at the Portgate. Beyond the frontier it pushed on through Redesdale and over the Cheviots at Chew Green, then ran through the Scottish borders past Trimontium at Newstead to reach Inveresk on the Firth of Forth.</p>",
+			"<p>Dere Street ran north from <em>Eboracum</em> at York, the legionary fortress and later capital of Britannia Inferior. It passed <em>Isurium Brigantum</em> at Aldborough and <em>Cataractonium</em> at Catterick, crossed the Tees and reached <em>Vinovia</em> at Binchester.</p><p>It continued north to <em>Coria</em> at Corbridge, the great supply base on the Tyne just south of Hadrian's Wall, and crossed the wall itself at the Portgate. Beyond the frontier it pushed on through Redesdale and over the Cheviots at Chew Green, then ran through the Scottish borders past Trimontium at Newstead to reach Inveresk on the Firth of Forth.</p>",
 		modern:
 			"<p>The A1 follows the line closely between York and Scotch Corner. North of Corbridge the A68 takes up the route across Northumberland and into Scotland, and its long straight climbs and sudden crests are a direct consequence of Roman surveying that took hills head on rather than contouring around them.</p>",
 		seeing:
@@ -163,7 +163,7 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 
 	"peddars-way": {
 		route:
-			"<p>Peddars Way ran from a junction with the Icknield Way in south-west Norfolk, near Knettishall Heath, north-west across the county to the coast at Holme-next-the-Sea. It holds a remarkably consistent alignment for about seventy kilometres over gently rolling chalk and sand.</p><p>Its purpose is generally read as military. The road was laid out in the years after the Boudican revolt of AD 60 and 61, cutting directly through the territory of the defeated Iceni, and it may have continued by ferry across the Wash to the Lincolnshire shore.</p>",
+			"<p>The road starts near Knettishall Heath and runs north-west across the county to the sea. It holds a remarkably consistent alignment for about seventy kilometres over gently rolling chalk and sand.</p><p>Its purpose is generally read as military. The road was laid out in the years after the Boudican revolt of AD 60 and 61, cutting directly through the territory of the defeated Iceni, and it may have continued by ferry across the Wash to the Lincolnshire shore.</p>",
 		modern:
 			"<p>Almost none of it. Peddars Way is unusual among major Roman roads in Britain in having been left alone: no modern trunk road took it up, and long stretches were never even metalled. A few short sections are minor lanes; the rest is track and footpath.</p>",
 		seeing:
@@ -182,7 +182,7 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 
 	"via-devana": {
 		route:
-			"<p>The route as proposed runs diagonally across England from <em>Camulodunum</em> at Colchester through Cambridge and Godmanchester, then north-west through the Midlands to <em>Deva Victrix</em> at Chester.</p><p>Real Roman road certainly exists along parts of that line. The stretch from Colchester toward Cambridge is well attested, and the section from Cambridge to Godmanchester is clear on the ground. Beyond Godmanchester the evidence thins, and the western half was for a long time omitted from some historians' maps for that reason, though most now accept the route.</p>",
+			"<p>The route as proposed runs diagonally across England from <em>Camulodunum</em> at Colchester through Cambridge and Godmanchester, then north-west through the Midlands to <em>Deva Victrix</em> at Chester.</p><p>Real Roman road certainly exists along parts of that line. The stretch from Colchester towards Cambridge is well attested, and the section from Cambridge to Godmanchester is clear on the ground. Beyond Godmanchester the evidence thins, and the western half was for a long time omitted from some historians' maps for that reason, though most now accept the route.</p>",
 		modern:
 			"<p>The A1307 between Cambridge and Haverhill follows parts of the eastern section. The A604 is sometimes cited for this road, but that number was retired in the 1990s and split between the A14 and the A1307.</p>",
 		seeing:
@@ -201,7 +201,7 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 
 	"sarn-helen": {
 		route:
-			"<p>Sarn Helen is not one road but the Welsh name given to the chain of Roman roads running the length of Wales from north to south. The northern end is given variously as <em>Segontium</em>, the fort at Caernarfon, or <em>Canovium</em> at Caerhun in the Conwy valley. From there the line runs south-east past the fort at Tomen y Mur near Trawsfynydd, over the moors above Ffestiniog and down through mid Wales.</p><p>It continues past the gold mines at Dolaucothi, which the Roman state worked on a large scale, and reaches <em>Maridunum</em> at Carmarthen in the south-west. Several branches and alternative alignments carry the same name locally.</p>",
+			"<p>The northern end is given variously as <em>Segontium</em>, the fort at Caernarfon, or <em>Canovium</em> at Caerhun in the Conwy valley. From there the line runs south-east past the fort at Tomen y Mur near Trawsfynydd, over the moors above Ffestiniog and down through mid Wales.</p><p>It continues past the gold mines at Dolaucothi, which the Roman state worked on a large scale, and reaches <em>Maridunum</em> at Carmarthen in the south-west. Several branches and alternative alignments carry the same name locally.</p>",
 		modern:
 			"<p>Very little. The A470 shadows the general corridor through mid Wales without following the Roman line closely. A handful of mountain lanes sit directly on it, and several are still signposted Sarn Helen.</p>",
 		seeing:
@@ -220,7 +220,7 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 
 	stanegate: {
 		route:
-			"<p>The Stanegate ran between <em>Coria</em> at Corbridge on the Tyne and <em>Luguvalium</em> at Carlisle on the Eden, crossing the narrowest part of northern Britain. It followed the natural corridor of the Tyne and Irthing valleys rather than the ridge line that Hadrian's Wall would later take.</p><p>Forts were built along it under the Flavian emperors and then more densely under Trajan: Vindolanda, Nether Denton, Carvoran and others. For roughly a generation, from about AD 105 until the wall was begun around AD 122, this string of forts along a road was the northern frontier of the Roman empire in Britain.</p>",
+			"<p>From Corbridge on the Tyne to Carlisle on the Eden it followed the natural corridor of the Tyne and Irthing valleys rather than the ridge line that Hadrian's Wall would later take.</p><p>Forts were built along it under the Flavian emperors and then more densely under Trajan: Vindolanda, Nether Denton, Carvoran and others. For roughly a generation, from about AD 105 until the wall was begun around AD 122, this string of forts along a road was the northern frontier of the Roman empire in Britain.</p>",
 		modern:
 			"<p>The A69 between Corbridge and Carlisle shares the corridor rather than the alignment, taking an easier course along the valley bottom where the Roman road held higher ground.</p><p>The minor road known as the Military Road, the B6318, is a different thing entirely and is largely eighteenth century, built on the wall rather than on the Stanegate.</p>",
 		seeing:
@@ -239,9 +239,9 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 
 	"king-street": {
 		route:
-			"<p>King Street branched from Ermine Street near <em>Durobrivae</em> at Water Newton and ran north through the western edge of the Lincolnshire fens, past Bourne, before rejoining the main road about a kilometre south of Ancaster. The road on north from Bourne toward Sleaford is Mareham Lane, a separate Roman route.</p><p>Where Ermine Street kept to the higher ground to the east, King Street took the lower and more direct line through the fen edge, which required building a raised causeway across ground that flooded. It served the salt-making and farming settlements of the fenland, a landscape the Romans drained and exploited intensively.</p>",
+			"<p>From Ermine Street near <em>Durobrivae</em> the road ran past Bourne and rejoined Ermine Street about a kilometre south of Ancaster. The road on north from Bourne towards Sleaford is Mareham Lane, a separate Roman route.</p><p>The lower line through the fen edge came at a cost: it needed a raised causeway across ground that flooded. It served the salt-making and farming settlements of the fenland, a landscape the Romans drained and exploited intensively.</p>",
 		modern:
-			"<p>Very little of it. South of Bourne the line survives as minor lanes and field boundaries, and it is easy to pick out on a map as an unusually straight run of otherwise unremarkable country roads. North of Bourne little of the road is still in use.</p>",
+			"<p>Very little of it. On a map the stretch south of Bourne is easy to pick out as an unusually straight run among otherwise unremarkable country roads; north of Bourne it has largely gone.</p>",
 		seeing:
 			"<p>The fen-edge lanes around Baston and Kate's Bridge give the clearest sense of it. This is quiet, flat country and the road's straightness across it is unmistakable.</p><p>Nearby, the Roman town at Water Newton and the Car Dyke, a major Roman watercourse running roughly parallel, put the road in the context of a heavily engineered fenland landscape.</p>",
 		faq: [
@@ -258,7 +258,7 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 
 	"pye-road": {
 		route:
-			"<p>The Pye Road ran north from <em>Camulodunum</em> at Colchester, the first Roman colony in Britain, to <em>Venta Icenorum</em> at Caistor St Edmund, the civitas capital of the Iceni just south of modern Norwich.</p><p>It crossed the Stour near Stratford St Mary, ran up through Suffolk past the small town at Coddenham, crossed the Waveney at Scole where a substantial roadside settlement grew up, and continued over the Tas to Caistor. Its purpose was administrative: it tied the defeated Iceni to the colony that symbolised Roman power in the region.</p>",
+			"<p><em>Camulodunum</em> at Colchester was the first Roman colony in Britain; <em>Venta Icenorum</em> at Caistor St Edmund, just south of modern Norwich, was the civitas capital of the Iceni.</p><p>The road crossed the Stour near Stratford St Mary, ran up through Suffolk past the small town at Coddenham, crossed the Waveney at Scole where a substantial roadside settlement grew up, and continued over the Tas to Caistor. Its purpose was administrative: it tied the defeated Iceni to the colony that symbolised Roman power in the region.</p>",
 		modern:
 			"<p>The A140 between Ipswich and Norwich follows the Roman line closely for most of its length, which is why it runs so much straighter than the lanes around it. The A12 near Stratford St Mary picks up the southern end.</p>",
 		seeing:
@@ -277,7 +277,7 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 
 	"devils-highway": {
 		route:
-			"<p>The Devil's Highway ran west from <em>Londinium</em> to <em>Calleva Atrebatum</em> at Silchester, the walled town that was the tribal capital of the Atrebates and a major road hub in its own right.</p><p>It crossed the Thames at <em>Pontes</em> near Staines, then ran across the Bagshot heaths and the sandy country of east Berkshire, through what is now Crowthorne and Wokingham, before approaching Silchester from the east. The line is direct and fast, chosen for speed across poor and thinly settled ground.</p>",
+			"<p><em>Calleva Atrebatum</em> at Silchester, at the western end, was a walled town, the tribal capital of the Atrebates and a major road hub in its own right.</p><p>The road crossed the Thames at <em>Pontes</em> near Staines, then ran across the Bagshot heaths and the sandy country of east Berkshire, through what is now Crowthorne and Wokingham, before approaching Silchester from the east. The line is direct and fast, chosen for speed across poor and thinly settled ground.</p>",
 		modern:
 			"<p>The A4 and the A30 both run in the same broad corridor without following the Roman line closely. Much of the road's central section crosses ground that was later heath, forest and army training land, so no modern route adopted it.</p>",
 		seeing:
@@ -300,7 +300,7 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 		modern:
 			"<p>The B3081 and various minor roads take up short sections, and the A354 between Salisbury and Blandford runs in the same corridor. But much of the best-preserved length crosses land that never carried a modern road, which is precisely why it survives so well.</p>",
 		seeing:
-			"<p>This is among the finest surviving Roman road earthworks in Britain. Between Badbury Rings and Bottlebush Down the <em>agger</em> runs up to fifteen metres wide and stands nearly two metres above the surrounding fields, unmistakable and walkable for several kilometres.</p><p>The National Trust land around Badbury Rings gives the easiest access. Park at the rings and follow the road north-east, toward Oakley Down and Old Sarum.</p>",
+			"<p>This is among the finest surviving Roman road earthworks in Britain. Between Badbury Rings and Bottlebush Down the <em>agger</em> runs up to fifteen metres wide and stands nearly two metres above the surrounding fields, unmistakable and walkable for several kilometres.</p><p>The National Trust land around Badbury Rings gives the easiest access. Park at the rings and follow the road north-east, towards Oakley Down and Old Sarum.</p>",
 		faq: [
 			{
 				q: "What is an agger?",
@@ -315,7 +315,7 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 
 	"stone-street": {
 		route:
-			"<p>Stone Street ran almost due south from <em>Durovernum Cantiacorum</em> at Canterbury, the chief town of the Cantii, to <em>Portus Lemanis</em> at Lympne on the Kent coast.</p><p>Lympne was one of the forts of the Saxon Shore, the chain of coastal strongholds built in the third century to watch the Channel, and it was also a harbour. The road existed to move goods and troops between the inland capital and the sea, and it does so with almost no concession to terrain, holding a single alignment across the chalk of the North Downs for about twenty kilometres.</p>",
+			"<p>Lympne was one of the forts of the Saxon Shore, the chain of coastal strongholds built in the third century to watch the Channel, and it was also a harbour. The road existed to move goods and troops between the inland capital and the sea, and it does so with almost no concession to terrain, holding a single alignment across the chalk of the North Downs for about twenty kilometres.</p>",
 		modern:
 			"<p>The B2068 follows it almost exactly for its full length, and is still called Stone Street on the signs. It is one of the most faithful modern survivals of a Roman alignment anywhere in Britain.</p>",
 		seeing:
@@ -334,9 +334,9 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 
 	"ryknild-street": {
 		route:
-			"<p>Ryknild Street ran north from a junction with the Fosse Way near Bourton-on-the-Water in Gloucestershire, up through the West Midlands to the fort at <em>Templeborough</em> near Rotherham in South Yorkshire.</p><p>It passed <em>Alcester</em> in Warwickshire, crossed Watling Street at <em>Letocetum</em> at Wall in Staffordshire, and continued through Derbyshire past Little Chester near Derby and up the Trent and Rother valleys. The crossing at Wall, where two major roads met at right angles beside a Roman bath house and inn, was one of the important junctions of the province.</p>",
+			"<p>Leaving the Fosse Way it passed <em>Alcester</em> in Warwickshire, crossed Watling Street at <em>Letocetum</em> at Wall in Staffordshire, and continued through Derbyshire past Little Chester near Derby and up the Trent and Rother valleys. The crossing at Wall, where two major roads met at right angles beside a Roman bath house and inn, was one of the important junctions of the province.</p>",
 		modern:
-			"<p>The A38 follows the line closely through Staffordshire and Derbyshire. North of Burton-on-Trent the modern road runs nearly straight for a long stretch, the surveying made easy by the broad flat Trent valley. Icknield Street, an alternative spelling of the same road name, appears on street signs in Birmingham.</p>",
+			"<p>The A38 follows the line closely through Staffordshire and Derbyshire. Icknield Street, an alternative spelling of the same road name, appears on street signs in Birmingham.</p>",
 		seeing:
 			"<p><em>Letocetum</em> at Wall, near Lichfield, is the best stop: the excavated bath house and mansio sit at the crossroads of Ryknild Street and Watling Street, National Trust land in English Heritage guardianship.</p><p>In Birmingham, Sutton Park preserves a genuinely impressive stretch of the road as a raised <em>agger</em> running through open parkland, one of the few Roman roads anywhere to survive inside a major British city.</p>",
 		faq: [
@@ -353,11 +353,11 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 
 	"maiden-way": {
 		route:
-			"<p>The Maiden Way ran north from the fort at <em>Bravoniacum</em> at Kirkby Thore in the Eden valley, climbed onto the high Pennines, and reached the wall fort at <em>Magnis</em> at Carvoran near Greenhead.</p><p>It crossed some of the most exposed ground any Roman road in Britain had to cover, holding above four hundred metres for long stretches over open fell. As well as connecting the Eden valley to the frontier it served the lead and silver mines of Alston Moor, which the Roman state worked directly.</p>",
+			"<p>From the Eden valley it climbed straight onto the high Pennines and reached the wall at Carvoran near Greenhead. As well as connecting the Eden valley to the frontier it served the lead and silver mines of Alston Moor, which the Roman state worked directly.</p>",
 		modern:
 			"<p>Essentially none. The A686 and A689 cross the same country but take different lines. The Maiden Way runs over ground that no modern road has ever wanted, and it survives largely because of that.</p>",
 		seeing:
-			"<p>The stretch across the moor above Kirkland, climbing toward Melmerby Fell, is the classic one. In the right light the road shows as a pale ribbon running dead straight up the heather.</p><p>At the northern end, the Roman Army Museum at Carvoran sits at the road's junction with Hadrian's Wall, next to some of the best-preserved wall country.</p>",
+			"<p>The stretch across the moor above Kirkland, climbing towards Melmerby Fell, is the classic one. In the right light the road shows as a pale ribbon running dead straight up the heather.</p><p>At the northern end, the Roman Army Museum at Carvoran sits at the road's junction with Hadrian's Wall, next to some of the best-preserved wall country.</p>",
 		faq: [
 			{
 				q: "Why is it called the Maiden Way?",
@@ -372,11 +372,11 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 
 	"devils-causeway": {
 		route:
-			"<p>The Devil's Causeway branched from Dere Street at the Portgate, on the high ground north of Corbridge where Dere Street crosses Hadrian's Wall, and ran north-east across Northumberland to the mouth of the Tweed near Berwick, about fifty-five miles.</p><p>It crossed the Wansbeck, the Coquet and the Aln, serving the forts and settlements of the north-east coastal plain. Its purpose was to give the army a route up the eastern side of Northumberland without funnelling everything through the Cheviot crossings that Dere Street used.</p>",
+			"<p>The Portgate sits on the high ground where Dere Street crosses Hadrian's Wall. From there the road ran north-east across Northumberland to the mouth of the Tweed, about fifty-five miles.</p><p>It crossed the Wansbeck, the Coquet and the Aln, serving the forts and settlements of the north-east coastal plain. Its purpose was to give the army a route up the eastern side of Northumberland without funnelling everything through the Cheviot crossings that Dere Street used.</p>",
 		modern:
 			"<p>The A697 touches, crosses and briefly follows the line in the middle of the county, and minor roads and farm tracks sit on it further north. No major modern road took it up, so much of its length crosses open farmland as a hedge line, a field boundary or a right of way.</p>",
 		seeing:
-			"<p>Ordnance Survey maps mark long stretches simply as Roman Road, and the line is easy to follow on the ground north of Longframlington and toward Lowick.</p><p>The country it crosses is quiet and open, and the road's straightness across the rolling Northumberland farmland is plain from any rise.</p>",
+			"<p>Ordnance Survey maps mark long stretches simply as Roman Road, and the line is easy to follow on the ground north of Longframlington and towards Lowick.</p><p>The country it crosses is quiet and open, and the road's straightness across the rolling Northumberland farmland is plain from any rise.</p>",
 		faq: [
 			{
 				q: "Why is it called the Devil's Causeway?",
@@ -391,7 +391,7 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 
 	"high-street": {
 		route:
-			"<p>The road climbed from the fort at <em>Galava</em> at Ambleside, at the head of Windermere, up onto the long north-south ridge above Kirkstone and held to it for most of its length before dropping into the Eden valley at <em>Brocavum</em> at Brougham near Penrith.</p><p>Along the ridge itself the road runs above seven hundred metres, over open fell with no shelter of any kind, which takes it higher than any other Roman road in England. The ridge has taken the road's name: the mountain is called High Street, one of very few English hills named after a piece of Roman infrastructure. Not every archaeologist accepts the whole line as Roman, since much of it survives as a worn hollow rather than a built embankment.</p>",
+			"<p>The road climbed from the fort at <em>Galava</em> at Ambleside, at the head of Windermere, up onto the long north-south ridge above Kirkstone and held to it for most of its length before dropping into the Eden valley at <em>Brocavum</em> at Brougham near Penrith.</p><p>Along the ridge itself there is open fell and no shelter of any kind. The ridge has taken the road's name: the mountain is called High Street, one of very few English hills named after a piece of Roman infrastructure. Not every archaeologist accepts the whole line as Roman, since much of it survives as a worn hollow rather than a built embankment.</p>",
 		modern:
 			"<p>None whatsoever. No modern road follows it, and none ever will. The A592 over Kirkstone Pass crosses the same range by a wholly different and much lower line.</p>",
 		seeing:
@@ -414,7 +414,7 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 
 	"icknield-way": {
 		route:
-			"<p>The Icknield Way runs along the chalk from Norfolk south-west through the Chilterns toward the Wessex downs, following the dry high ground above the wooded and waterlogged clay of the vales.</p><p>It is prehistoric. It was in use for many centuries before the conquest and it is not a Roman road in origin or in engineering. The Romans metalled sections of it where the line served their network, notably between Ivinghoe and Tring, and they built other roads that crossed it, but they never rebuilt it as a whole.</p>",
+			"<p>The Icknield Way runs along the chalk from Norfolk south-west through the Chilterns towards the Wessex downs, following the dry high ground above the wooded and waterlogged clay of the vales.</p><p>It is not a Roman road in origin or in engineering. Where the Romans used it they metalled the existing line rather than resurveying it, and most of the roads they built themselves cross it rather than follow it.</p>",
 		modern:
 			"<p>The A505 near Baldock and the A5 near Dunstable pick up parts of the corridor. Icknield Street and Icknield Way appear as street names in a dozen towns along the route.</p>",
 		seeing:
@@ -437,7 +437,7 @@ export const ROAD_DETAIL: Record<string, RoadDetail> = {
 
 	"military-way": {
 		route:
-			"<p>The Military Way is not a single named route but the service road that ran behind a Roman frontier wall, linking its forts, milecastles and turrets.</p><p>Two frontiers in Britain had one. Behind Hadrian's Wall it ran the full width of the country from Wallsend to Bowness-on-Solway, generally a little to the south of the wall and between it and the Vallum. Behind the Antonine Wall a shorter equivalent ran across the central belt of Scotland from the Forth to the Clyde.</p><p>Its purpose was lateral movement: getting men and supplies quickly along the frontier rather than through it.</p>",
+			"<p>Behind Hadrian's Wall it ran the full width of the country from Wallsend to Bowness-on-Solway, generally a little to the south of the wall and between it and the Vallum. The Antonine Wall's shorter equivalent ran from the Forth to the Clyde.</p><p>Its purpose was lateral movement: getting men and supplies quickly along the frontier rather than through it.</p>",
 		modern:
 			"<p>The B6318, confusingly called the Military Road, is an eighteenth-century construction built largely on top of Hadrian's Wall itself after the Jacobite rising, not on the Roman Military Way. The two should not be confused.</p>",
 		seeing:

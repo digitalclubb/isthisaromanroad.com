@@ -114,7 +114,7 @@ function toggleSearch() {
 
 	.text-link {
 		/* Expands the tap target to meet WCAG 2.2 SC 2.5.8 (24px AA) with
-		   headroom toward AAA (44px), without changing the apparent baseline.
+		   headroom towards AAA (44px), without changing the apparent baseline.
 		   The inline-flex centring is necessary — min-height alone leaves
 		   the text near the top of the 44px box. */
 		display: inline-flex;

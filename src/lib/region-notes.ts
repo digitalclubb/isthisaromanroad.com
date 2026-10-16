@@ -52,7 +52,7 @@ export const REGION_NOTES: Record<string, string> = {
 		"Roman Dacia was conquered by Trajan in AD 106 and abandoned barely one hundred and seventy years later, which makes its road network unusually easy to date. The roads were driven north from the Danube to the gold mines of the Apuseni mountains, the wealth that paid for Trajan's Column and his forum at Rome.",
 
 	belgium:
-		"The <em>Via Belgica</em> is the road that defines Roman Belgium, running east from the Channel at Boulogne through Bavay and Tongeren toward Cologne and the Rhine. It carried the traffic between the British provinces and the German frontier, and long sections in Limburg are still followed by modern roads and field boundaries.",
+		"The <em>Via Belgica</em> is the road that defines Roman Belgium, running east from the Channel at Boulogne through Bavay and Tongeren towards Cologne and the Rhine. It carried the traffic between the British provinces and the German frontier, and long sections in Limburg are still followed by modern roads and field boundaries.",
 
 	croatia:
 		"Roman Dalmatia's roads had to cross one of the hardest coastlines in the empire, threading between the Adriatic and the Dinaric mountains. The network was laid out from Salona near Split, the provincial capital, with routes inland to the Sava valley and the Pannonian plain. Diocletian, born in the province, retired to his palace at Split at the end of one of them.",
@@ -61,25 +61,25 @@ export const REGION_NOTES: Record<string, string> = {
 		"Almost every Roman road in the Netherlands relates to the <em>limes</em>, the Rhine frontier that marked the edge of the empire. The <em>Limesweg</em> ran along the river's south bank linking the forts from the North Sea inland, built on causeways and pile foundations through ground that was mostly water. It forms part of the Lower German Limes, inscribed as a UNESCO World Heritage Site in 2021.",
 
 	syria:
-		"Roman Syria was the empire's frontier with Parthia and later Persia, and its roads carried both armies and the caravan trade. The <em>Strata Diocletiana</em> ran along the desert edge from the Euphrates toward Damascus, a fortified road watching the steppe. Palmyra grew rich as the point where the desert crossing met the Roman road system.",
+		"Roman Syria was the empire's frontier with Parthia and later Persia, and its roads carried both armies and the caravan trade. The <em>Strata Diocletiana</em> ran along the desert edge from the Euphrates towards Damascus, a fortified road watching the steppe. Palmyra grew rich as the point where the desert crossing met the Roman road system.",
 
 	portugal:
-		"Roman <em>Lusitania</em> was governed from <em>Emerita Augusta</em> at Mérida, just over the modern border, and Portugal's roads mostly run toward it. Routes linked the Atlantic ports at Olisipo, modern Lisbon, and Bracara Augusta at Braga to the interior. The Roman bridges of the north, several still carrying traffic, are the most visible survivals.",
+		"Roman <em>Lusitania</em> was governed from <em>Emerita Augusta</em> at Mérida, just over the modern border, and Portugal's roads mostly run towards it. Routes linked the Atlantic ports at Olisipo, modern Lisbon, and Bracara Augusta at Braga to the interior. The Roman bridges of the north, several still carrying traffic, are the most visible survivals.",
 
 	serbia:
-		"Serbia sits at the junction of two Roman arteries: the Danube frontier road, and the <em>Via Militaris</em> running south-east from Singidunum at Belgrade toward Byzantium. The stretch through the Iron Gates gorge was cut into the rock face and carried on timber galleries, one of the most ambitious pieces of road engineering the Romans attempted anywhere.",
+		"Serbia sits at the junction of two Roman arteries: the Danube frontier road, and the <em>Via Militaris</em> running south-east from Singidunum at Belgrade towards Byzantium. The stretch through the Iron Gates gorge was cut into the rock face and carried on timber galleries, one of the most ambitious pieces of road engineering the Romans attempted anywhere.",
 
 	libya:
 		"The cities of Roman Tripolitania, Leptis Magna, Oea and Sabratha, grew rich on the trans-Saharan trade, and the roads inland ran to the desert oases that made it possible. Leptis Magna was the birthplace of the emperor Septimius Severus, who rebuilt it on a scale the province could not sustain and which is why so much of it survives.",
 
 	israel:
-		"Roman <em>Iudaea</em> was intensively roaded after the revolts of AD 66 and 132, when Rome decided the province needed permanent military control. The roads run between the governor's seat at Caesarea Maritima, the legionary fortresses at Jerusalem and Legio near Megiddo, and the frontier forts, and Israel has one of the highest densities of surviving Roman milestones anywhere in the empire.",
+		"Roman <em>Iudaea</em> was intensively roaded after the revolts of AD 66 and 132, when Rome decided the province needed permanent military control. The roads run between the governor's seat at Caesarea Maritima, the legionary fortresses at Jerusalem and Legio near Megiddo and the frontier forts. Israel has one of the highest densities of surviving Roman milestones anywhere in the empire.",
 
 	austria:
 		"Roman Austria spanned <em>Noricum</em>, valued for its iron, and the western part of <em>Pannonia</em>. The <em>Via Claudia Augusta</em> crossed the Alps from Italy to the Danube, and the Danube road linked the Pannonian legionary fortresses at Vindobona, modern Vienna, and Carnuntum. Marcus Aurelius spent his last years on that frontier and died on it.",
 
 	"bosnia-and-herzegovina":
-		"The Roman roads of Bosnia climbed inland from the Dalmatian coast toward the Sava and the Pannonian plain, crossing the Dinaric mountains by the few passes that allow it. They served the silver and lead mines of the interior, which were worked under imperial control and were a significant part of what made the province worth holding.",
+		"The Roman roads of Bosnia climbed inland from the Dalmatian coast towards the Sava and the Pannonian plain, crossing the Dinaric mountains by the few passes that allow it. They served the silver and lead mines of the interior, which were worked under imperial control and were a significant part of what made the province worth holding.",
 
 	jordan:
 		"The <em>Via Nova Traiana</em> is the defining Roman road of Jordan, built between AD 111 and 114 to run the length of the new province of <em>Arabia Petraea</em> from Bostra to the Red Sea at Aila. It followed the line of the far older King's Highway, and it carried the incense trade north from Arabia through Petra.",
@@ -88,10 +88,10 @@ export const REGION_NOTES: Record<string, string> = {
 		"Roman Hungary was the Transdanubian part of <em>Pannonia</em>, and its roads exist to serve the Danube frontier. The limes road ran along the river past the legionary fortresses at Aquincum, now within Budapest and later the capital of Pannonia Inferior, and Brigetio, while the amber route ran south from the Baltic through Savaria to Italy, carrying a trade older than Rome itself.",
 
 	cyprus:
-		"Cyprus was a senatorial province from 22 BC, wealthy from copper — the metal takes its name from the island. Roman roads linked the coastal cities of Paphos, Salamis and Kition, and the Peutinger Table, a medieval copy of a late-antique road map, records the circuit of the island in some detail.",
+		"Cyprus was a senatorial province from 22 BC, wealthy from copper; the metal takes its name from the island. Roman roads linked the coastal cities of Paphos, Salamis and Kition, and the Peutinger Table, a medieval copy of a late-antique road map, records the circuit of the island in some detail.",
 
 	albania:
-		"Albania holds the western end of the <em>Via Egnatia</em>, which began at the Adriatic ports of Dyrrachium at Durrës and Apollonia and climbed inland toward Macedonia. Travellers from Italy crossed the strait from Brundisium and picked up the road here, which makes this coast the hinge between the Roman west and the Greek east.",
+		"Albania holds the western end of the <em>Via Egnatia</em>, which began at the Adriatic ports of Dyrrachium at Durrës and Apollonia and climbed inland towards Macedonia. Travellers from Italy crossed the strait from Brundisium and picked up the road here, which makes this coast the hinge between the Roman west and the Greek east.",
 
 	"north-macedonia":
 		"The <em>Via Egnatia</em> crossed what is now North Macedonia on its way from the Adriatic to Thessalonica, passing Lake Ohrid and Heraclea Lyncestis near Bitola. It was the road that made the southern Balkans a corridor rather than a barrier, and it stayed in use through the Byzantine and Ottoman centuries.",
@@ -126,7 +126,7 @@ export const REGION_EXTRA: Record<string, string> = {
 	"bosnia-and-herzegovina":
 		"The Roman remains here are mostly small and rural, which is itself the point: this was a mining and transit province, not an urban one. Mogorjelo near Čapljina preserves a fortified late-Roman estate, and the mosaics at Stolac and the villa at Višići show the wealth that moved along the roads inland from the Dalmatian coast.",
 	hungary:
-		"Aquincum, in the Óbuda district of Budapest, has a museum built around the excavated civil town, complete with an amphitheatre and the reconstructed pipes of a Roman water organ found on the site. Gorsium at Tác and the Danube forts along the limes fill in the rest, and the amber route south toward Italy is traceable across Transdanubia.",
+		"Aquincum, in the Óbuda district of Budapest, has a museum built around the excavated civil town, complete with an amphitheatre and the reconstructed pipes of a Roman water organ found on the site. Gorsium at Tác and the Danube forts along the limes fill in the rest, and the amber route south towards Italy is traceable across Transdanubia.",
 	cyprus:
 		"The mosaics in the Houses of Dionysos, Theseus and Aion at Nea Paphos are among the finest in the eastern Mediterranean and sit within a UNESCO World Heritage Site. Salamis on the east coast keeps a gymnasium, baths and a theatre, and the two were joined by the coastal road the Peutinger Table records.",
 	greece:

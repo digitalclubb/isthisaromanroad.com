@@ -21,10 +21,10 @@ let { minimised = false }: Props = $props();
 		transition: font-size 280ms var(--ease), opacity 280ms var(--ease);
 	}
 	.wordmark.minimised {
-		font-size: 0.78rem;
-		font-weight: 500;
+		font-size: 0.76rem;
+		font-weight: 700;
 		text-transform: uppercase;
-		letter-spacing: 0.12em;
+		letter-spacing: 0.16em;
 		color: var(--ink-soft);
 	}
 </style>

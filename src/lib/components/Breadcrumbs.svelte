@@ -29,13 +29,16 @@ let { items }: Props = $props();
 </nav>
 
 <style>
+	/* Cut capitals in the serif, tracked wide like an inscription. Inter caps
+	   here read as app chrome. */
 	.crumbs {
-		margin-top: 0.35rem;
-		font-family: var(--font-body);
-		font-size: 0.7rem;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 0.76rem;
 		text-transform: uppercase;
-		letter-spacing: 0.14em;
+		letter-spacing: 0.16em;
 		color: var(--ink-soft);
+		padding-block: 0.2rem;
 	}
 	ol {
 		list-style: none;
@@ -44,7 +47,7 @@ let { items }: Props = $props();
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
-		gap: 0.5rem;
+		column-gap: 0.5rem;
 	}
 	li {
 		display: inline-flex;
@@ -54,16 +57,13 @@ let { items }: Props = $props();
 	a {
 		color: inherit;
 		text-decoration: none;
-		position: relative;
 		transition: color 200ms var(--ease);
-	}
-	/* At 0.7rem the text box is ~14px tall. Rather than pad the link (which
-	   would stretch the header), expand the hit area with a pseudo-element to
-	   clear the project's 44px floor without moving anything. */
-	a::after {
-		content: "";
-		position: absolute;
-		inset: -15px -6px;
+		/* A real 44px box rather than a pseudo-element hit area: the trail is
+		   the only way home at the top of the page and wraps on a phone, where
+		   expanded hit areas on the second row overlapped the first. */
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
 	}
 	a:hover {
 		color: var(--ink);

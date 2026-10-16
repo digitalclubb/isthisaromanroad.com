@@ -172,10 +172,11 @@ const crumbs: Crumb[] = [
 	}
 
 	.stats {
-		font-family: var(--font-body);
-		font-size: 0.7rem;
-		text-transform: uppercase;
-		letter-spacing: 0.12em;
+		font-family: var(--font-display);
+		font-style: italic;
+		font-weight: 500;
+		font-size: 0.98rem;
+		letter-spacing: 0.01em;
 		color: var(--ink-soft);
 		margin: 0.25rem 0 0;
 		font-feature-settings: "onum";

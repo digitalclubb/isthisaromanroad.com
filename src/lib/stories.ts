@@ -50,7 +50,7 @@ export const STORIES: Story[] = [
 			"Map of Watling Street, the Roman road from Richborough through London to Wroxeter. Where the A2 and A5 still follow it and the road Boudica's army marched down.",
 		from: "Rutupiae",
 		to: "Viroconium",
-		body: "Watling Street ran from <em>Rutupiae</em> on the Kent coast to <em>Viroconium</em> in Shropshire, crossing Britain at its widest reach. It came ashore at Richborough and headed north-west through Canterbury and Rochester into <em>Londinium</em>, then on past <em>Verulamium</em> toward Wroxeter. Boudica's army marched south along it in AD 60 to burn <em>Londinium</em> and <em>Verulamium</em>. Her revolt ended the following year, probably somewhere on the same road, against the governor Suetonius Paulinus. The line survives almost intact today: the A2 traces it from Dover to London, the A5 from London to Shrewsbury runs along the original surveying within a few metres in many places.",
+		body: "Watling Street ran from <em>Rutupiae</em> on the Kent coast to <em>Viroconium</em> in Shropshire, crossing Britain at its widest reach. It came ashore at Richborough and headed north-west through Canterbury and Rochester into <em>Londinium</em>, then on past <em>Verulamium</em> towards Wroxeter. Boudica's army marched south along it in AD 60 to burn <em>Londinium</em> and <em>Verulamium</em>. Her revolt ended the following year, probably somewhere on the same road, against the governor Suetonius Paulinus. The line survives almost intact today: the A2 traces it from Dover to London, the A5 from London to Shrewsbury runs along the original surveying within a few metres in many places.",
 	},
 	{
 		key: "ermine-street",
@@ -94,7 +94,7 @@ export const STORIES: Story[] = [
 			"Map of Akeman Street, the Roman road from St Albans to Cirencester. Where the A41 follows it and the green lanes you can still walk in Oxfordshire.",
 		from: "Verulamium",
 		to: "Corinium",
-		body: "Akeman Street ran east-west across the southern Midlands, from <em>Verulamium</em> near St Albans to <em>Corinium</em> at Cirencester. It met Watling Street at <em>Verulamium</em> and the Fosse Way at <em>Corinium</em>. Those three roads together framed the heart of Roman Britain. The name is Old English: the people who came after the Romans called Bath <em>Acemannesceaster</em>. Akeman Street is the road that led toward it from the east. A long stretch is preserved as a green lane through Buckinghamshire and Oxfordshire, walkable in a day. Outside Tring the modern A41 picks it up and never quite lets go.",
+		body: "Akeman Street ran east-west across the southern Midlands, from <em>Verulamium</em> near St Albans to <em>Corinium</em> at Cirencester. It met Watling Street at <em>Verulamium</em> and the Fosse Way at <em>Corinium</em>. Those three roads together framed the heart of Roman Britain. The name is Old English: the people who came after the Romans called Bath <em>Acemannesceaster</em>. Akeman Street is the road that led towards it from the east. A long stretch is preserved as a green lane through Buckinghamshire and Oxfordshire, walkable in a day. Outside Tring the modern A41 picks it up and never quite lets go.",
 	},
 	{
 		key: "dere-street",
@@ -222,7 +222,7 @@ export const STORIES: Story[] = [
 			"Map of Ryknild Street, also called Icknield Street, from Bourton-on-the-Water via Wall and Derby to Templeborough. Where the A38 follows it.",
 		from: "Bourton-on-the-Water",
 		to: "Templeborough",
-		body: "Ryknild Street ran north from the Fosse Way at Bourton-on-the-Water through the West Midlands to <em>Templeborough</em> south of Sheffield. It crossed Watling Street at <em>Letocetum</em>, the small Roman town that became Wall in Staffordshire, where the two great roads met at right angles. The road is often called Icknield Street; the medieval name echoes the prehistoric Icknield Way to the south, though whether the two names share an origin is disputed. Long sections survive as the modern A38 through Staffordshire and Derbyshire. North of Burton-on-Trent the road runs almost dead straight toward Derby, the surveying made easy by the broad and level Trent valley.",
+		body: "Ryknild Street ran north from the Fosse Way at Bourton-on-the-Water through the West Midlands to <em>Templeborough</em> south of Sheffield. It crossed Watling Street at <em>Letocetum</em>, the small Roman town that became Wall in Staffordshire, where the two great roads met at right angles. The road is often called Icknield Street; the medieval name echoes the prehistoric Icknield Way to the south, though whether the two names share an origin is disputed. Long sections survive as the modern A38 through Staffordshire and Derbyshire. North of Burton-on-Trent the road runs almost dead straight towards Derby, the surveying made easy by the broad and level Trent valley.",
 	},
 	{
 		key: "maiden-way",

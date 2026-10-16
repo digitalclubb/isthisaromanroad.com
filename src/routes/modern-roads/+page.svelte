@@ -36,7 +36,7 @@ const FAQ = [
 	},
 	{
 		q: "Is the A15 a Roman road?",
-		a: "Yes. North of Lincoln the A15 follows Ermine Street almost dead straight toward the Humber, apart from a dogleg round RAF Scampton. It is a truer survival of the Roman line than the A1 that usually gets the credit.",
+		a: "Yes. North of Lincoln the A15 follows Ermine Street almost dead straight towards the Humber, apart from a dogleg round RAF Scampton. It is a truer survival of the Roman line than the A1 that usually gets the credit.",
 	},
 	{
 		q: "Is the A38 a Roman road?",
@@ -206,10 +206,11 @@ const FAQ = [
 		font-feature-settings: "onum" 0;
 	}
 	.fidelity {
-		font-family: var(--font-body);
-		font-size: 0.66rem;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 0.74rem;
 		text-transform: uppercase;
-		letter-spacing: 0.14em;
+		letter-spacing: 0.16em;
 		padding: 0.3rem 0.6rem;
 		border-radius: 999px;
 		border: 1px solid currentColor;

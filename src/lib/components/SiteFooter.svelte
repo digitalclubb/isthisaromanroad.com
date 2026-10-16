@@ -135,7 +135,9 @@ async function countSupportClick() {
 		justify-content: center;
 		flex-wrap: wrap;
 		gap: 0.7rem;
-		font-size: 0.72rem;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 0.76rem;
 		text-transform: uppercase;
 		letter-spacing: 0.18em;
 	}
@@ -151,7 +153,7 @@ async function countSupportClick() {
 		position: relative;
 		transition: color 200ms var(--ease);
 	}
-	/* The footer type is 0.72rem, so the text box is ~14px tall. Expanding the
+	/* The footer type is 0.76rem, so the text box is ~14px tall. Expanding the
 	   hit area with a pseudo-element clears the project's 44px floor without
 	   padding the link and stretching the footer. The 0.7rem gap between items
 	   means the ±6px horizontal spread can't overlap the neighbouring link. */

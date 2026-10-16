@@ -37,7 +37,7 @@ const ROAD_LINKS = STORIES.map((s) => ({ key: s.key, name: s.name }));
 const FAQ = [
 	{
 		q: "How do I know if I am on a Roman road?",
-		a: "Compare your position against a surveyed map of the network. This site does that: it checks your coordinates against the Itiner-e academic survey and tells you whether you are on the line, near it, or a long way from the nearest one.",
+		a: "Compare your position against a surveyed map of the network. This site does that: it checks your coordinates against the Itiner-e academic survey and tells you whether you are on the line, near it or a long way from the nearest one.",
 	},
 	{
 		q: "Are Roman roads always straight?",
@@ -408,13 +408,14 @@ const matchedRoadKey = $derived(result ? roadKey(result.road) || null : null);
 		color: var(--ink-soft);
 	}
 	.more summary {
-		font-size: 0.85rem;
+		font-family: var(--font-display);
+		font-size: 0.86rem;
 		text-transform: uppercase;
-		letter-spacing: 0.12em;
-		font-weight: 500;
+		letter-spacing: 0.16em;
+		font-weight: 700;
 		cursor: pointer;
 		list-style: none;
-		/* Bumped from 0.6rem to push toward WCAG 2.2 SC 2.5.5 (AAA, 44px). */
+		/* Bumped from 0.6rem to push towards WCAG 2.2 SC 2.5.5 (AAA, 44px). */
 		padding: 0.95rem 0.5rem;
 		margin: 0 -0.5rem;
 		display: inline-flex;

@@ -79,6 +79,7 @@ Typography:
 - Body: **Inter Variable**
 - **Roman names always render in italic small caps with a thin gold underline.** This is the most important typographic convention in the project.
 - Old-style numerals (`font-feature-settings: "onum"`) wherever figures sit next to serif type.
+- **Labels are inscriptional capitals**: Cormorant Garamond 700, uppercase, tracked 0.16em (breadcrumbs, fact labels, pills, footer meta). Never Inter caps, which reads as app chrome. Lines of figures ("350 km mapped") are serif italic with lower-case units, not capitals.
 
 References: museum / heritage sites (V&A, British Museum, Pelagios) — editorial type, restrained palette, scholarly tone.
 

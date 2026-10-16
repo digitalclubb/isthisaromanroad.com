@@ -177,3 +177,39 @@ button {
 		transition-duration: 0.001ms !important;
 	}
 }
+
+/*
+ * The facts row under a map (road, county and country pages). Ruled top and
+ * bottom in gold like an entry in a register, not a grid of boxed stats: the
+ * boxed version read as a dashboard and left an empty tea-stain cell when
+ * three items wrapped to two columns on a phone. Flex lets the odd one out
+ * take the full row instead.
+ */
+.facts {
+	margin: clamp(1.25rem, 3vh, 1.6rem) 0 0;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	column-gap: clamp(1.25rem, 5vw, 2.5rem);
+	border-block: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+}
+.facts > div {
+	flex: 1 1 8rem;
+	padding: 0.8rem 0;
+}
+.facts dt {
+	font-family: var(--font-display);
+	font-weight: 700;
+	font-size: 0.74rem;
+	text-transform: uppercase;
+	letter-spacing: 0.16em;
+	color: var(--ink-soft);
+}
+.facts dd {
+	font-family: var(--font-display);
+	font-weight: 700;
+	font-size: 1.45rem;
+	color: var(--ink);
+	margin: 0.15rem 0 0;
+	font-feature-settings: "onum";
+}

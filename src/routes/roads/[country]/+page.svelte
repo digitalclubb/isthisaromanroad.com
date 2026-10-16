@@ -209,37 +209,6 @@ const certaintySummary = $derived(
 		background: var(--surface);
 	}
 
-	.facts {
-		margin: clamp(1.25rem, 3vh, 1.6rem) 0 0;
-		padding: 0;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-		gap: 1px;
-		background: color-mix(in srgb, var(--gold) 38%, transparent);
-		border: 1px solid color-mix(in srgb, var(--gold) 38%, transparent);
-		border-radius: var(--radius);
-		overflow: hidden;
-	}
-	.facts > div {
-		background: var(--surface);
-		padding: 0.9rem 1rem;
-	}
-	.facts dt {
-		font-family: var(--font-body);
-		font-size: 0.66rem;
-		text-transform: uppercase;
-		letter-spacing: 0.14em;
-		color: var(--ink-soft);
-	}
-	.facts dd {
-		font-family: var(--font-display);
-		font-weight: 700;
-		font-size: 1.45rem;
-		color: var(--ink);
-		margin: 0.25rem 0 0;
-		font-feature-settings: "onum";
-	}
-
 	.note {
 		font-family: var(--font-body);
 		font-size: 0.8rem;
@@ -277,10 +246,11 @@ const certaintySummary = $derived(
 		color: var(--ink);
 	}
 	.named-stat {
-		font-family: var(--font-body);
-		font-size: 0.72rem;
-		text-transform: uppercase;
-		letter-spacing: 0.12em;
+		font-family: var(--font-display);
+		font-style: italic;
+		font-weight: 500;
+		font-size: 0.98rem;
+		letter-spacing: 0.01em;
 		color: var(--ink-soft);
 		white-space: nowrap;
 		font-feature-settings: "onum";

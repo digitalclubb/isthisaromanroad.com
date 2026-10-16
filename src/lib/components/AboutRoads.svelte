@@ -46,7 +46,7 @@ let { roads, faq }: Props = $props();
 	<h2 class="title">How this works</h2>
 	<div class="prose">
 		<p>
-			Tap the button, allow location, and the site compares your coordinates against every Roman
+			Tap the button, allow location and the site compares your coordinates against every Roman
 			road mapped near you. If you are within a few metres of a line it says so. If not, it tells
 			you how far the nearest one is and which way to look.
 		</p>

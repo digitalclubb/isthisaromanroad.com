@@ -13,8 +13,10 @@ let { data }: Props = $props();
 const { roads } = $derived(data);
 
 const TITLE = "Which Modern Roads Are Roman Roads?";
+// Answer first: the old description only repeated the question, and
+// "is the a1 a roman road" sat on page one with no clicks.
 const DESCRIPTION =
-	"Is the A5 a Roman road? The A2, A1, A46, A68 and B2068? Which British roads still follow the line Roman surveyors laid out, how closely, and where the claim is overstated.";
+	"The A5, A2, A15, A38 and B2068 follow Roman roads closely. The A1 only in parts. Each British road on a Roman line, rated for how closely it follows.";
 const CANONICAL = `${SITE}/modern-roads`;
 
 const crumbs: Crumb[] = [
@@ -31,6 +33,14 @@ const FAQ = [
 	{
 		q: "Is the A1 a Roman road?",
 		a: "Only in parts, despite the common claim. The A1 descends from the medieval Great North Road, which used Ermine Street where convenient and left it where it was not. The A15 north of Lincoln and the A1198 near Royston are far truer survivals of the Roman line.",
+	},
+	{
+		q: "Is the A15 a Roman road?",
+		a: "Yes. North of Lincoln the A15 follows Ermine Street almost dead straight toward the Humber, apart from a dogleg round RAF Scampton. It is a truer survival of the Roman line than the A1 that usually gets the credit.",
+	},
+	{
+		q: "Is the A38 a Roman road?",
+		a: "In part. Through Staffordshire and Derbyshire long sections run on Ryknild Street, most faithfully between Burton-on-Trent and Derby, where the road holds almost dead straight up the Trent valley.",
 	},
 	{
 		q: "Which is the most faithful Roman road still in use?",
@@ -90,7 +100,9 @@ const FAQ = [
 
 		<ol class="roads" role="list">
 			{#each roads as road (road.number)}
-				<li>
+				<!-- Anchor per road (#a1, #a37-and-a367) so search results and shares can
+				     deep-link the answer to "is the A1 a Roman road?". -->
+				<li id={road.number.toLowerCase().replaceAll(" ", "-")}>
 					<div class="head">
 						<h2 class="number">{road.number}</h2>
 						<span class="fidelity" data-fidelity={road.fidelity}>
@@ -170,6 +182,7 @@ const FAQ = [
 		padding: 0;
 	}
 	.roads li {
+		scroll-margin-top: 1rem;
 		padding: clamp(1.1rem, 3vh, 1.4rem) 0;
 	}
 	.roads li + li {

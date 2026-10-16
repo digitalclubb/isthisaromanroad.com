@@ -10,7 +10,9 @@ let { data }: Props = $props();
 
 const { counties, totalSegments } = $derived(data);
 
-const TITLE = "Roman Roads in Britain by County";
+// Distinct from /roads, which owns "Roman roads in Britain"; the two titles
+// used to compete and this page ranked around position 70 for its parent's queries.
+const TITLE = "Roman Roads by County: Kent to Cumbria";
 const DESCRIPTION =
 	"Where the Roman roads run, county by county: Kent, Yorkshire, Hertfordshire, Cumbria, Norfolk and more, each with a map, the named roads that cross it and what survives to see.";
 const CANONICAL = `${SITE}/roads/britain`;

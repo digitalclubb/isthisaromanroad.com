@@ -10,7 +10,7 @@ let { data }: Props = $props();
 
 const { roads, regions, counties, mappedRoadCount, mappedKm } = $derived(data);
 
-const TITLE = "Roman Roads of Britain: Map and Guide";
+const TITLE = "Roman Roads of Britain: Map and List of Every Named Road";
 const DESCRIPTION =
 	"Watling Street, the Fosse Way, Ermine Street, Dere Street and every other named Roman road in Britain. Route, length and history for each, with a map.";
 const CANONICAL = `${SITE}/roads`;
@@ -62,10 +62,12 @@ const crumbs: Crumb[] = [{ name: "Is this a Roman road?", href: "/" }, { name: "
 			Hadrian's Wall.
 		</p>
 		<p class="standfirst">
-			The <em>Itiner-e</em> survey attributes mapped segments to {mappedRoadCount} of them by
-			name, accounting for roughly {mappedKm.toLocaleString("en-GB")} kilometres of measured line.
-			The rest are well attested by archaeology but carry no named line in the dataset, so no
-			figures are shown for them.
+			The <em>Itiner-e</em> survey maps {mappedRoadCount === roads.length ? "every one" : mappedRoadCount}
+			of them, accounting for roughly {mappedKm.toLocaleString("en-GB")} kilometres of measured line.
+			{#if mappedRoadCount < roads.length}
+				The rest are well attested by archaeology but carry no line in the dataset, so no figures
+				are shown for them.
+			{/if}
 		</p>
 
 		<ol class="roads" role="list">

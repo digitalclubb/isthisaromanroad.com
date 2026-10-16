@@ -87,21 +87,17 @@ export function formatDistance(m: number): string {
 }
 
 /**
- * First sentence of a block of authored HTML, tags stripped. Used for both the
- * road page's meta description and the hub's per-road teaser, which is why the
- * length cap is a parameter rather than baked in: a meta description has to fit
- * Google's ~155 character snippet, a teaser on the page does not.
+ * First sentence of a block of authored HTML, tags stripped. Used for the
+ * hub's per-road teaser; meta descriptions are hand-written `summary` fields.
  *
  * A full stop inside the first 40 characters is treated as an abbreviation
  * rather than a sentence end, so "St. Albans was…" doesn't truncate to "St.".
  */
-export function firstSentence(html: string, fallback: string, maxLen?: number): string {
+export function firstSentence(html: string, fallback: string): string {
 	const text = html.replace(/<[^>]+>/g, "").trim();
 	if (!text) return fallback;
 	const period = text.indexOf(". ");
-	const sentence = period > 40 ? `${text.slice(0, period)}.` : text;
-	if (maxLen === undefined || sentence.length <= maxLen) return sentence;
-	return `${sentence.slice(0, maxLen - 1).trimEnd()}…`;
+	return period > 40 ? `${text.slice(0, period)}.` : text;
 }
 
 export function roadDisplayName(r: RoadFeature): string | null {

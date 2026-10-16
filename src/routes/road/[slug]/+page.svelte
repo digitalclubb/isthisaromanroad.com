@@ -5,7 +5,6 @@ import RoadMap from "$lib/components/Map.svelte";
 import RuleGold from "$lib/components/RuleGold.svelte";
 import SiteFooter from "$lib/components/SiteFooter.svelte";
 import SiteMasthead from "$lib/components/SiteMasthead.svelte";
-import { firstSentence } from "$lib/format.js";
 import { formatYear } from "$lib/geometry.js";
 import { roadKey } from "$lib/roads.js";
 import type { PageData } from "./$types.js";
@@ -17,15 +16,15 @@ const { story, segments, siblings, detail, counties, lengthKm, segmentCount, cer
 	$derived(data);
 const matchedRoadKey = $derived(segments.length > 0 ? roadKey(segments[0]) || null : null);
 
-// Google truncates the snippet around 155 characters, so cap there rather
-// than let a long opening sentence run past the fold.
-const description = $derived(firstSentence(story.body, story.name, 155));
+// Hand-written per road: the story's opening sentence made a poor snippet
+// (Stane Street sat at position 8 on 1,275 impressions for one click).
+const description = $derived(story.summary);
 
 const canonical = $derived(`${SITE}/road/${story.key}`);
 // Per-road share card rendered by `pnpm icons:build`. Every road page used to
 // share the one generic og.png, so every share looked identical in the feed.
 const ogImage = $derived(`${SITE}/og/road-${story.key}.png`);
-const title = $derived(`${story.name}: Route, Map and History`);
+const title = $derived(`${story.name}: Roman Road Map, ${story.route}`);
 const crumbs: Crumb[] = $derived([
 	{ name: "Is this a Roman road?", href: "/" },
 	{ name: "The roads", href: "/roads" },

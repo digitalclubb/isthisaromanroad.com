@@ -25,9 +25,9 @@ const TITLE = "Is This a Roman Road? Roman Roads Map and Finder";
 // tail belongs in <title> and nowhere else.
 const NAME = "Is this a Roman road?";
 const DESCRIPTION =
-	"Tap once and find out whether you are standing on a Roman road. Live map of the empire's road network, from Britain to Syria, with the history of every named British road.";
+	"Tap once and find out whether you are standing on a Roman road, from Britain to Syria. Live map of the empire's network, with histories of its great roads.";
 
-const ROAD_LINKS = STORIES.map((s) => ({ key: s.key, name: s.name }));
+const ROAD_LINKS = STORIES.map((s) => ({ key: s.key, name: s.name, british: !s.countries }));
 
 /**
  * Answers to the questions people actually search. Rendered visibly by
@@ -49,7 +49,7 @@ const FAQ = [
 	},
 	{
 		q: "Does this work outside Britain?",
-		a: "Yes. The underlying survey covers the whole empire, so the site will answer anywhere from Scotland to Syria. The hand-written histories are Britain-only for now; elsewhere you get the survey's own record of the road.",
+		a: "Yes. The underlying survey covers the whole empire, so the site will answer anywhere from Scotland to Syria. Britain's named roads and the great roads of the empire, from the Via Appia to the Via Nova Traiana in Jordan, have their own histories; elsewhere you get the survey's own record of the road.",
 	},
 ];
 

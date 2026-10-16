@@ -22,15 +22,17 @@ export type RoadSummary = {
 	 */
 	lengthKm: number | null;
 	segmentCount: number;
+	/** Present for roads beyond Britain; see Story.countries. */
+	countries?: string[];
 };
 
 /**
  * Build-time only. Reassembles the dataset once (memoised across all
  * prerenders) and derives each road's real length and segment count.
  *
- * Itiner-e names only six British roads in its `itinerary` field, so most
- * stories match nothing and legitimately have no measurable line. That is
- * reported rather than papered over — see `lengthKm`.
+ * A story that matches nothing reports no length rather than "0 km"; see
+ * `lengthKm`. The mapped totals cover Britain only, because the standfirst
+ * they appear in is about Britain's roads.
  */
 export const load: PageServerLoad = async () => {
 	const features = await loadAllFeatures();
@@ -38,7 +40,7 @@ export const load: PageServerLoad = async () => {
 	let mappedMeters = 0;
 	const roads: RoadSummary[] = STORIES.map((story) => {
 		const segments = segmentsForStory(story, features);
-		mappedMeters += totalLengthMeters(segments);
+		if (!story.countries) mappedMeters += totalLengthMeters(segments);
 		return {
 			key: story.key,
 			name: story.name,
@@ -47,6 +49,7 @@ export const load: PageServerLoad = async () => {
 			teaser: firstSentence(story.body, story.name),
 			lengthKm: totalLengthKm(segments),
 			segmentCount: segments.length,
+			countries: story.countries,
 		};
 	});
 
@@ -58,11 +61,14 @@ export const load: PageServerLoad = async () => {
 
 	const counties = (await loadCounties()).map((c) => ({ slug: c.slug, name: c.name }));
 
+	const britain = roads.filter((r) => !r.countries);
+
 	return {
-		roads,
+		britain,
+		empire: roads.filter((r) => r.countries),
 		regions,
 		counties,
-		mappedRoadCount: roads.filter((r) => r.segmentCount > 0).length,
+		mappedRoadCount: britain.filter((r) => r.segmentCount > 0).length,
 		// Summed from raw metres, not from the already-rounded per-road figures.
 		mappedKm: Math.round(mappedMeters / 1000 / 100) * 100,
 	};

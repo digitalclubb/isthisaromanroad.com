@@ -52,9 +52,9 @@ export function totalLengthMeters(roads: RoadFeature[]): number {
  * the nearest km below — the dataset's segments are reconstructions with gaps,
  * so a figure to the metre would imply a precision that isn't there.
  *
- * Returns null, not 0, for an empty set. Itiner-e names only six British roads
- * in its `itinerary` field, so 15 of the 22 stories match no segment at all;
- * a 0 here would publish "0 km surveyed" as though it were a measurement
+ * Returns null, not 0, for an empty set. Every story matches segments today,
+ * but one that stopped matching (a data rebuild, a renamed segment) must not
+ * publish "0 km surveyed" as though it were a measurement
  * rather than an absence. Callers must render the null case as missing data.
  */
 export function totalLengthKm(roads: RoadFeature[]): number | null {

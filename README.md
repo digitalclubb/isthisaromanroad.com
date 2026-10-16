@@ -2,7 +2,7 @@
 
 A single-page PWA that answers a child's question from the back seat: **is this a Roman road?**
 
-Tap *Use my location* (or search any town / postcode) and the site checks your point against the full empire-wide Itiner-e Roman roads dataset. The answer comes in five tiers — walking the line, standing on it, nearly there, probably not, or out of reach — and the bands honour the dataset's own reconstructive uncertainty. You get the road's Roman name, type, certainty, and historical context. Hand-written stories cover the famous roads of Britain; everywhere else falls back gracefully to the dataset's own record.
+Tap *Use my location* (or search any town / postcode) and the site checks your point against the full empire-wide Itiner-e Roman roads dataset. The answer comes in five tiers — walking the line, standing on it, nearly there, probably not, or out of reach — and the bands honour the dataset's own reconstructive uncertainty. You get the road's Roman name, type, certainty, and historical context. Hand-written histories cover the famous roads of Britain and ten great roads of the empire, from the Via Appia to the Via Nova Traiana in Jordan; everywhere else falls back gracefully to the dataset's own record.
 
 Alongside the app there is a set of static, crawlable pages: `/roads` lists every named Roman road in Britain, `/road/<slug>` gives each one its route, the modern roads that follow it, where to see it on the ground, and a short FAQ, `/roads/<country>` covers the network in each of the 26 other modern countries the survey reaches, `/roads/britain/<county>` does the same for 26 British counties, and `/modern-roads` answers the "is the A5 a Roman road?" family of questions in one place rather than a page per road number.
 
@@ -67,7 +67,7 @@ src/
     geocode.ts             # Nominatim wrapper
     format.ts              # display helpers + narrative generator
     geometry.ts            # build-time length / date / certainty maths over features
-    stories.ts             # 22 road stories (also client-side: keep it small)
+    stories.ts             # 32 road stories, 22 British + 10 empire (also client-side: keep it small)
     road-detail.ts         # long-form road-page copy (server-only, never bundled)
     breadcrumbs.ts         # Crumb type + BreadcrumbList JSON-LD from one source
     region-notes.ts        # authored notes per country (server-only)
@@ -101,6 +101,8 @@ The road data is **Itiner-e** (de Soto et al., *Scientific Data* 2025, CC BY 4.0
 The prerendered `/road/[slug]` pages run at build time and need every feature, so `src/lib/server/roads-data.ts` reassembles the full set from the cells (server-only, memoised) — that file is never sent to the browser.
 
 **How road pages find their line.** Itiner-e's `itinerary` field names only six British roads (Watling Street, Ermine Street, the Fosse Way, Stane Street, Akeman Street and Dere Street), plus one segment matching High Street. The other fifteen stories match on the survey's own segment names instead, Margary-style "A-B" pairs such as `Combretovium-Camulodunum` for the Pye Road, chosen by checking each segment's endpoints against the road's known course (see the `match` arrays in `src/lib/stories.ts`). Before that those pages drew no line, and Google classed the Pye Road page as a soft 404. If a story ever matches nothing, the page says so rather than reporting a length: `totalLengthKm` returns `null`, never `0`, for an empty segment set so it can't be rendered as "0 km surveyed". Each story also carries a hand-written `route` (title) and `summary` (meta description).
+
+**Roads beyond Britain.** Empire stories carry `countries` (the `/roads/[country]` slugs they cross, primary first), which drives the road page's breadcrumb and "Countries it crosses" list and lets each country page link its named roads to their history. Itiner-e names these roads directly in `itinerary`, and itinerary entries are matched whole, so "Via Domitia" does not catch "Via Domitiana". Where the survey reuses a name for two roads ("Via Traiana" is also a road near Aachen) the story sets `bounds` to keep the right one.
 
 Distance is graded into five tiers by `answerTierFor` in `src/lib/format.ts`. The bands respect the road's own certainty rating: ≤10 m is "walking", ≤80 m on a Certain segment (≤150 m on a Conjectured or Hypothetical one) is "standing on the line", ≤500 m is "nearly", ≤50 km is "probably not", beyond that is "out of reach". The wider bands on uncertain segments reflect what the dataset actually claims to know: an Itiner-e line on a Hypothetical reconstruction can sit 50–200 m from the road's true position on the ground.
 

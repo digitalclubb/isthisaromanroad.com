@@ -2,6 +2,7 @@ import { dateRangeOf, dominantCertainty, totalLengthKm } from "$lib/geometry.js"
 import { ROAD_DETAIL } from "$lib/road-detail.js";
 import type { RoadFeature } from "$lib/roads.js";
 import { countiesForRoad } from "$lib/server/counties.js";
+import { loadRegions } from "$lib/server/regions.js";
 import { loadAllFeatures } from "$lib/server/roads-data.js";
 import { STORIES, segmentsForStory } from "$lib/stories.js";
 import { error } from "@sveltejs/kit";
@@ -29,20 +30,31 @@ export const load: PageServerLoad = async ({ params }) => {
 	const features = await loadAllFeatures();
 	const segments: RoadFeature[] = segmentsForStory(story, features);
 
-	// Every other road, so each page links to all 21 siblings. Before this the
-	// only inbound link to /road/* sat behind a geolocation prompt, leaving the
-	// set uncrawlable — Search Console reported them "unknown to Google".
-	const siblings = STORIES.filter((s) => s.key !== story.key).map((s) => ({
-		key: s.key,
-		name: s.name,
-	}));
+	// Every other road in the same group (Britain, or the rest of the empire),
+	// so each page links to all its siblings. Before this the only inbound link
+	// to /road/* sat behind a geolocation prompt, leaving the set uncrawlable:
+	// Search Console reported them "unknown to Google".
+	const british = !story.countries;
+	const siblings = STORIES.filter((s) => s.key !== story.key && !s.countries === british).map(
+		(s) => ({ key: s.key, name: s.name }),
+	);
+
+	// In the story's order. A slug with no /roads/[country] page is a typo that
+	// would silently drop the breadcrumb, so fail the build instead.
+	const regions = await loadRegions();
+	const countries = (story.countries ?? []).map((slug) => {
+		const region = regions.find((r) => r.slug === slug);
+		if (!region) throw new Error(`Story "${story.key}" lists unknown country "${slug}"`);
+		return { slug: region.slug, name: region.name };
+	});
 
 	return {
 		story,
 		segments,
 		siblings,
-		// Long-form sections live in a server-only module so the ~14,000 words
-		// are inlined into these 22 prerendered pages rather than shipped in
+		countries,
+		// Long-form sections live in a server-only module so the ~20,000 words
+		// are inlined into these prerendered pages rather than shipped in
 		// the client bundle the way stories.ts is.
 		detail: ROAD_DETAIL[story.key] ?? null,
 		counties: await countiesForRoad(story.key),

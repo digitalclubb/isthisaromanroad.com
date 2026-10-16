@@ -8,11 +8,11 @@ import type { PageData } from "./$types.js";
 type Props = { data: PageData };
 let { data }: Props = $props();
 
-const { roads, regions, counties, mappedRoadCount, mappedKm } = $derived(data);
+const { britain, empire, regions, counties, mappedRoadCount, mappedKm } = $derived(data);
 
 const TITLE = "Roman Roads of Britain: Map and List of Every Named Road";
 const DESCRIPTION =
-	"Watling Street, the Fosse Way, Ermine Street, Dere Street and every other named Roman road in Britain. Route, length and history for each, with a map.";
+	"Watling Street, the Fosse Way and every named Roman road in Britain, plus the great roads of the empire from the Via Appia to the Via Egnatia, mapped.";
 const CANONICAL = `${SITE}/roads`;
 
 const crumbs: Crumb[] = [{ name: "Is this a Roman road?", href: "/" }, { name: "The roads" }];
@@ -37,8 +37,8 @@ const crumbs: Crumb[] = [{ name: "Is this a Roman road?", href: "/" }, { name: "
 			"@context": "https://schema.org",
 			"@type": "ItemList",
 			name: "Roman roads of Britain",
-			numberOfItems: roads.length,
-			itemListElement: roads.map((r, i) => ({
+			numberOfItems: britain.length,
+			itemListElement: britain.map((r, i) => ({
 				"@type": "ListItem",
 				position: i + 1,
 				name: r.name,
@@ -51,6 +51,32 @@ const crumbs: Crumb[] = [{ name: "Is this a Roman road?", href: "/" }, { name: "
 <main>
 	<SiteMasthead {crumbs} />
 
+	{#snippet entry(road: (typeof britain)[number], heading: "h2" | "h3" = "h2")}
+		<li>
+			<svelte:element this={heading} class="name">
+				<a href="/road/{road.key}">{road.name}</a>
+			</svelte:element>
+			{#if road.from && road.to}
+				<p class="route">
+					<em class="roman">{road.from}</em>
+					to
+					<em class="roman">{road.to}</em>
+				</p>
+			{/if}
+			<p class="teaser">{road.teaser}</p>
+			<p class="stats">
+				{#if road.lengthKm !== null}
+					{road.lengthKm} km mapped
+					<span class="sep" aria-hidden="true">·</span>
+					{road.segmentCount}
+					{road.segmentCount === 1 ? "segment" : "segments"}
+				{:else}
+					Not named in the <em>Itiner-e</em> survey
+				{/if}
+			</p>
+		</li>
+	{/snippet}
+
 	<article>
 		<h1>The roads</h1>
 		<RuleGold animated />
@@ -62,37 +88,17 @@ const crumbs: Crumb[] = [{ name: "Is this a Roman road?", href: "/" }, { name: "
 			Hadrian's Wall.
 		</p>
 		<p class="standfirst">
-			The <em>Itiner-e</em> survey maps {mappedRoadCount === roads.length ? "every one" : mappedRoadCount}
+			The <em>Itiner-e</em> survey maps {mappedRoadCount === britain.length ? "every one" : mappedRoadCount}
 			of them, accounting for roughly {mappedKm.toLocaleString("en-GB")} kilometres of measured line.
-			{#if mappedRoadCount < roads.length}
+			{#if mappedRoadCount < britain.length}
 				The rest are well attested by archaeology but carry no line in the dataset, so no figures
 				are shown for them.
 			{/if}
 		</p>
 
 		<ol class="roads" role="list">
-			{#each roads as road (road.key)}
-				<li>
-					<h2 class="name"><a href="/road/{road.key}">{road.name}</a></h2>
-					{#if road.from && road.to}
-						<p class="route">
-							<em class="roman">{road.from}</em>
-							to
-							<em class="roman">{road.to}</em>
-						</p>
-					{/if}
-					<p class="teaser">{road.teaser}</p>
-					<p class="stats">
-						{#if road.lengthKm !== null}
-							{road.lengthKm} km mapped
-							<span class="sep" aria-hidden="true">·</span>
-							{road.segmentCount}
-							{road.segmentCount === 1 ? "segment" : "segments"}
-						{:else}
-							Not named in the <em>Itiner-e</em> survey
-						{/if}
-					</p>
-				</li>
+			{#each britain as road (road.key)}
+				{@render entry(road)}
 			{/each}
 		</ol>
 
@@ -112,6 +118,19 @@ const crumbs: Crumb[] = [{ name: "Is this a Roman road?", href: "/" }, { name: "
 				{/each}
 			</ul>
 			<p class="all"><a href="/roads/britain">Every county, with figures →</a></p>
+		</section>
+
+		<section class="empire" aria-labelledby="great-title">
+			<h2 class="section" id="great-title">The great roads of the empire</h2>
+			<p class="prose">
+				Beyond Britain the roads keep their Roman names. These are some of the most important,
+				from the <em>Via Appia</em> out of Rome to the frontier road of Roman Arabia.
+			</p>
+			<ol class="roads" role="list">
+				{#each empire as road (road.key)}
+					{@render entry(road, "h3")}
+				{/each}
+			</ol>
 		</section>
 
 		<section class="empire" aria-labelledby="empire-title">

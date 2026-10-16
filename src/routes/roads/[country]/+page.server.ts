@@ -1,6 +1,7 @@
 import { toOverviewFeatures } from "$lib/geometry.js";
 import { REGION_EXTRA, REGION_NOTES } from "$lib/region-notes.js";
 import { featuresForRegion, findRegion, loadRegions } from "$lib/server/regions.js";
+import { STORIES } from "$lib/stories.js";
 import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types.js";
 
@@ -25,8 +26,22 @@ export const load: PageServerLoad = async ({ params }) => {
 		.filter((r) => r && r.slug !== region.slug)
 		.map((r) => ({ slug: r.slug, name: r.name }));
 
+	// Named roads with a history page, keyed by the name the list shows. Only
+	// stories that list this country, so the Via Traiana near Aachen does not
+	// link to the Italian one.
+	const storyKeys: Record<string, string> = {};
+	for (const road of region.namedRoads) {
+		const story = STORIES.find(
+			(s) =>
+				s.countries?.includes(region.slug) &&
+				s.match.some((m) => m.toLowerCase() === road.name.toLowerCase()),
+		);
+		if (story) storyKeys[road.name] = story.key;
+	}
+
 	return {
 		region,
+		storyKeys,
 		note: REGION_NOTES[region.slug] ?? null,
 		extra: REGION_EXTRA[region.slug] ?? null,
 		// Geometry only, simplified: the raw features would inline megabytes of

@@ -4,7 +4,7 @@ Project context for Claude Code sessions on isthisaromanroad.com. Loaded automat
 
 ## What this is
 
-A single-page PWA that tells you whether you're standing on (or near) a Roman road, anywhere the Romans built — the full empire-wide Itiner-e dataset, not just Britain. Inspired by a child's question from the back seat of a car. Mobile-first, geolocation-driven, single-tap interaction. (Hand-written road stories are still Britain-only; everywhere else falls back to the dataset's own record.)
+A single-page PWA that tells you whether you're standing on (or near) a Roman road, anywhere the Romans built — the full empire-wide Itiner-e dataset, not just Britain. Inspired by a child's question from the back seat of a car. Mobile-first, geolocation-driven, single-tap interaction. Hand-written histories cover 22 British roads and ten great roads of the empire (Via Appia, Egnatia, Domitia, Aurelia, Flaminia, Claudia Augusta, Traiana, Belgica, Nova Traiana and Sebaste); everywhere else falls back to the dataset's own record.
 
 ## Stack
 
@@ -45,7 +45,7 @@ pnpm data:smoke        # probe the partitioned index against known locations (ts
 
 UK drivers and the curious kids in their back seat. The canonical moment is a parent at a junction, phone in one hand, child in the seat behind asking "is this a Roman road?". They want one number: yes or no. If no, how far to the nearest, and which way.
 
-Secondary: history nerds, walkers, school kids, anyone who keeps spotting straight A-roads.
+Secondary: history nerds, walkers, school kids, anyone who keeps spotting straight A-roads, and travellers on the old roads of Italy, France, Greece, Turkey and Jordan.
 
 The job is **a single tap, a single answer, sometimes with a moment of historical context.** Not a research tool. Not a route planner. Not a map app.
 
@@ -126,7 +126,7 @@ src/
       +page.svelte              # road headline, story body, full road on map
   lib/
     roads.ts                    # lazy cell-based RoadIndex + Turf nearest-point-on-line
-    stories.ts                  # 22 hand-written stories + segmentsForStory helper
+    stories.ts                  # 32 hand-written stories (22 British, 10 empire) + matching helpers
     geocode.ts                  # Nominatim wrapper (browser, with timeout)
     format.ts                   # display helpers + bearingToWords + answerTierFor
     share.ts                    # html-to-image + Web Share API + download fallback

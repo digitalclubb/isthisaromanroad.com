@@ -4,9 +4,10 @@
  * but backed by a filesystem `fetch` shim that reads static/roads/.
  * Usage: node --experimental-strip-types scripts/smoke-test.ts
  */
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { answerTierFor, bearingToCompass } from "../src/lib/format.ts";
 import { type CellFetch, loadRoadIndex } from "../src/lib/roads.ts";
+import { STORIES, segmentsForStory } from "../src/lib/stories.ts";
 
 // Map the index's request URLs (`<baseUrl>/...`) onto files on disk.
 const fsFetch: CellFetch = async (url) => {
@@ -57,3 +58,58 @@ for (const { name, lng, lat } of cases) {
 }
 
 console.log(`\nFeatures pulled into memory: ${idx.loadedFeatureCount}`);
+
+// Every story must keep the segments it was written against. A data rebuild or
+// a matcher change that quietly drops some (as a "?" separator once did to the
+// Via Claudia Augusta's Augsburg end) fails here instead of shortening a road.
+const EXPECTED_SEGMENTS: Record<string, number> = {
+	"watling-street": 58,
+	"ermine-street": 68,
+	"fosse-way": 34,
+	"stane-street": 8,
+	"akeman-street": 15,
+	"dere-street": 18,
+	"peddars-way": 9,
+	"via-devana": 11,
+	"sarn-helen": 16,
+	stanegate: 6,
+	"king-street": 4,
+	"pye-road": 2,
+	"devils-highway": 9,
+	"ackling-dyke": 4,
+	"stone-street": 3,
+	"ryknild-street": 13,
+	"maiden-way": 1,
+	"devils-causeway": 2,
+	"high-street": 1,
+	"icknield-way": 10,
+	"military-way": 5,
+	"stainmore-pass": 4,
+	"via-appia": 38,
+	"via-egnatia": 66,
+	"via-domitia": 40,
+	"via-aurelia": 15,
+	"via-flaminia": 6,
+	"via-claudia-augusta": 26,
+	"via-traiana": 12,
+	"via-belgica": 54,
+	"via-nova-traiana": 38,
+	"via-sebaste": 38,
+};
+const byId = new Map<string, GeoJSON.Feature>();
+for (const file of await readdir("static/roads/cells")) {
+	const cell = JSON.parse(await readFile(`static/roads/cells/${file}`, "utf8"));
+	for (const f of cell.features) byId.set(String(f.id), f);
+}
+const allFeatures = [...byId.values()];
+const wrong = STORIES.flatMap((story) => {
+	const got = segmentsForStory(story, allFeatures).length;
+	return got === EXPECTED_SEGMENTS[story.key]
+		? []
+		: [`${story.key}: ${got}, expected ${EXPECTED_SEGMENTS[story.key]}`];
+});
+if (wrong.length > 0) {
+	console.error(`\nStory segment counts changed:\n  ${wrong.join("\n  ")}`);
+	process.exit(1);
+}
+console.log(`All ${STORIES.length} stories match their expected segment counts.`);

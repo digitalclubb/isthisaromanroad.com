@@ -38,8 +38,21 @@ export type Story = {
 	route: string;
 	/** Meta description: what the page answers, under Google's ~155-char cut. */
 	summary: string;
+	/**
+	 * /roads/[country] slugs the road crosses, primary first. Absent means a
+	 * British road: those sit under /roads and the county pages instead.
+	 */
+	countries?: string[];
+	/**
+	 * [west, south, east, north] in degrees. Only for names Itiner-e reuses:
+	 * "Via Traiana" is both the Italian road and one near Aachen.
+	 */
+	bounds?: [number, number, number, number];
 };
 
+// ponytail: every story body ships to the client because the homepage answer
+// card renders it. ~15 KB raw for the empire roads is fine; if the set grows
+// much, split `body` into per-story modules loaded with import.meta.glob.
 export const STORIES: Story[] = [
 	{
 		key: "watling-street",
@@ -127,7 +140,7 @@ export const STORIES: Story[] = [
 			"Map of the Via Devana, the supposed Roman road from Colchester through Cambridge to Chester. Which stretches are Roman and which are Georgian.",
 		from: "Camulodunum",
 		to: "Deva",
-		body: "Via Devana is the modern name given to a road that may never have existed as a single Roman route. The eighteenth-century antiquary Charles Mason coined the term for a supposed road running diagonally from <em>Camulodunum</em> at Colchester through Cambridge to <em>Deva</em> at Chester, the legionary fortress on the Dee. Stretches of Roman road certainly exist along that line, particularly between Colchester and Cambridge, but whether they ever connected as one continuous highway is disputed. The Cambridge to Godmanchester section survives clearly. West of that, the Via Devana is more a Georgian idea than a Roman fact.",
+		body: "<em>Via Devana</em> is the modern name given to a road that may never have existed as a single Roman route. The eighteenth-century antiquary Charles Mason coined the term for a supposed road running diagonally from <em>Camulodunum</em> at Colchester through Cambridge to <em>Deva</em> at Chester, the legionary fortress on the Dee. Stretches of Roman road certainly exist along that line, particularly between Colchester and Cambridge, but whether they ever connected as one continuous highway is disputed. The Cambridge to Godmanchester section survives clearly. West of that, the <em>Via Devana</em> is more a Georgian idea than a Roman fact.",
 	},
 	{
 		key: "sarn-helen",
@@ -291,36 +304,174 @@ export const STORIES: Story[] = [
 		to: "Brocavum",
 		body: "The Stainmore Pass road carried Roman supplies west across the Pennines from <em>Cataractonium</em> at Catterick to <em>Brocavum</em> at Brougham in the Eden valley, and on to Carlisle. It climbed to four hundred and fifty metres at the top of Stainmore, where the fort at <em>Lavatris</em> at Bowes guarded the bleak summit. It was the connecting line between Dere Street and the Cumbrian forts: without it Roman Cumbria would have been cut off from the eastern half of the province by the Pennine hills. The modern A66 follows the same pass. In bad weather it closes for the same reasons the Romans must have closed it.",
 	},
+	// The great roads of the empire. Itiner-e names these in `itinerary`, so
+	// they match on the road name itself; `countries` places them in the site.
+	{
+		key: "via-appia",
+		name: "Via Appia",
+		match: ["Via Appia"],
+		route: "Rome to Brindisi",
+		summary:
+			"Map of the Via Appia, the queen of Roman roads, from Rome to Brindisi. Where Italy's SS7 still follows it and where to walk its original paving.",
+		countries: ["italy"],
+		from: "Roma",
+		to: "Brundisium",
+		body: "The <em>Via Appia</em> ran from <em>Roma</em> to <em>Brundisium</em> on the Adriatic, the harbour for Greece and the East. The censor Appius Claudius Caecus began it in 312 BC as a military road to <em>Capua</em>; it was later pushed on through <em>Beneventum</em>, <em>Venusia</em> and <em>Tarentum</em> to Brindisi. The poet Statius called it <em>regina viarum</em>, the queen of roads. In 71 BC, after the defeat of Spartacus, some six thousand captured rebels were crucified along the stretch between Rome and Capua. St Paul came up it as a prisoner, met by Christians at <em>Forum Appii</em> and <em>Tres Tabernae</em>. South of Rome its basalt paving survives for kilometres between rows of tombs. In 2024 UNESCO inscribed the road, with Trajan's later branch, as a World Heritage Site.",
+	},
+	{
+		key: "via-egnatia",
+		name: "Via Egnatia",
+		match: ["Via Egnatia"],
+		route: "Durr\u00ebs to Istanbul",
+		summary:
+			"Map of the Via Egnatia, Rome's road from Durr\u00ebs to Istanbul across Albania, North Macedonia, Greece and Turkey. Where it ran and where to walk it today.",
+		countries: ["greece", "albania", "north-macedonia", "turkey"],
+		from: "Dyrrhachium",
+		to: "Constantinopolis",
+		body: "The <em>Via Egnatia</em> ran from <em>Dyrrhachium</em>, modern Durr\u00ebs on the Adriatic, across the Balkans to <em>Byzantium</em>, the later <em>Constantinopolis</em>. It was laid out in the years after 146 BC by Gnaeus Egnatius, proconsul of the new province of Macedonia; it carries his name. A milestone found by the Gallikos river west of Thessaloniki, inscribed in Latin and Greek, counts 260 miles back to <em>Dyrrhachium</em>. For Rome it was the overland sequel to the <em>Via Appia</em>: cross the sea from <em>Brundisium</em>, then march east. Caesar and Pompey fought over its western end in 48 BC. Six years later Antony and Octavian followed it to defeat Brutus and Cassius at <em>Philippi</em>. St Paul walked it from <em>Neapolis</em> to <em>Thessalonike</em>. Byzantine couriers and Ottoman armies kept the same line in use for centuries afterwards.",
+	},
+	{
+		key: "via-domitia",
+		name: "Via Domitia",
+		match: ["Via Domitia"],
+		route: "Alps to the Pyrenees",
+		summary:
+			"Map of the Via Domitia, Rome's first road in Gaul, from the Alps to the Pyrenees. Who built it, which modern roads follow it and where to walk on it.",
+		countries: ["france", "italy"],
+		from: "Segusio",
+		to: "Ad Pyrenaeum",
+		body: "The <em>Via Domitia</em> ran from the Alps to the Pyrenees, carrying Rome's road from Italy across southern Gaul to the edge of Spain. It came over the Col de Montgen\u00e8vre, followed the Durance south, crossed the Rh\u00f4ne and ran the length of the Languedoc plain through <em>Nemausus</em> and <em>Narbo Martius</em> to the pass above Le Perthus. It was the first Roman road built in Gaul. It takes its name from Gnaeus Domitius Ahenobarbus, who defeated the Allobroges and Arverni in 121 BC and laid the road out around 118 BC; Suetonius says he rode through the new province on an elephant. The route itself was far older. Greek tradition held that Heracles had walked it on his way back from Spain; traders had used the corridor for centuries before the legions came.",
+	},
+	{
+		key: "via-aurelia",
+		name: "Via Aurelia",
+		match: ["Via Aurelia"],
+		route: "Rome to Pisa",
+		summary:
+			"Map of the Via Aurelia, the Roman road up the Tyrrhenian coast from Rome to Pisa. Where the SS1 follows it and which Roman sites you can see on it.",
+		countries: ["italy"],
+		from: "Roma",
+		to: "Pisae",
+		body: "The <em>Via Aurelia</em> ran north-west from <em>Roma</em> up the Tyrrhenian coast of Etruria to <em>Pisae</em> at Pisa. It is traditionally credited to the censor Gaius Aurelius Cotta in about 241 BC, though no ancient author says so outright. Its first stage may have stopped at the colony of <em>Cosa</em>. The road tied together the harbours and colonies of the coast, among them <em>Pyrgi</em>, <em>Cosa</em> and <em>Telamon</em>, in country only lately taken from the Etruscans. In 109 BC Marcus Aemilius Scaurus carried a road on from Pisa round the Ligurian coast towards Genoa. Under the emperors the Aurelia name spread along the whole coastal route to <em>Arelate</em>, Arles in southern Gaul. The modern SS1 still bears the name and runs on to the French border at Ventimiglia.",
+	},
+	{
+		key: "via-flaminia",
+		name: "Via Flaminia",
+		match: ["Via Flaminia"],
+		route: "Rome to Rimini",
+		summary:
+			"Map of the Via Flaminia, the Roman road from Rome over the Apennines to Rimini. Where the SS3 follows it and where its bridges and tunnel survive.",
+		countries: ["italy"],
+		from: "Roma",
+		to: "Ariminum",
+		body: "The <em>Via Flaminia</em> ran from <em>Roma</em> to <em>Ariminum</em> at Rimini, crossing the Apennines to reach the Adriatic. Gaius Flaminius built it as censor in about 220 BC, opening a direct route to the Latin colony at <em>Ariminum</em> and the Gallic lands beyond; three years later he was killed fighting Hannibal at Lake Trasimene. From the Milvian Bridge outside Rome the road climbed through Umbria by Narni and <em>Carsulae</em>, crossed the watershed at Scheggia, then followed the river valleys down to the sea at Fano. Augustus restored it in 27 BC and Rimini honoured him with an arch at its end. Vespasian later cut a tunnel through the rock of the Furlo gorge to spare travellers a dangerous ledge. For most of its length the modern SS3 keeps the Roman name and much of the Roman line.",
+	},
+	{
+		key: "via-claudia-augusta",
+		name: "Via Claudia Augusta",
+		match: ["Via Claudia Augusta"],
+		route: "Altino to Augsburg",
+		summary:
+			"Map of the Via Claudia Augusta, the Roman road over the Alps from the Po and the Venetian lagoon to Augsburg. Its route, the passes and what survives.",
+		countries: ["italy", "austria", "germany"],
+		from: "Altinum",
+		to: "Augusta Vindelicum",
+		body: "The <em>Via Claudia Augusta</em> ran from northern Italy to <em>Augusta Vindelicum</em> at Augsburg, the first Roman road for wheeled traffic across the central Alps. Two branches climbed out of Italy, one from <em>Hostilia</em> on the Po and one from <em>Altinum</em> on the Venetian lagoon. They met at <em>Tridentum</em> at Trento. From there the road followed the Adige north to the Reschen Pass at 1,504 metres. Beyond the pass it dropped into the Inn valley, crossed the Fern Pass and ran down the Lech into Bavaria. Drusus, stepson of Augustus, opened the route as a military track during his Alpine campaign of 15 BC. His son Claudius rebuilt it for carts and wagons in AD 46 and 47; timbers from a causeway at Lermoos were felled in the winter before work began.",
+	},
+	{
+		key: "via-traiana",
+		name: "Via Traiana",
+		match: ["Via Traiana"],
+		route: "Benevento to Brindisi",
+		summary:
+			"Map of the Via Traiana, Trajan's road from Benevento to Brindisi across Puglia. Its route, which modern roads near it and where to see it.",
+		countries: ["italy"],
+		bounds: [10, 35, 20, 45],
+		from: "Beneventum",
+		to: "Brundisium",
+		body: "The <em>Via Traiana</em> ran from <em>Beneventum</em> to <em>Brundisium</em>, an easier way to the Adriatic than the old <em>Via Appia</em> through Venosa and Taranto. Trajan built it around 109; his milestones record that he paid for it <em>pecunia sua</em>, from his own purse. It took over the line of an older mule track across the Apennines, came down into the Apulian plain at <em>Aecae</em>, now Troia, and ran on through <em>Herdoniae</em> and <em>Canusium</em> to the coast. The geographer Strabo had already reckoned that route a day quicker than the Appia; the saving lay in the gradients, since the distance was much the same. At Benevento the arch raised to Trajan carries a relief of the sacrifice that opened the road. Since 2024 it has shared the <em>Via Appia</em>'s UNESCO listing.",
+	},
+	{
+		key: "via-belgica",
+		name: "Via Belgica",
+		match: ["Via Belgica"],
+		route: "Bavay to Cologne",
+		summary:
+			"Map of the Via Belgica, the Roman road from Bavay through Tongeren and Maastricht to Cologne. Where it ran, why it has three names and where to see it.",
+		countries: ["belgium", "netherlands", "germany", "france"],
+		from: "Bagacum",
+		to: "Colonia Agrippina",
+		body: "The <em>Via Belgica</em> ran from <em>Bagacum</em>, Bavay in northern France, to <em>Colonia Claudia Ara Agrippinensium</em> on the Rhine, now Cologne. From Bavay it holds an almost dead-straight line for some seventy-five kilometres across Hainaut, then bends over the Hesbaye plateau to Tongeren, crosses the Maas at Maastricht and runs on through Heerlen and J\u00fclich to the river. The Romans never called it the <em>Via Belgica</em>; archaeologists coined that name in the early twentieth century. In Belgium and France it is the Chauss\u00e9e Brunehaut, after a Frankish queen said in legend to have repaired it. Germans call it the Agrippastra\u00dfe, after Marcus Agrippa, traditionally credited with building it around 20 BC. It probably paved an older track. It carried soldiers and grain between the Rhine frontier and the coast.",
+	},
+	{
+		key: "via-nova-traiana",
+		name: "Via Nova Traiana",
+		match: ["Via Nova Traiana"],
+		route: "Bosra to Aqaba",
+		summary:
+			"Map of the Via Nova Traiana, Trajan's road from Bosra to Aqaba by Amman, Kerak and Petra. How close the King's Highway runs to it and what survives.",
+		countries: ["jordan", "syria"],
+		from: "Bostra",
+		to: "Aila",
+		body: "The <em>Via Nova Traiana</em> ran from <em>Bostra</em> in southern Syria to <em>Aila</em> on the Red Sea at Aqaba, the backbone of the new Roman province of Arabia. Trajan annexed the Nabataean kingdom in AD 106; his governor Gaius Claudius Severus set about joining its towns with a paved road. It ran south through <em>Philadelphia</em> at Amman and on to Madaba, crossed the canyons of the Wadi Mujib and the Wadi Hasa, passed through Petra and came down through the desert to the gulf. The milestones, the earliest probably of AD 111, say that Trajan opened and paved a new road <em>a finibus Syriae usque ad mare Rubrum</em>, from the borders of Syria to the Red Sea. For much of its length it followed the far older King's Highway.",
+	},
+	{
+		key: "via-sebaste",
+		name: "Via Sebaste",
+		match: ["Via Sebaste"],
+		route: "Perge to Lystra",
+		summary:
+			"Map of the Via Sebaste, the road Augustus built in 6 BC from Perge over the Taurus to Pisidian Antioch, Konya and Lystra. Where it ran and how to see it.",
+		countries: ["turkey"],
+		from: "Perge",
+		to: "Lystra",
+		body: "The <em>Via Sebaste</em> ran from <em>Perge</em> on the Pamphylian plain north over the Taurus mountains to <em>Antiochia</em> in Pisidia, with an arm east to <em>Iconium</em> and <em>Lystra</em>. Its milestones, cut in 6 BC, name the emperor Augustus and his governor of Galatia, Cornutus Aquila. They count the miles from <em>Antiochia</em>. <em>Sebastos</em> is simply the Greek for Augustus. The road tied together the colonies of veteran soldiers that Augustus had planted in the Pisidian uplands, among them <em>Antiochia</em>, <em>Comama</em> and <em>Lystra</em>. It gave Rome a firm hold on mountain country it had struggled to control. About half a century later Paul and Barnabas came up from <em>Perge</em> to <em>Antiochia</em>, probably along this road. They went on to <em>Iconium</em> and <em>Lystra</em>, where Paul was stoned and left for dead.",
+	},
 ];
 
 /**
- * Returns the matching story for a road feature, or null if none of the
- * patterns appear in the road's `itinerary` or `name` properties.
+ * Whether a feature belongs to a story. Itinerary names are compared as whole
+ * comma-separated entries, so "Via Domitia" no longer catches "Via Domitiana"
+ * or "Via Flaminia" catch "Via Flaminia Nova". Segment names are still
+ * substrings, which the British "A-B" patterns rely on. `bounds` then drops
+ * same-named roads elsewhere, judged by the feature's first vertex.
  */
-export function findStoryFor(road: RoadFeature): Story | null {
-	const itinerary = (road.properties.itinerary ?? "").toLowerCase();
-	const name = (road.properties.name ?? "").toLowerCase();
-	for (const story of STORIES) {
-		for (const pattern of story.match) {
-			const p = pattern.toLowerCase();
-			if (itinerary.includes(p) || name.includes(p)) return story;
-		}
-	}
+function storyMatches(story: Story, feature: Feature): boolean {
+	const props = (feature.properties ?? {}) as { itinerary?: string; name?: string };
+	// Split on "?" too: four Augsburg segments of the Via Claudia Augusta read
+	// "Itinerarium Antonini? Via Claudia Augusta".
+	const itinerary = (props.itinerary ?? "")
+		.toLowerCase()
+		.split(/[,?]/)
+		.map((entry) => entry.trim());
+	const name = (props.name ?? "").toLowerCase();
+	const hit = story.match.some((pattern) => {
+		const p = pattern.toLowerCase();
+		return itinerary.includes(p) || name.includes(p);
+	});
+	if (!hit || !story.bounds) return hit;
+	const first = firstVertex(feature);
+	if (!first) return false;
+	const [west, south, east, north] = story.bounds;
+	return first[0] >= west && first[0] <= east && first[1] >= south && first[1] <= north;
+}
+
+function firstVertex(feature: Feature): number[] | null {
+	const g = feature.geometry;
+	if (g?.type === "LineString") return g.coordinates[0] ?? null;
+	if (g?.type === "MultiLineString") return g.coordinates[0]?.[0] ?? null;
 	return null;
 }
 
+/** The first story a road feature belongs to, or null. Order in STORIES decides ties. */
+export function findStoryFor(road: RoadFeature): Story | null {
+	return STORIES.find((story) => storyMatches(story, road)) ?? null;
+}
+
 /**
- * Find every road-feature whose itinerary or name matches the story's
- * patterns. Used by the per-road page (`/road/[slug]`) to render the
- * full road on the map. Same matching rules as `findStoryFor` but
- * applied in reverse: given a story, return all qualifying features.
+ * Every feature belonging to a story. Used by the per-road page
+ * (`/road/[slug]`) to render the full road on the map.
  */
 export function segmentsForStory<T extends Feature>(story: Story, features: ReadonlyArray<T>): T[] {
-	const lowered = story.match.map((p) => p.toLowerCase());
-	return features.filter((f) => {
-		const props = (f.properties ?? {}) as { itinerary?: string; name?: string };
-		const itin = (props.itinerary ?? "").toLowerCase();
-		const name = (props.name ?? "").toLowerCase();
-		return lowered.some((p) => itin.includes(p) || name.includes(p));
-	});
+	return features.filter((f) => storyMatches(story, f));
 }

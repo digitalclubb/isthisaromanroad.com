@@ -9,7 +9,7 @@ import type { PageData } from "./$types.js";
 type Props = { data: PageData };
 let { data }: Props = $props();
 
-const { region, note, extra, segments, others } = $derived(data);
+const { region, storyKeys, note, extra, segments, others } = $derived(data);
 
 const canonical = $derived(`${SITE}/roads/${region.slug}`);
 const title = $derived(`Roman Roads in ${region.name}: Map and Guide`);
@@ -108,7 +108,11 @@ const certaintySummary = $derived(
 			<ul class="named" role="list">
 				{#each region.namedRoads as road (road.name)}
 					<li>
-						<span class="named-name">{road.name}</span>
+						{#if storyKeys[road.name]}
+							<a class="named-name" href="/road/{storyKeys[road.name]}">{road.name}</a>
+						{:else}
+							<span class="named-name">{road.name}</span>
+						{/if}
 						<span class="named-stat">
 							{#if road.lengthKm}{road.lengthKm} km{:else}{road.segmentCount} segments{/if}
 						</span>
@@ -244,6 +248,21 @@ const certaintySummary = $derived(
 		font-size: 1.15rem;
 		letter-spacing: 0.04em;
 		color: var(--ink);
+	}
+	/* Roads with a history page. A terracotta underline, like the site's other
+	   text links, because the gold one is the Roman-name convention and on its
+	   own would not read as a link. The negative margin keeps a 44px target
+	   without changing the row height. */
+	a.named-name {
+		display: inline-block;
+		text-decoration: underline 1px var(--brand);
+		text-underline-offset: 0.2em;
+		padding-block: 0.7rem;
+		margin-block: -0.7rem;
+		transition: color 200ms var(--ease);
+	}
+	a.named-name:hover {
+		color: var(--brand);
 	}
 	.named-stat {
 		font-family: var(--font-display);

@@ -12,8 +12,18 @@ import type { PageData } from "./$types.js";
 type Props = { data: PageData };
 let { data }: Props = $props();
 
-const { story, segments, siblings, detail, counties, lengthKm, segmentCount, certainty, dates } =
-	$derived(data);
+const {
+	story,
+	segments,
+	siblings,
+	countries,
+	detail,
+	counties,
+	lengthKm,
+	segmentCount,
+	certainty,
+	dates,
+} = $derived(data);
 const matchedRoadKey = $derived(segments.length > 0 ? roadKey(segments[0]) || null : null);
 
 // Hand-written per road: the story's opening sentence made a poor snippet
@@ -25,9 +35,13 @@ const canonical = $derived(`${SITE}/road/${story.key}`);
 // share the one generic og.png, so every share looked identical in the feed.
 const ogImage = $derived(`${SITE}/og/road-${story.key}.png`);
 const title = $derived(`${story.name}: Roman Road Map, ${story.route}`);
+// Roads beyond Britain sit under their primary country in the trail.
 const crumbs: Crumb[] = $derived([
 	{ name: "Is this a Roman road?", href: "/" },
 	{ name: "The roads", href: "/roads" },
+	...(countries.length > 0
+		? [{ name: countries[0].name, href: `/roads/${countries[0].slug}` }]
+		: []),
 	{ name: story.name },
 ]);
 </script>
@@ -163,10 +177,12 @@ const crumbs: Crumb[] = $derived([
 			<h2 class="section">The road today</h2>
 			<!-- biome-ignore lint/security/noDangerouslySetInnerHtml: trusted, authored -->
 			<div class="body">{@html detail.modern}</div>
-			<p class="aside">
-				See also: <a href="/modern-roads">which modern roads follow Roman lines</a>, and how
-				closely.
-			</p>
+			{#if !story.countries}
+				<p class="aside">
+					See also: <a href="/modern-roads">which modern roads follow Roman lines</a>, and how
+					closely.
+				</p>
+			{/if}
 
 			<h2 class="section">Where to see it</h2>
 			<!-- biome-ignore lint/security/noDangerouslySetInnerHtml: trusted, authored -->
@@ -187,16 +203,29 @@ const crumbs: Crumb[] = $derived([
 			</ul>
 		{/if}
 
+		{#if countries.length > 0}
+			<h2 class="section">Countries it crosses</h2>
+			<ul class="counties" role="list">
+				{#each countries as c (c.slug)}
+					<li><a href="/roads/{c.slug}">{c.name}</a></li>
+				{/each}
+			</ul>
+		{/if}
+
 		<a class="cta" href="/">Am I on it?</a>
 
 		<nav class="siblings" aria-labelledby="siblings-title">
-			<h2 class="section" id="siblings-title">The other roads</h2>
+			<h2 class="section" id="siblings-title">
+				{story.countries ? "Other great roads of the empire" : "The other roads of Britain"}
+			</h2>
 			<ul role="list">
 				{#each siblings as s (s.key)}
 					<li><a href="/road/{s.key}">{s.name}</a></li>
 				{/each}
 			</ul>
-			<p class="all"><a href="/roads">All Roman roads of Britain →</a></p>
+			<p class="all">
+				<a href="/roads">{story.countries ? "Every road and country →" : "All Roman roads of Britain →"}</a>
+			</p>
 		</nav>
 	</article>
 

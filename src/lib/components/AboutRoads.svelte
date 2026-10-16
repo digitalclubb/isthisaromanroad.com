@@ -11,7 +11,7 @@ import FaqList from "./FaqList.svelte";
  * road pages on the site's only page with any inbound authority.
  */
 type Props = {
-	roads: { key: string; name: string }[];
+	roads: { key: string; name: string; british: boolean }[];
 	faq: { q: string; a: string }[];
 };
 let { roads, faq }: Props = $props();
@@ -57,9 +57,9 @@ let { roads, faq }: Props = $props();
 			OpenFreeMap's tiles.
 		</p>
 		<p>
-			Coverage is empire-wide, from Scotland to Syria, because the underlying survey is. The
-			hand-written histories are Britain-only for now; everywhere else falls back to the survey's
-			own record of the road.
+			Coverage is empire-wide, from Scotland to Syria, because the underlying survey is. Britain's
+			named roads and the great roads of the empire have hand-written histories; everywhere else
+			falls back to the survey's own record of the road.
 		</p>
 	</div>
 
@@ -74,7 +74,21 @@ let { roads, faq }: Props = $props();
 		</p>
 	</div>
 	<ul class="road-list" role="list">
-		{#each roads as road (road.key)}
+		{#each roads.filter((r) => r.british) as road (road.key)}
+			<li><a href="/road/{road.key}">{road.name}</a></li>
+		{/each}
+	</ul>
+
+	<h2 class="title">The great roads of the empire</h2>
+	<div class="prose">
+		<p>
+			Beyond Britain the roads kept their Latin names, many of them taken from the magistrate who
+			built them: Appius Claudius for the <em>Via Appia</em>, Gaius Flaminius for the
+			<em>Via Flaminia</em>.
+		</p>
+	</div>
+	<ul class="road-list" role="list">
+		{#each roads.filter((r) => !r.british) as road (road.key)}
 			<li><a href="/road/{road.key}">{road.name}</a></li>
 		{/each}
 	</ul>

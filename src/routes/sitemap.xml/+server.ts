@@ -14,7 +14,7 @@ const SITE = "https://isthisaromanroad.com";
  * whose lastmod is always now is one Google learns to discount. Bump this
  * when the roads, stories or page content actually change.
  */
-const CONTENT_UPDATED = "2026-08-16";
+const CONTENT_UPDATED = "2026-10-16";
 
 type Entry = { loc: string; changefreq: string; priority: string };
 

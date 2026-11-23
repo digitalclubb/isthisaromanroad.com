@@ -12,6 +12,8 @@ import type { StyleSpecification } from "maplibre-gl";
 import { PALETTE, type PaletteName } from "#lib/theme.js";
 
 const TILES_URL = "https://tiles.openfreemap.org/planet";
+// One font per `text-font`: OpenFreeMap serves single fontstacks only and
+// 404s a combined "A,B" request, which silently drops every label.
 const GLYPHS_URL = "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf";
 const ATTRIBUTION =
 	'© <a href="https://www.openstreetmap.org/copyright" rel="noopener" target="_blank">OpenStreetMap</a> · © <a href="https://openfreemap.org" rel="noopener" target="_blank">OpenFreeMap</a> · Roads © <a href="https://itiner-e.org" rel="noopener" target="_blank">Itiner-e</a> (CC BY 4.0)';
@@ -183,7 +185,7 @@ export function buildStyle(variant: StyleVariant): StyleSpecification {
 				},
 			},
 
-			// City labels — italic small caps
+			// City labels — italic capitals (MapLibre has no small caps)
 			{
 				id: "place-city",
 				type: "symbol",
@@ -192,7 +194,7 @@ export function buildStyle(variant: StyleVariant): StyleSpecification {
 				filter: ["==", ["get", "class"], "city"],
 				layout: {
 					"text-field": ["coalesce", ["get", "name:latin"], ["get", "name"]],
-					"text-font": ["Noto Sans Italic", "Noto Sans Regular"],
+					"text-font": ["Noto Sans Italic"],
 					"text-size": ["interpolate", ["linear"], ["zoom"], 4, 10, 10, 18],
 					"text-letter-spacing": 0.12,
 					"text-transform": "uppercase",
@@ -216,7 +218,7 @@ export function buildStyle(variant: StyleVariant): StyleSpecification {
 				minzoom: 7,
 				layout: {
 					"text-field": ["coalesce", ["get", "name:latin"], ["get", "name"]],
-					"text-font": ["Noto Sans Italic", "Noto Sans Regular"],
+					"text-font": ["Noto Sans Italic"],
 					"text-size": ["interpolate", ["linear"], ["zoom"], 7, 9, 12, 13],
 					"text-letter-spacing": 0.08,
 					"text-max-width": 8,
@@ -238,7 +240,7 @@ export function buildStyle(variant: StyleVariant): StyleSpecification {
 				minzoom: 11,
 				layout: {
 					"text-field": ["coalesce", ["get", "name:latin"], ["get", "name"]],
-					"text-font": ["Noto Sans Italic", "Noto Sans Regular"],
+					"text-font": ["Noto Sans Italic"],
 					"text-size": 11,
 					"text-letter-spacing": 0.05,
 					"text-max-width": 8,

@@ -1,6 +1,9 @@
 <script lang="ts">
 import type { Feature, LineString, MultiLineString } from "geojson";
 import type { GeoJSONSource, Map as MaplibreMap } from "maplibre-gl";
+// MapLibre 6 loads its worker from a file beside its own module, which the
+// bundler doesn't emit. `?url` makes Vite ship it as a hashed asset.
+import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import { onMount } from "svelte";
 import { buildStyle, type StyleVariant } from "#lib/map/style-parchment.js";
 import { PALETTE } from "#lib/theme.js";
@@ -34,8 +37,9 @@ let drawAnimFrame = 0;
 onMount(() => {
 	let disposed = false;
 	(async () => {
-		const maplibregl = (await import("maplibre-gl")).default;
+		const maplibregl = await import("maplibre-gl");
 		if (disposed) return;
+		maplibregl.setWorkerUrl(workerUrl);
 
 		const variant: StyleVariant = window.matchMedia("(prefers-color-scheme: dark)").matches
 			? "walnut"
@@ -161,8 +165,8 @@ function emptyFc(): GeoJSON.FeatureCollection {
  */
 function clearGradient() {
 	if (!map) return;
-	map.setPaintProperty("road-line", "line-gradient", null);
-	map.setPaintProperty("road-line-casing", "line-gradient", null);
+	map.setPaintProperty("road-line", "line-gradient", undefined);
+	map.setPaintProperty("road-line-casing", "line-gradient", undefined);
 	map.setPaintProperty("road-line", "line-color", roadColour);
 	map.setPaintProperty("road-line-casing", "line-color", casingColour);
 }

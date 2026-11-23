@@ -43,7 +43,7 @@ export default defineConfig({
 					],
 				},
 				generateSW: {
-					globPatterns: ["client/**/*.{js,css,html,svg,png,webp,woff2}", "prerendered/**/*.html"],
+					globPatterns: ["client/**/*.{js,mjs,css,html,svg,png,webp,woff2}", "prerendered/**/*.html"],
 					// Worldwide road names span the `latin` + `latin-ext` subsets
 					// (ž, ć, š, ğ, ș, ț, … across Central/Eastern Europe, Turkey and
 					// the Balkans), so both are precached. The dataset has no Greek,

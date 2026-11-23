@@ -1,6 +1,6 @@
-import { loadCounties } from "$lib/server/counties.js";
-import { loadRegions } from "$lib/server/regions.js";
-import { STORIES } from "$lib/stories.js";
+import { loadCounties } from "#lib/server/counties.js";
+import { loadRegions } from "#lib/server/regions.js";
+import { STORIES } from "#lib/stories.js";
 import type { RequestHandler } from "./$types.js";
 
 export const prerender = true;

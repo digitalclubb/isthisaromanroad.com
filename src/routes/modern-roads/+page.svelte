@@ -1,10 +1,10 @@
 <script lang="ts">
-import { breadcrumbSchema, type Crumb, jsonLd, SITE } from "$lib/breadcrumbs.js";
-import FaqList from "$lib/components/FaqList.svelte";
-import RuleGold from "$lib/components/RuleGold.svelte";
-import SiteFooter from "$lib/components/SiteFooter.svelte";
-import SiteMasthead from "$lib/components/SiteMasthead.svelte";
-import { FIDELITY_LABEL } from "$lib/modern-roads.js";
+import { breadcrumbSchema, type Crumb, jsonLd, SITE } from "#lib/breadcrumbs.js";
+import FaqList from "#lib/components/FaqList.svelte";
+import RuleGold from "#lib/components/RuleGold.svelte";
+import SiteFooter from "#lib/components/SiteFooter.svelte";
+import SiteMasthead from "#lib/components/SiteMasthead.svelte";
+import { FIDELITY_LABEL } from "#lib/modern-roads.js";
 import type { PageData } from "./$types.js";
 
 type Props = { data: PageData };

@@ -2,8 +2,8 @@
 import type { Feature, LineString, MultiLineString } from "geojson";
 import type { GeoJSONSource, Map as MaplibreMap } from "maplibre-gl";
 import { onMount } from "svelte";
-import { buildStyle, type StyleVariant } from "$lib/map/style-parchment.js";
-import { PALETTE } from "$lib/theme.js";
+import { buildStyle, type StyleVariant } from "#lib/map/style-parchment.js";
+import { PALETTE } from "#lib/theme.js";
 
 type Props = {
 	userPoint: [number, number] | null;

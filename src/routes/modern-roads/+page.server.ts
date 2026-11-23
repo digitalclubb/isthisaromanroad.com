@@ -1,4 +1,4 @@
-import { MODERN_ROADS } from "$lib/modern-roads.js";
+import { MODERN_ROADS } from "#lib/modern-roads.js";
 import type { PageServerLoad } from "./$types.js";
 
 export const prerender = true;

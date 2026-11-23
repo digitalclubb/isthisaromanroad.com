@@ -8,10 +8,10 @@ Alongside the app there is a set of static, crawlable pages: `/roads` lists ever
 
 ## Stack
 
-- **SvelteKit 2** (Svelte 5 runes) + TypeScript
+- **SvelteKit 3** (Svelte 5 runes, Vite 8) + TypeScript; config lives in `vite.config.ts`, `$lib` is `#lib`
 - **pnpm** for package management
 - **Biome** for lint + format
-- **MapLibre GL JS** with free CartoDB Voyager raster tiles (no API key, no billing surprises)
+- **MapLibre GL JS** with a bespoke vector style on OpenFreeMap tiles (no API key, no billing surprises)
 - **Nominatim** for postcode / place geocoding
 - **Location-partitioned static data** (a 1°×1° cell grid is the spatial index) + **Turf.js** for nearest-point queries
 - **@vite-pwa/sveltekit** (Workbox) for offline PWA

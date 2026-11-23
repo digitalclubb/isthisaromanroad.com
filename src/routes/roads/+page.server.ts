@@ -1,9 +1,9 @@
-import { firstSentence } from "$lib/format.js";
-import { totalLengthKm, totalLengthMeters } from "$lib/geometry.js";
-import { loadCounties } from "$lib/server/counties.js";
-import { loadRegions } from "$lib/server/regions.js";
-import { loadAllFeatures } from "$lib/server/roads-data.js";
-import { STORIES, segmentsForStory } from "$lib/stories.js";
+import { firstSentence } from "#lib/format.js";
+import { totalLengthKm, totalLengthMeters } from "#lib/geometry.js";
+import { loadCounties } from "#lib/server/counties.js";
+import { loadRegions } from "#lib/server/regions.js";
+import { loadAllFeatures } from "#lib/server/roads-data.js";
+import { STORIES, segmentsForStory } from "#lib/stories.js";
 import type { PageServerLoad } from "./$types.js";
 
 export const prerender = true;

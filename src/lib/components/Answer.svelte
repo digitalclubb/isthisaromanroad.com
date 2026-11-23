@@ -1,6 +1,6 @@
 <script lang="ts">
-import { type AnswerTier, bearingToWords, formatDistance, roadDisplayName } from "$lib/format.js";
-import type { LookupResult } from "$lib/roads.js";
+import { type AnswerTier, bearingToWords, formatDistance, roadDisplayName } from "#lib/format.js";
+import type { LookupResult } from "#lib/roads.js";
 import RuleGold from "./RuleGold.svelte";
 
 type Props = {

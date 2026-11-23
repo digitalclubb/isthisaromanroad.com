@@ -1,8 +1,8 @@
 <script lang="ts">
-import { breadcrumbSchema, type Crumb, jsonLd, SITE } from "$lib/breadcrumbs.js";
-import RuleGold from "$lib/components/RuleGold.svelte";
-import SiteFooter from "$lib/components/SiteFooter.svelte";
-import SiteMasthead from "$lib/components/SiteMasthead.svelte";
+import { breadcrumbSchema, type Crumb, jsonLd, SITE } from "#lib/breadcrumbs.js";
+import RuleGold from "#lib/components/RuleGold.svelte";
+import SiteFooter from "#lib/components/SiteFooter.svelte";
+import SiteMasthead from "#lib/components/SiteMasthead.svelte";
 import type { PageData } from "./$types.js";
 
 type Props = { data: PageData };

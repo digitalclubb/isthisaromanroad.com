@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Story } from "$lib/stories.js";
+import type { Story } from "#lib/stories.js";
 
 type Props = { story: Story };
 let { story }: Props = $props();

@@ -1,7 +1,7 @@
 <script lang="ts">
-import { type AnswerTier, bearingToWords, formatDistance, roadDisplayName } from "$lib/format.js";
-import type { LookupResult, RoadFeature } from "$lib/roads.js";
-import { PALETTE } from "$lib/theme.js";
+import { type AnswerTier, bearingToWords, formatDistance, roadDisplayName } from "#lib/format.js";
+import type { LookupResult, RoadFeature } from "#lib/roads.js";
+import { PALETTE } from "#lib/theme.js";
 
 type Props = {
 	result: LookupResult;

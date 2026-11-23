@@ -9,7 +9,7 @@
  * Source: https://openfreemap.org/
  */
 import type { StyleSpecification } from "maplibre-gl";
-import { PALETTE, type PaletteName } from "$lib/theme.js";
+import { PALETTE, type PaletteName } from "#lib/theme.js";
 
 const TILES_URL = "https://tiles.openfreemap.org/planet";
 const GLYPHS_URL = "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf";

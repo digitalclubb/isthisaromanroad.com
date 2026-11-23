@@ -8,7 +8,7 @@
  */
 import { readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import type { RoadFeature } from "$lib/roads.js";
+import type { RoadFeature } from "#lib/roads.js";
 
 const CELLS_DIR = "static/roads/cells";
 

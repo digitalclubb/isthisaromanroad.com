@@ -5,7 +5,7 @@
  * renders rather than the fallback.
  */
 
-import { PALETTE } from "$lib/theme.js";
+import { PALETTE } from "#lib/theme.js";
 
 const SHARE_TITLE = "Is this a Roman road?";
 const SHARE_TEXT = "I asked the road. isthisaromanroad.com";

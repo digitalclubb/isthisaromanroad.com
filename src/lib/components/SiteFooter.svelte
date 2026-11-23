@@ -11,13 +11,12 @@ const KOFI = "https://ko-fi.com/digitalclubb";
 
 // A plain link rather than Ko-fi's embedded widget, which sets third-party
 // cookies. The click is counted first-party so the ask can be judged on its
-// numbers. Imported from the /sveltekit entry, not ".", deliberately: that
-// entry is self-contained and re-exports `track`, so this resolves to the
-// same chunk +layout.svelte already dynamic-imports on mount. Importing "."
-// instead builds a second 1 KB copy of `track` and costs a round-trip here.
+// numbers. Imported from ".", the same entry +layout.svelte dynamic-imports
+// on mount, so this resolves to that already-loaded chunk. (The /sveltekit
+// entry imports `$app/stores`, which throws under Kit 3.)
 // target="_blank" keeps the page alive, so the queue flush completes.
 async function countSupportClick() {
-	const { track } = await import("@vercel/analytics/sveltekit");
+	const { track } = await import("@vercel/analytics");
 	track("support_click", { placement: "footer" });
 }
 </script>

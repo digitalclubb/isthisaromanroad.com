@@ -8,7 +8,7 @@ A single-page PWA that tells you whether you're standing on (or near) a Roman ro
 
 ## Stack
 
-- **SvelteKit 2** with Svelte 5 (runes mode) + TypeScript
+- **SvelteKit 3** with Svelte 5 (runes mode) + TypeScript, on Vite 8. No `svelte.config.js`: Kit config is the first argument to `withPwa()` in `vite.config.ts`. Import from `#lib/…` (Kit 3 removed `$lib`).
 - **pnpm** (lockfile committed; `packageManager` pinned in package.json)
 - **Biome** for lint + format (see `biome.json`)
 - **MapLibre GL JS** with a bespoke vector style served from OpenFreeMap (`src/lib/map/style-parchment.ts`) — no API key, no rate limits

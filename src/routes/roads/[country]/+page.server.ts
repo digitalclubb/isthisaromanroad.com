@@ -1,8 +1,8 @@
 import { error } from "@sveltejs/kit";
-import { toOverviewFeatures } from "$lib/geometry.js";
-import { REGION_EXTRA, REGION_NOTES } from "$lib/region-notes.js";
-import { featuresForRegion, findRegion, loadRegions } from "$lib/server/regions.js";
-import { STORIES } from "$lib/stories.js";
+import { toOverviewFeatures } from "#lib/geometry.js";
+import { REGION_EXTRA, REGION_NOTES } from "#lib/region-notes.js";
+import { featuresForRegion, findRegion, loadRegions } from "#lib/server/regions.js";
+import { STORIES } from "#lib/stories.js";
 import type { PageServerLoad } from "./$types.js";
 
 export const prerender = true;

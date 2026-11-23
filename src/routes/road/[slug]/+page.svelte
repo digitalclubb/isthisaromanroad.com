@@ -1,12 +1,12 @@
 <script lang="ts">
-import { breadcrumbSchema, type Crumb, jsonLd, SITE } from "$lib/breadcrumbs.js";
-import FaqList from "$lib/components/FaqList.svelte";
-import RoadMap from "$lib/components/Map.svelte";
-import RuleGold from "$lib/components/RuleGold.svelte";
-import SiteFooter from "$lib/components/SiteFooter.svelte";
-import SiteMasthead from "$lib/components/SiteMasthead.svelte";
-import { formatYear } from "$lib/geometry.js";
-import { roadKey } from "$lib/roads.js";
+import { breadcrumbSchema, type Crumb, jsonLd, SITE } from "#lib/breadcrumbs.js";
+import FaqList from "#lib/components/FaqList.svelte";
+import RoadMap from "#lib/components/Map.svelte";
+import RuleGold from "#lib/components/RuleGold.svelte";
+import SiteFooter from "#lib/components/SiteFooter.svelte";
+import SiteMasthead from "#lib/components/SiteMasthead.svelte";
+import { formatYear } from "#lib/geometry.js";
+import { roadKey } from "#lib/roads.js";
 import type { PageData } from "./$types.js";
 
 type Props = { data: PageData };

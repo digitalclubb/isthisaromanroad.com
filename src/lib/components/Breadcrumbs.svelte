@@ -5,7 +5,7 @@
  * policy requires the markup to describe the breadcrumb the user actually
  * sees, and one source for both is the only way to stop them drifting.
  */
-import type { Crumb } from "$lib/breadcrumbs.js";
+import type { Crumb } from "#lib/breadcrumbs.js";
 
 type Props = { items: Crumb[] };
 let { items }: Props = $props();

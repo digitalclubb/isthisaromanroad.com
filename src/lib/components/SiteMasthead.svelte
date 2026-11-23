@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Crumb } from "$lib/breadcrumbs.js";
+import type { Crumb } from "#lib/breadcrumbs.js";
 import Breadcrumbs from "./Breadcrumbs.svelte";
 
 /**

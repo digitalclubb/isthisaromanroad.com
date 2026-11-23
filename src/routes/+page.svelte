@@ -1,20 +1,20 @@
 <script lang="ts">
-import { jsonLd, SITE } from "$lib/breadcrumbs.js";
-import AboutRoads from "$lib/components/AboutRoads.svelte";
-import Answer from "$lib/components/Answer.svelte";
-import AskAgain from "$lib/components/AskAgain.svelte";
-import Listening from "$lib/components/Listening.svelte";
-import RoadMap from "$lib/components/Map.svelte";
-import Question from "$lib/components/Question.svelte";
-import RoadStory from "$lib/components/RoadStory.svelte";
-import ShareCard from "$lib/components/ShareCard.svelte";
-import SiteFooter from "$lib/components/SiteFooter.svelte";
-import Wordmark from "$lib/components/Wordmark.svelte";
-import { answerTierFor, roadNarrative, roadSubtitle } from "$lib/format.js";
-import { geocode } from "$lib/geocode.js";
-import { type LookupResult, type RoadFeature, type RoadIndex, roadKey } from "$lib/roads.js";
-import { rasterise, shareOrDownload } from "$lib/share.js";
-import { findStoryFor, STORIES } from "$lib/stories.js";
+import { jsonLd, SITE } from "#lib/breadcrumbs.js";
+import AboutRoads from "#lib/components/AboutRoads.svelte";
+import Answer from "#lib/components/Answer.svelte";
+import AskAgain from "#lib/components/AskAgain.svelte";
+import Listening from "#lib/components/Listening.svelte";
+import RoadMap from "#lib/components/Map.svelte";
+import Question from "#lib/components/Question.svelte";
+import RoadStory from "#lib/components/RoadStory.svelte";
+import ShareCard from "#lib/components/ShareCard.svelte";
+import SiteFooter from "#lib/components/SiteFooter.svelte";
+import Wordmark from "#lib/components/Wordmark.svelte";
+import { answerTierFor, roadNarrative, roadSubtitle } from "#lib/format.js";
+import { geocode } from "#lib/geocode.js";
+import { type LookupResult, type RoadFeature, type RoadIndex, roadKey } from "#lib/roads.js";
+import { rasterise, shareOrDownload } from "#lib/share.js";
+import { findStoryFor, STORIES } from "#lib/stories.js";
 
 // The bare wordmark is a brand name nobody searches for. Keep it at the front
 // so the identity survives, then say what the page does in the words people
@@ -71,7 +71,7 @@ let requestId = 0;
 async function ensureIndex(): Promise<RoadIndex> {
 	if (idx) return idx;
 	if (!pendingIndex) {
-		pendingIndex = import("$lib/roads.js")
+		pendingIndex = import("#lib/roads.js")
 			.then((m) => m.loadRoadIndex())
 			.then((built) => {
 				idx = built;

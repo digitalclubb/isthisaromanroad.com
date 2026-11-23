@@ -1,4 +1,4 @@
-import { loadCounties } from "$lib/server/counties.js";
+import { loadCounties } from "#lib/server/counties.js";
 import type { PageServerLoad } from "./$types.js";
 
 export const prerender = true;

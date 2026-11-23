@@ -15,7 +15,7 @@
  * Run with: pnpm data:counties  (after pnpm data:build and pnpm data:regions)
  */
 import { createWriteStream, existsSync, mkdirSync } from "node:fs";
-import { readFile, readdir, rename, stat, writeFile } from "node:fs/promises";
+import { readdir, readFile, rename, stat, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";

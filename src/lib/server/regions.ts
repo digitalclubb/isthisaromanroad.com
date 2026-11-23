@@ -9,8 +9,8 @@
 import regionData from "../../../data/regions.json" with { type: "json" };
 import { featureLengthMeters, totalLengthKm } from "../geometry.js";
 import { canonicalRoadNameKey, isDisplayableRoadName } from "../road-names.js";
-import { itineraryRoadName } from "../roads.js";
 import type { RoadFeature } from "../roads.js";
+import { itineraryRoadName } from "../roads.js";
 import { loadAllFeatures } from "./roads-data.js";
 
 type RawRegion = { slug: string; name: string; featureIds: string[] };

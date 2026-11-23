@@ -6,7 +6,7 @@
  * across all prerenders. Never shipped to the client — the live app loads cells
  * lazily by location instead (see src/lib/roads.ts).
  */
-import { readFile, readdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import type { RoadFeature } from "$lib/roads.js";
 

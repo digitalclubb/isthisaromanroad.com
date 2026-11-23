@@ -1,4 +1,3 @@
-import { PALETTE, type PaletteName } from "$lib/theme.js";
 /**
  * A bespoke MapLibre style that renders the basemap as aged parchment (or
  * walnut, in dark mode). Tiles come from OpenFreeMap's planet vector tiles
@@ -10,6 +9,7 @@ import { PALETTE, type PaletteName } from "$lib/theme.js";
  * Source: https://openfreemap.org/
  */
 import type { StyleSpecification } from "maplibre-gl";
+import { PALETTE, type PaletteName } from "$lib/theme.js";
 
 const TILES_URL = "https://tiles.openfreemap.org/planet";
 const GLYPHS_URL = "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf";

@@ -4,7 +4,7 @@
  * but backed by a filesystem `fetch` shim that reads static/roads/.
  * Usage: node --experimental-strip-types scripts/smoke-test.ts
  */
-import { readFile, readdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { answerTierFor, bearingToCompass } from "../src/lib/format.ts";
 import { type CellFetch, loadRoadIndex } from "../src/lib/roads.ts";
 import { STORIES, segmentsForStory } from "../src/lib/stories.ts";

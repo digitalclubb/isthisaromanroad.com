@@ -21,7 +21,7 @@
  * Run with: pnpm data:regions   (needs static/roads/cells to exist already)
  */
 import { existsSync, mkdirSync } from "node:fs";
-import { readFile, readdir, stat, writeFile } from "node:fs/promises";
+import { readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import type { Feature, MultiPolygon, Polygon } from "geojson";
 import { type AreaPoly, assignArea, bboxOfRings, ringsOf, slugify } from "./geo-assign.ts";

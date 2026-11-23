@@ -1,5 +1,5 @@
 <script lang="ts">
-import { SITE, jsonLd } from "$lib/breadcrumbs.js";
+import { jsonLd, SITE } from "$lib/breadcrumbs.js";
 import AboutRoads from "$lib/components/AboutRoads.svelte";
 import Answer from "$lib/components/Answer.svelte";
 import AskAgain from "$lib/components/AskAgain.svelte";
@@ -14,7 +14,7 @@ import { answerTierFor, roadNarrative, roadSubtitle } from "$lib/format.js";
 import { geocode } from "$lib/geocode.js";
 import { type LookupResult, type RoadFeature, type RoadIndex, roadKey } from "$lib/roads.js";
 import { rasterise, shareOrDownload } from "$lib/share.js";
-import { STORIES, findStoryFor } from "$lib/stories.js";
+import { findStoryFor, STORIES } from "$lib/stories.js";
 
 // The bare wordmark is a brand name nobody searches for. Keep it at the front
 // so the identity survives, then say what the page does in the words people

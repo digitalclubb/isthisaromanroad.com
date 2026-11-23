@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.6.8/schema.json",
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",
@@ -7,16 +7,18 @@
 	},
 	"files": {
 		"ignoreUnknown": true,
-		"ignore": [
-			".svelte-kit",
-			".claude",
-			".vercel",
-			"build",
-			"node_modules",
-			"static/roads",
-			"pnpm-lock.yaml",
-			"dev-dist",
-			"data"
+		"includes": [
+			"**",
+			"!**/.svelte-kit",
+			"!**/.claude",
+			"!**/.vercel",
+			"!**/build",
+			"!**/node_modules",
+			"!**/static/roads",
+			"!**/pnpm-lock.yaml",
+			"!**/dev-dist",
+			"!**/data",
+			"!**/*.md"
 		]
 	},
 	"formatter": {
@@ -24,13 +26,17 @@
 		"indentStyle": "tab",
 		"lineWidth": 100
 	},
-	"organizeImports": {
-		"enabled": true
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
 	},
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true,
+			"preset": "recommended",
 			"style": {
 				"useNodejsImportProtocol": "error",
 				"noNonNullAssertion": "off",
@@ -49,5 +55,28 @@
 			"quoteStyle": "double",
 			"semicolons": "always"
 		}
-	}
+	},
+	"overrides": [
+		{
+			"includes": ["**/*.svelte"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noUnusedVariables": "off",
+						"noUnusedImports": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["src/app.css"],
+			"linter": {
+				"rules": {
+					"complexity": {
+						"noImportantStyles": "off"
+					}
+				}
+			}
+		}
+	]
 }

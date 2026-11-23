@@ -1,5 +1,5 @@
 <script lang="ts">
-import { type Crumb, SITE, breadcrumbSchema, jsonLd } from "$lib/breadcrumbs.js";
+import { breadcrumbSchema, type Crumb, jsonLd, SITE } from "$lib/breadcrumbs.js";
 import FaqList from "$lib/components/FaqList.svelte";
 import RuleGold from "$lib/components/RuleGold.svelte";
 import SiteFooter from "$lib/components/SiteFooter.svelte";

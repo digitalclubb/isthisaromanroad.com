@@ -7,9 +7,9 @@ import "../app.css";
 // in parallel with the CSS instead of waiting for CSS parse to discover
 // the @font-face. Eliminates the FOUT (parchment momentarily set in
 // Georgia + system sans) that swap+no-preload would otherwise show.
-import interWght from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
 import cormorant500i from "@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-italic.woff2?url";
 import cormorant700 from "@fontsource/cormorant-garamond/files/cormorant-garamond-latin-700-normal.woff2?url";
+import interWght from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
 import { onMount } from "svelte";
 
 const { children } = $props();

@@ -1,4 +1,4 @@
-import { type RoadFeature, itineraryRoadName } from "./roads.js";
+import { itineraryRoadName, type RoadFeature } from "./roads.js";
 
 const UNNAMED = "an unnamed Roman road";
 const MAX_DESCRIPTION_CHARS = 280;
@@ -122,7 +122,7 @@ export function roadSubtitle(r: RoadFeature): string | null {
 
 function trim(s: string, max: number): string {
 	if (s.length <= max) return s;
-	return `${s.slice(0, max - 1).replace(/[\s,;:.\-]+$/, "")}…`;
+	return `${s.slice(0, max - 1).replace(/[\s,;:.-]+$/, "")}…`;
 }
 
 export function roadNarrative(r: RoadFeature): string {

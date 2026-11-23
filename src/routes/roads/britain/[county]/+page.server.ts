@@ -1,6 +1,6 @@
+import { error } from "@sveltejs/kit";
 import { toOverviewFeatures } from "$lib/geometry.js";
 import { featuresForCounty, findCounty, loadCounties } from "$lib/server/counties.js";
-import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types.js";
 
 export const prerender = true;

@@ -34,9 +34,10 @@
 
 	--warn: #8a4a16;
 
-	--font-display: "Cormorant Garamond", "Iowan Old Style", Charter, Georgia, "Times New Roman",
-		serif;
-	--font-body: "Inter Variable", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+	--font-display:
+		"Cormorant Garamond", "Iowan Old Style", Charter, Georgia, "Times New Roman", serif;
+	--font-body:
+		"Inter Variable", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		"Helvetica Neue", Arial, sans-serif;
 
 	--radius: 12px;
@@ -128,7 +129,9 @@ a {
 	text-decoration-color: var(--gold);
 	text-decoration-thickness: 1.5px;
 	text-underline-offset: 3px;
-	transition: color 160ms var(--ease), text-decoration-color 160ms var(--ease);
+	transition:
+		color 160ms var(--ease),
+		text-decoration-color 160ms var(--ease);
 }
 a:hover {
 	color: var(--brand-deep);

@@ -1,3 +1,4 @@
+import { error } from "@sveltejs/kit";
 import { dateRangeOf, dominantCertainty, totalLengthKm } from "$lib/geometry.js";
 import { ROAD_DETAIL } from "$lib/road-detail.js";
 import type { RoadFeature } from "$lib/roads.js";
@@ -5,7 +6,6 @@ import { countiesForRoad } from "$lib/server/counties.js";
 import { loadRegions } from "$lib/server/regions.js";
 import { loadAllFeatures } from "$lib/server/roads-data.js";
 import { STORIES, segmentsForStory } from "$lib/stories.js";
-import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types.js";
 
 export const prerender = true;

@@ -14,7 +14,7 @@ Alongside the app there is a set of static, crawlable pages: `/roads` lists ever
 - **MapLibre GL JS** with a bespoke vector style on OpenFreeMap tiles (no API key, no billing surprises)
 - **Nominatim** for postcode / place geocoding
 - **Location-partitioned static data** (a 1°×1° cell grid is the spatial index) + **Turf.js** for nearest-point queries
-- **@vite-pwa/sveltekit** (Workbox) for offline PWA
+- **@vite-pwa/sveltekit** (Workbox) for offline PWA: pages and assets precached, road cells and map tiles cached as you use them. The worker is registered in `+layout.svelte` and updates once open tabs close
 - **Cormorant Garamond** (display) + **Inter** (body), self-hosted via Fontsource
 - **Vercel** for hosting (`@sveltejs/adapter-vercel`)
 - **Itiner-e** dataset (CC BY 4.0) for road geometry — see `scripts/build-roads.ts`

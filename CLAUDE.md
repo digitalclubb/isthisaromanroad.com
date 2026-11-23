@@ -14,7 +14,7 @@ A single-page PWA that tells you whether you're standing on (or near) a Roman ro
 - **MapLibre GL JS** with a bespoke vector style served from OpenFreeMap (`src/lib/map/style-parchment.ts`) — no API key, no rate limits
 - **Cormorant Garamond** (display) + **Inter Variable** (body), self-hosted via Fontsource
 - **Location-partitioned static data** — a 1°×1° cell grid (built by `scripts/build-roads.ts`) is itself the spatial index; the client lazily fetches only nearby cells. **Turf.js** does the nearest-point maths. No client-side tree.
-- **@vite-pwa/sveltekit** (Workbox) for the PWA layer
+- **@vite-pwa/sveltekit** (Workbox) for the PWA layer. `generateSW`, registered by hand in `+layout.svelte` (the plugin can't inject into Kit's HTML). `registerType: "prompt"` with no UI: an update waits, is activated only while the app is hidden, then the page reloads. `navigateFallback: null` (the default fallback served the homepage for every non-precached page). **Kill switch:** an installed worker outlives removing `register()`; to retire it, ship a build with `strategies: "selfDestroySW"`.
 - **Vercel** adapter for hosting
 - **html-to-image** for the shareable answer-card PNG export (dynamic-imported on first share)
 - Data: **Itiner-e** dataset (CC BY 4.0) — see `scripts/build-roads.ts`
@@ -28,6 +28,9 @@ pnpm preview           # serve the production build locally
 pnpm check             # svelte-check
 pnpm lint  / pnpm fix  # biome
 pnpm data:build        # rebuild the static/roads/ cell grid from Itiner-e (~78 MB d/l)
+                       # ⚠ feature ids are build-order counters and the SW caches cells
+                       #   (StaleWhileRevalidate): if a rebuild reorders features, make ids
+                       #   content-based first, or cached and fresh cells can collide
 pnpm icons:build       # regenerate PWA icons + og.png
 pnpm data:smoke        # probe the partitioned index against known locations (tsx)
 ```

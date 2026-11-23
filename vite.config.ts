@@ -14,8 +14,14 @@ export default defineConfig({
 				prerender: { handleHttpError: "warn" },
 			},
 			{
-				registerType: "autoUpdate",
-				injectRegister: "auto",
+				// Registered by hand in +layout.svelte: the plugin can't inject into
+				// SvelteKit's HTML, and its registerSW.js uses a page-relative
+				// ./sw.js that breaks on nested routes. "prompt" (with no prompt UI)
+				// means a new worker waits until the app's tabs close, so an open
+				// tab never loses the old precached chunks it still lazy-loads
+				// (Vercel stops serving them) and never reloads mid-question.
+				registerType: "prompt",
+				injectRegister: false,
 				strategies: "generateSW",
 				manifest: {
 					name: "Is this a Roman Road?",
@@ -53,6 +59,14 @@ export default defineConfig({
 					// Cyrillic or Vietnamese glyphs — verified via
 					// `grep -oP '[^\x00-\x7F]' static/roads/cells/*.json | sort -u` —
 					// so those subsets stay excluded to save precache storage.
+					// No SPA fallback. The plugin defaults it to the homepage, which
+					// would answer every non-precached navigation (/roads/<country>,
+					// sitemap.xml, …) with the home page, online included. Precached
+					// pages still match navigations directly.
+					navigateFallback: null,
+					// Take control on first install so that visit's road cells and
+					// tiles are cached too. Updates still wait (see registerType).
+					clientsClaim: true,
 					globIgnores: [
 						// Per-page Open Graph cards: fetched only by crawlers and social
 						// scrapers, never by the app. ~53 files at ~80 KB each would add
@@ -74,18 +88,38 @@ export default defineConfig({
 					runtimeCaching: [
 						{
 							// The partitioned road data: manifest.json, road-cells.json
-							// and the lazily-fetched per-location cell files. CacheFirst so
-							// once a region is loaded the answer works offline. maxEntries
-							// caps how many cells we retain (the data is immutable per
-							// build, so staleness isn't a concern within the 30-day window).
-							urlPattern: ({ url }) => url.pathname.startsWith("/roads/"),
-							handler: "CacheFirst",
+							// and the lazily-fetched per-location cell files. Cached so
+							// once a region is loaded the answer works offline. The URLs
+							// carry no build hash, so StaleWhileRevalidate rather than
+							// CacheFirst: a data rebuild reaches users on their next
+							// lookup. Exact files only, so the /roads/<country> pages and
+							// their __data.json stay out. maxEntries caps retained cells.
+							// (String checks, not a regex: the SW generator can't serialise
+							// regex literals inside urlPattern.)
+							urlPattern: ({ url }) =>
+								url.pathname === "/roads/manifest.json" ||
+								url.pathname === "/roads/road-cells.json" ||
+								(url.pathname.startsWith("/roads/cells/") && url.pathname.endsWith(".json")),
+							handler: "StaleWhileRevalidate",
 							options: {
 								cacheName: "roads-data",
 								expiration: {
 									maxEntries: 300,
 									maxAgeSeconds: 60 * 60 * 24 * 30,
+									purgeOnQuotaError: true,
 								},
+							},
+						},
+						{
+							// The TileJSON index points at dated tile paths that OpenFreeMap
+							// retires, so prefer a fresh copy; the cache covers offline.
+							urlPattern: ({ url }) =>
+								url.hostname === "tiles.openfreemap.org" && url.pathname === "/planet",
+							handler: "NetworkFirst",
+							options: {
+								cacheName: "map-index",
+								networkTimeoutSeconds: 3,
+								expiration: { maxEntries: 2, purgeOnQuotaError: true },
 							},
 						},
 						{
@@ -96,6 +130,7 @@ export default defineConfig({
 								expiration: {
 									maxEntries: 500,
 									maxAgeSeconds: 60 * 60 * 24 * 30,
+									purgeOnQuotaError: true,
 								},
 							},
 						},

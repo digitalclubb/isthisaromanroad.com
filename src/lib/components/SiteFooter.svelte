@@ -10,15 +10,7 @@ let { current = "road" }: Props = $props();
 const KOFI = "https://ko-fi.com/digitalclubb";
 
 // A plain link rather than Ko-fi's embedded widget, which sets third-party
-// cookies. The click is counted first-party so the ask can be judged on its
-// numbers. Imported from ".", the same entry +layout.svelte dynamic-imports
-// on mount, so this resolves to that already-loaded chunk. (The /sveltekit
-// entry imports `$app/stores`, which throws under Kit 3.)
-// target="_blank" keeps the page alive, so the queue flush completes.
-async function countSupportClick() {
-	const { track } = await import("@vercel/analytics");
-	track("support_click", { placement: "footer" });
-}
+// cookies.
 </script>
 
 <footer>
@@ -32,9 +24,6 @@ async function countSupportClick() {
 			href={KOFI}
 			target="_blank"
 			rel="external noopener"
-			onclick={() => {
-				countSupportClick().catch(() => {});
-			}}
 			>Buy me a coffee<span class="sr-only">&nbsp;(opens in a new tab)</span></a
 		> if it helped.
 	</p>

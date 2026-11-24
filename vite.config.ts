@@ -1,4 +1,4 @@
-import adapter from "@sveltejs/adapter-vercel";
+import adapter from "@sveltejs/adapter-static";
 import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 import { withPwa } from "@vite-pwa/sveltekit";
 import { defineConfig } from "vite";
@@ -10,7 +10,9 @@ export default defineConfig({
 		...withPwa(
 			{
 				preprocess: vitePreprocess(),
-				adapter: adapter({ runtime: "nodejs22.x" }),
+				// Every route is prerendered; adapter-static fails the build if one isn't.
+				// 404.html is the client-rendered error page Cloudflare serves for misses.
+				adapter: adapter({ fallback: "404.html" }),
 				prerender: { handleHttpError: "warn" },
 			},
 			{
@@ -19,7 +21,7 @@ export default defineConfig({
 				// ./sw.js that breaks on nested routes. "prompt" (with no prompt UI)
 				// means a new worker waits until the app's tabs close, so an open
 				// tab never loses the old precached chunks it still lazy-loads
-				// (Vercel stops serving them) and never reloads mid-question.
+				// (each deploy stops serving them) and never reloads mid-question.
 				registerType: "prompt",
 				injectRegister: false,
 				strategies: "generateSW",

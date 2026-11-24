@@ -16,7 +16,7 @@ Alongside the app there is a set of static, crawlable pages: `/roads` lists ever
 - **Location-partitioned static data** (a 1°×1° cell grid is the spatial index) + **Turf.js** for nearest-point queries
 - **@vite-pwa/sveltekit** (Workbox) for offline PWA: pages and assets precached, road cells and map tiles cached as you use them. The worker is registered in `+layout.svelte` and updates once open tabs close
 - **Cormorant Garamond** (display) + **Inter** (body), self-hosted via Fontsource
-- **Vercel** for hosting (`@sveltejs/adapter-vercel`)
+- **Cloudflare Workers static assets** for hosting (`@sveltejs/adapter-static` → `build/`, configured in `wrangler.jsonc`; cache headers in `static/_headers`). Cloudflare Web Analytics, enabled in the dashboard, so no analytics code
 - **Itiner-e** dataset (CC BY 4.0) for road geometry — see `scripts/build-roads.ts`
 
 ## Design language
@@ -39,7 +39,7 @@ Then open http://localhost:5173.
 | Command | What it does |
 | --- | --- |
 | `pnpm dev` | Vite dev server with HMR |
-| `pnpm build` | Production build (prerendered index + Vercel adapter output) |
+| `pnpm build` | Production build (fully prerendered static site in `build/`) |
 | `pnpm preview` | Serve the production build locally |
 | `pnpm check` | `svelte-check` typecheck across .ts and .svelte |
 | `pnpm lint` | Biome lint + format check |

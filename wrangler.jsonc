@@ -1,0 +1,10 @@
+{
+	// Static assets only, no Worker script: every route is prerendered.
+	"name": "isthisaromanroad",
+	"compatibility_date": "2026-11-01",
+	"assets": {
+		"directory": "./build",
+		"html_handling": "auto-trailing-slash",
+		"not_found_handling": "404-page"
+	}
+}

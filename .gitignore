@@ -6,7 +6,7 @@ node_modules
 
 .svelte-kit
 build
-.vercel
+.wrangler
 dev-dist
 
 # Raw downloaded source data (kept out of repo; rebuild with pnpm data:build)

@@ -25,7 +25,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "^2.6.8",
 		"@resvg/resvg-js": "^2.6.2",
-		"@sveltejs/adapter-vercel": "^7.0.5",
+		"@sveltejs/adapter-static": "^4.0.1",
 		"@sveltejs/kit": "^3.4.0",
 		"@sveltejs/vite-plugin-svelte": "^7.3.1",
 		"@types/geojson": "^7946.0.16",
@@ -45,7 +45,6 @@
 		"@turf/distance": "^7.4.0",
 		"@turf/helpers": "^7.4.0",
 		"@turf/nearest-point-on-line": "^7.4.0",
-		"@vercel/analytics": "^2.0.1",
 		"html-to-image": "^1.11.13",
 		"maplibre-gl": "^6.19.0"
 	},

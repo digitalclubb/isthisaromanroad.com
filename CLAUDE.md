@@ -15,7 +15,7 @@ A single-page PWA that tells you whether you're standing on (or near) a Roman ro
 - **Cormorant Garamond** (display) + **Inter Variable** (body), self-hosted via Fontsource
 - **Location-partitioned static data** — a 1°×1° cell grid (built by `scripts/build-roads.ts`) is itself the spatial index; the client lazily fetches only nearby cells. **Turf.js** does the nearest-point maths. No client-side tree.
 - **@vite-pwa/sveltekit** (Workbox) for the PWA layer. `generateSW`, registered by hand in `+layout.svelte` (the plugin can't inject into Kit's HTML). `registerType: "prompt"` with no UI: an update waits, is activated only while the app is hidden, then the page reloads. `navigateFallback: null` (the default fallback served the homepage for every non-precached page). **Kill switch:** an installed worker outlives removing `register()`; to retire it, ship a build with `strategies: "selfDestroySW"`.
-- **Vercel** adapter for hosting
+- **Cloudflare Workers static assets** for hosting: `adapter-static` → `build/`, `wrangler.jsonc`, cache headers in `static/_headers`. No Worker script (so requests stay free); adding a server route means switching to `adapter-cloudflare`. Analytics is Cloudflare Web Analytics, auto-injected at the edge, so no code
 - **html-to-image** for the shareable answer-card PNG export (dynamic-imported on first share)
 - Data: **Itiner-e** dataset (CC BY 4.0) — see `scripts/build-roads.ts`
 

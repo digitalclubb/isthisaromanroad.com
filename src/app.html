@@ -10,6 +10,8 @@
 		<link rel="manifest" href="/manifest.webmanifest" />
 		<link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin />
 		<link rel="dns-prefetch" href="https://nominatim.openstreetmap.org" />
+		<!-- Cloudflare Web Analytics. Auto-injection skips Worker responses, so it lives here. -->
+		<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "2d658f33f25b4eec8278d3ddb1dff9db"}'></script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
